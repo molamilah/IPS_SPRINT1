@@ -24,6 +24,10 @@ import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
 
+/**
+ * @author DD
+ *
+ */
 public class VentanaDisponibilidadInstalaciones extends JDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -50,6 +54,15 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 	Usuario usuario;
 
 	@SuppressWarnings("serial")
+	/**
+	 * 
+	 * @author Martin
+	 * 
+	 *         Clase para cambiar el color de las celdas de la table en funcion
+	 *         de si estan o no reservadas, y de quien sea el propietario de la
+	 *         reserva.
+	 *
+	 */
 	class Celda extends DefaultTableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
@@ -58,9 +71,9 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 				this.setBackground(Color.RED);
 			} else if (this.getText() == "Disponible") {
 				this.setBackground(Color.GREEN);
-			} else if(this.getText() == "Reserva Propia"){
+			} else if (this.getText() == "Reserva Propia") {
 				this.setBackground(Color.ORANGE);
-			}else {
+			} else {
 				this.setBackground(null);
 				this.setIcon(null);
 			}
@@ -183,6 +196,9 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 		return cbDia;
 	}
 
+	/**
+	 * Metodo que invoca al metodo que calcula el numero de dias por mes
+	 */
 	private void cambiarNumeroDias() {
 		int indice = cbDia.getSelectedIndex();
 		String[] dias = calcularDiasMes();
@@ -193,6 +209,10 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 			cbDia.setSelectedIndex(dias.length - 1);
 	}
 
+	/**
+	 * Metodo para calcular el numero de dias que tiene un mes.
+	 * @return numero de dias por mes.
+	 */
 	private String[] calcularDiasMes() {
 		String[] dias;
 		String aux = String.valueOf(cbMes.getSelectedItem());
@@ -273,12 +293,12 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 						if (horasReservadas[i] == null) {
 							modeloTablaReservas
 									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Disponible" });
-						} else if(usuario.getIdentificador().equals(horasReservadas[i].getIdentificador())) {
+						} else if (usuario.getIdentificador().equals(horasReservadas[i].getIdentificador())) {
 							modeloTablaReservas
 									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reserva Propia" });
-						}else{
+						} else {
 							modeloTablaReservas
-							.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reservada" });
+									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reservada" });
 						}
 					}
 				}
@@ -288,6 +308,9 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 		return btComprobar;
 	}
 
+	/**
+	 * Borra los elementos de la tabla
+	 */
 	private void borrarModelo() {
 		while (modeloTablaReservas.getRowCount() > 0) {
 			modeloTablaReservas.removeRow(0);
