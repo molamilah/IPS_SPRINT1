@@ -81,6 +81,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> getCbSalas() {
 		if (cbSalas == null) {
 			cbSalas = new JComboBox<String>();
+			cbSalas.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbSalas.setBounds(10, 123, 97, 28);
 		}
@@ -122,6 +126,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> getCbMes() {
 		if (cbMes == null) {
 			cbMes = new JComboBox<String>();
+			cbMes.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbMes.setBounds(80, 33, 116, 26);
 		}
@@ -148,6 +156,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> getCbDia() {
 		if (cbDia == null) {
 			cbDia = new JComboBox<String>();
+			cbDia.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbDia.setBounds(10, 33, 60, 26);
 		}
@@ -196,6 +208,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> getCbInicio() {
 		if (cbInicio == null) {
 			cbInicio = new JComboBox<String>();
+			cbInicio.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			cbInicio.setBounds(10, 42, 89, 26);
 		}
 		return cbInicio;
@@ -212,6 +228,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> getCbFin() {
 		if (cbFin == null) {
 			cbFin = new JComboBox<String>();
+			cbFin.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			cbFin.setBounds(109, 42, 89, 26);
 		}
 		return cbFin;
@@ -219,6 +239,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private JButton getBtReserva() {
 		if (btReserva == null) {
 			btReserva = new JButton("Reservar");
+			btReserva.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			btReserva.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			btReserva.setBounds(412, 325, 109, 23);
 		}
@@ -259,6 +283,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private JButton getBtnComprobar() {
 		if (btnComprobar == null) {
 			btnComprobar = new JButton("Comprobar");
+			btnComprobar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			btnComprobar.setFont(new Font("Tahoma", Font.PLAIN, 18));
 			btnComprobar.setBounds(358, 196, 121, 38);
 		}
