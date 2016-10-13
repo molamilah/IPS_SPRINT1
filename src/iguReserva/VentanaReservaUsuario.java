@@ -1,16 +1,17 @@
 package iguReserva;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class VentanaReservaUsuario extends JDialog {
 	/**
@@ -36,11 +37,15 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> cbFin;
 	private JButton btReserva;
 	private JButton btAtras;
+	private JTextField txDisponibilidad;
+	private JLabel lblDisponibilidad;
+	private JButton btnComprobar;
 
 	/**
 	 * Create the dialog.
 	 */
 	public VentanaReservaUsuario() {
+		setTitle("Reserva INstalaciones");
 		getContentPane().setLayout(null);
 		getContentPane().add(getLbReservas());
 		getContentPane().add(getLbSalas());
@@ -51,6 +56,9 @@ public class VentanaReservaUsuario extends JDialog {
 		getContentPane().add(getPnHorario());
 		getContentPane().add(getBtReserva());
 		getContentPane().add(getBtAtras());
+		getContentPane().add(getTxDisponibilidad());
+		getContentPane().add(getLblDisponibilidad());
+		getContentPane().add(getBtnComprobar());
 		
 	}
 	private JLabel getLbReservas() {
@@ -70,9 +78,9 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return lbSalas;
 	}
-	private JComboBox getCbSalas() {
+	private JComboBox<String> getCbSalas() {
 		if (cbSalas == null) {
-			cbSalas = new JComboBox();
+			cbSalas = new JComboBox<String>();
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbSalas.setBounds(10, 123, 97, 28);
 		}
@@ -111,9 +119,9 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return pnFecha;
 	}
-	private JComboBox getCbMes() {
+	private JComboBox<String> getCbMes() {
 		if (cbMes == null) {
-			cbMes = new JComboBox();
+			cbMes = new JComboBox<String>();
 			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbMes.setBounds(80, 33, 116, 26);
 		}
@@ -137,9 +145,9 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return lbDia;
 	}
-	private JComboBox getCbDia() {
+	private JComboBox<String> getCbDia() {
 		if (cbDia == null) {
-			cbDia = new JComboBox();
+			cbDia = new JComboBox<String>();
 			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbDia.setBounds(10, 33, 60, 26);
 		}
@@ -185,9 +193,9 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return lbInicio;
 	}
-	private JComboBox getCbInicio() {
+	private JComboBox<String> getCbInicio() {
 		if (cbInicio == null) {
-			cbInicio = new JComboBox();
+			cbInicio = new JComboBox<String>();
 			cbInicio.setBounds(10, 42, 89, 26);
 		}
 		return cbInicio;
@@ -201,9 +209,9 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return lbFin;
 	}
-	private JComboBox getCbFin() {
+	private JComboBox<String> getCbFin() {
 		if (cbFin == null) {
-			cbFin = new JComboBox();
+			cbFin = new JComboBox<String>();
 			cbFin.setBounds(109, 42, 89, 26);
 		}
 		return cbFin;
@@ -228,5 +236,32 @@ public class VentanaReservaUsuario extends JDialog {
 			btAtras.setBounds(318, 325, 89, 23);
 		}
 		return btAtras;
+	}
+	private JTextField getTxDisponibilidad() {
+		if (txDisponibilidad == null) {
+			txDisponibilidad = new JTextField();
+			txDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txDisponibilidad.setEditable(false);
+			txDisponibilidad.setBounds(341, 276, 159, 38);
+			txDisponibilidad.setColumns(10);
+		}
+		return txDisponibilidad;
+	}
+	private JLabel getLblDisponibilidad() {
+		if (lblDisponibilidad == null) {
+			lblDisponibilidad = new JLabel("Disponibilidad");
+			lblDisponibilidad.setHorizontalAlignment(SwingConstants.CENTER);
+			lblDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			lblDisponibilidad.setBounds(341, 245, 159, 20);
+		}
+		return lblDisponibilidad;
+	}
+	private JButton getBtnComprobar() {
+		if (btnComprobar == null) {
+			btnComprobar = new JButton("Comprobar");
+			btnComprobar.setFont(new Font("Tahoma", Font.PLAIN, 18));
+			btnComprobar.setBounds(358, 196, 121, 38);
+		}
+		return btnComprobar;
 	}
 }
