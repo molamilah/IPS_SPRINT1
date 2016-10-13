@@ -47,10 +47,10 @@ public class Sala {
 		Usuario[] propietarioReserva = new Usuario[24];
 		for (int i = 0; i < propietarioReserva.length; i++)
 			propietarioReserva[i] = null;
-		int dia = inicio.getDay() + 1;
+		int dia = inicio.getDate() + 1;
 		int mes = inicio.getMonth();
 		for (Reserva reserva : reservas) {
-			int diaReserva = reserva.getHora_inicio().getDay() + 1;
+			int diaReserva = reserva.getHora_inicio().getDate() + 1;
 			int mesReserva = reserva.getHora_inicio().getMonth();
 			int inicioReserva = reserva.getHora_inicio().getHours();
 			int finReserva = reserva.getHora_fin().getHours();

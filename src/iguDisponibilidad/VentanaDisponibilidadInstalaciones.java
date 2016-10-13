@@ -211,6 +211,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 
 	/**
 	 * Metodo para calcular el numero de dias que tiene un mes.
+	 * 
 	 * @return numero de dias por mes.
 	 */
 	private String[] calcularDiasMes() {
@@ -276,7 +277,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 		if (btComprobar == null) {
 			btComprobar = new JButton("Comprobar");
 			btComprobar.setToolTipText("Muestra todas las horas disponibles de una sala");
-			btComprobar.setMnemonic('v');
+			btComprobar.setMnemonic('C');
 			btComprobar.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			btComprobar.addActionListener(new ActionListener() {
 				@SuppressWarnings("deprecation")
