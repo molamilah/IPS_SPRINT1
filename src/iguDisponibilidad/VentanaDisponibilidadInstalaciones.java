@@ -104,7 +104,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 	public VentanaDisponibilidadInstalaciones(Usuario usuario) {
 		this.usuario = usuario;
 		bd = new BaseDatos();
-		salasGimnasio = bd.cargarDisponibilidadSalas();
+		salasGimnasio = bd.cargarSalas();
 		setResizable(false);
 		setTitle("Disponiblidad de Instalaciones");
 		setBounds(100, 100, 664, 552);

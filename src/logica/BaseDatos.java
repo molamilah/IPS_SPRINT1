@@ -104,7 +104,7 @@ public class BaseDatos {
 		return null;
 	}
 
-	public List<Sala> cargarDisponibilidadSalas() {
+	public List<Sala> cargarSalas() {
 		try{
 		List<Sala> salas = new ArrayList<Sala>();
 		Connection con = conectar();

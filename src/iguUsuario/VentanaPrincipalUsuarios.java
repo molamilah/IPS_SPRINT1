@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import iguAdministracion.VentanaPrincipalAdministracion;
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
+import iguReserva.VentanaReservaUsuario;
 import logica.Usuario;
 
 public class VentanaPrincipalUsuarios extends JFrame {
@@ -82,7 +83,10 @@ public class VentanaPrincipalUsuarios extends JFrame {
 			btnReservas = new JButton("Reservas");
 			btnReservas.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
+					VentanaReservaUsuario vru = new VentanaReservaUsuario(usuario);
+					vru.setModal(true);
+					vru.setLocationRelativeTo(null);
+					vru.setVisible(true);
 				}
 			});
 			btnReservas.setMnemonic('R');

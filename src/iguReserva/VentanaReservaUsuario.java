@@ -3,7 +3,9 @@ package iguReserva;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -11,6 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+
+import logica.BaseDatos;
+import logica.Sala;
+import logica.Usuario;
+
 import javax.swing.SwingConstants;
 
 public class VentanaReservaUsuario extends JDialog {
@@ -40,11 +47,18 @@ public class VentanaReservaUsuario extends JDialog {
 	private JTextField txDisponibilidad;
 	private JLabel lblDisponibilidad;
 	private JButton btnComprobar;
+	
+	private Usuario usuario;
+	private BaseDatos bd;
+	private List<Sala> salasGimnasio;
 
 	/**
 	 * Create the dialog.
 	 */
-	public VentanaReservaUsuario() {
+	public VentanaReservaUsuario(Usuario usuario) {
+		bd = new BaseDatos();
+		salasGimnasio = bd.cargarSalas();
+		this.usuario = usuario;
 		setTitle("Reserva INstalaciones");
 		getContentPane().setLayout(null);
 		getContentPane().add(getLbReservas());
@@ -207,12 +221,14 @@ public class VentanaReservaUsuario extends JDialog {
 	}
 	private JComboBox<String> getCbInicio() {
 		if (cbInicio == null) {
+			String[] horas = generarHorasInicio();
 			cbInicio = new JComboBox<String>();
 			cbInicio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 				}
 			});
 			cbInicio.setBounds(10, 42, 89, 26);
+			cbInicio.setModel(new DefaultComboBoxModel<String>(horas));
 		}
 		return cbInicio;
 	}
@@ -227,12 +243,14 @@ public class VentanaReservaUsuario extends JDialog {
 	}
 	private JComboBox<String> getCbFin() {
 		if (cbFin == null) {
+			String[] horas = generarHorasFin();
 			cbFin = new JComboBox<String>();
 			cbFin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 				}
 			});
 			cbFin.setBounds(109, 42, 89, 26);
+			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
 		}
 		return cbFin;
 	}
@@ -291,5 +309,29 @@ public class VentanaReservaUsuario extends JDialog {
 			btnComprobar.setBounds(358, 196, 121, 38);
 		}
 		return btnComprobar;
+	}
+	
+	private String[] generarHorasInicio(){
+		String[] horas = new String[24];
+		for(int i = 0;i<24;i++){
+			if(i<10){
+				horas[i] = "0"+i+":00";
+			}else{
+				horas[i] = i+":00";
+			}
+		}
+		return horas;
+	}
+	
+	private String[] generarHorasFin(){
+		String[] horas = new String[24];
+		for(int i = 0;i<24;i++){
+			if(i<10){
+				horas[i] = "0"+i+":59";
+			}else{
+				horas[i] = i+":59";
+			}
+		}
+		return horas;
 	}
 }
