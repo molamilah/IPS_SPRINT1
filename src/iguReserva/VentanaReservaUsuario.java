@@ -62,10 +62,12 @@ public class VentanaReservaUsuario extends JDialog {
 	 * Create the dialog.
 	 */
 	public VentanaReservaUsuario(Usuario usuario) {
+		setResizable(false);
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
 		this.usuario = usuario;
-		setTitle("Reserva INstalaciones");
+		setBounds(100, 100, 533, 383);
+		setTitle("Reserva Instalaciones");
 		getContentPane().setLayout(null);
 		getContentPane().add(getLbReservas());
 		getContentPane().add(getLbSalas());
@@ -141,7 +143,7 @@ public class VentanaReservaUsuario extends JDialog {
 			pnFecha = new JPanel();
 			pnFecha.setLayout(null);
 			pnFecha.setBorder(new TitledBorder(null, "Fecha", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnFecha.setBounds(228, 92, 308, 70);
+			pnFecha.setBounds(218, 95, 308, 70);
 			pnFecha.add(getCbMes());
 			pnFecha.add(getLbMes());
 			pnFecha.add(getLbDia());
@@ -153,13 +155,17 @@ public class VentanaReservaUsuario extends JDialog {
 	}
 	private JComboBox<String> getCbMes() {
 		if (cbMes == null) {
+			String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
+					"Octubre", "Noviembre", "Diciembre" };
 			cbMes = new JComboBox<String>();
 			cbMes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					cambiarNumeroDias();
 				}
 			});
 			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbMes.setBounds(80, 33, 116, 26);
+			cbMes.setModel(new DefaultComboBoxModel<String>(meses));
 		}
 		return cbMes;
 	}
@@ -181,8 +187,48 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return lbDia;
 	}
+	
+	/**
+	 * Metodo que invoca al metodo que calcula el numero de dias por mes
+	 */
+	private void cambiarNumeroDias() {
+		int indice = cbDia.getSelectedIndex();
+		String[] dias = calcularDiasMes();
+		cbDia.setModel(new DefaultComboBoxModel<String>(dias));
+		if (indice < dias.length)
+			cbDia.setSelectedIndex(indice);
+		else
+			cbDia.setSelectedIndex(dias.length - 1);
+	}
+
+	/**
+	 * Metodo para calcular el numero de dias que tiene un mes.
+	 * 
+	 * @return numero de dias por mes.
+	 */
+	private String[] calcularDiasMes() {
+		String[] dias;
+		String aux = String.valueOf(cbMes.getSelectedItem());
+		if (aux.equals("Enero") || aux.equals("Marzo") || aux.equals("Mayo") || aux.equals("Julio")
+				|| aux.equals("Agosto") || aux.equals("Octubre") || aux.equals("Diciembre")) {
+			dias = new String[31];
+			for (int i = 0; i < 31; i++)
+				dias[i] = "" + (i + 1);
+		} else if (aux.equals("Febrero")) {
+			dias = new String[28];
+			for (int i = 0; i < 28; i++)
+				dias[i] = "" + (i + 1);
+		} else {
+			dias = new String[30];
+			for (int i = 0; i < 30; i++)
+				dias[i] = "" + (i + 1);
+		}
+		return dias;
+	}
+	
 	private JComboBox<String> getCbDia() {
 		if (cbDia == null) {
+			String[] dias = calcularDiasMes();
 			cbDia = new JComboBox<String>();
 			cbDia.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -190,6 +236,7 @@ public class VentanaReservaUsuario extends JDialog {
 			});
 			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbDia.setBounds(10, 33, 60, 26);
+			cbDia.setModel(new DefaultComboBoxModel<String>(dias));
 		}
 		return cbDia;
 	}
