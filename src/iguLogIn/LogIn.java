@@ -75,6 +75,7 @@ public class LogIn extends JFrame {
 		contentPane.setLayout(null);
 		contentPane.add(getPnLogIn());
 		setLocationRelativeTo(null);
+		getRootPane().setDefaultButton(btEntrar);
 	}
 
 	private JPanel getPnLogIn() {
