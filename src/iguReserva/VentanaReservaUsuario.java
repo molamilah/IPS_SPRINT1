@@ -3,6 +3,7 @@ package iguReserva;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -51,6 +52,11 @@ public class VentanaReservaUsuario extends JDialog {
 	private Usuario usuario;
 	private BaseDatos bd;
 	private List<Sala> salasGimnasio;
+	
+	private Calendar c = Calendar.getInstance();
+	private int dia = c.get(Calendar.DATE);
+	private int mes = c.get(Calendar.MONTH);
+	private int año = c.get(Calendar.YEAR) - 1900;
 
 	/**
 	 * Create the dialog.
@@ -73,6 +79,9 @@ public class VentanaReservaUsuario extends JDialog {
 		getContentPane().add(getTxDisponibilidad());
 		getContentPane().add(getLblDisponibilidad());
 		getContentPane().add(getBtnComprobar());
+		
+		cbDia.setSelectedIndex(dia - 1);
+		cbMes.setSelectedIndex(mes);
 		
 	}
 	private JLabel getLbReservas() {
@@ -99,8 +108,13 @@ public class VentanaReservaUsuario extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 				}
 			});
+			int tamaño = salasGimnasio.size();
+			String[] salas = new String[tamaño];
+			for (int i = 0; i < salasGimnasio.size(); i++)
+				salas[i] = salasGimnasio.get(i).getCodigo();
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbSalas.setBounds(10, 123, 97, 28);
+			cbSalas.setModel(new DefaultComboBoxModel<String>(salas));
 		}
 		return cbSalas;
 	}
