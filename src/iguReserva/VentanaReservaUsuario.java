@@ -22,6 +22,8 @@ import javax.swing.border.TitledBorder;
 import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 public class VentanaReservaUsuario extends JDialog {
 	/**
@@ -64,6 +66,10 @@ public class VentanaReservaUsuario extends JDialog {
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
+	private JPanel pnMetodoPago;
+	private JRadioButton rdbtnEfectivo;
+	private JRadioButton rdbtnCuota;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Create the dialog.
@@ -93,6 +99,7 @@ public class VentanaReservaUsuario extends JDialog {
 		cbMes.setSelectedIndex(0);
 		cbSalas.setSelectedIndex(0);
 		txAno.setText(c.get(Calendar.YEAR) + "");
+		getContentPane().add(getPnMetodoPago());
 
 	}
 
@@ -309,6 +316,7 @@ public class VentanaReservaUsuario extends JDialog {
 	private JTextField getTxAno() {
 		if (txAno == null) {
 			txAno = new JTextField();
+			txAno.setHorizontalAlignment(SwingConstants.CENTER);
 			txAno.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txAno.setEditable(false);
 			txAno.setColumns(10);
@@ -585,5 +593,38 @@ public class VentanaReservaUsuario extends JDialog {
 		txDisponibilidad.setText("");
 		txDisponibilidad.setBackground(null);
 		btReserva.setEnabled(false);
+	}
+	private JPanel getPnMetodoPago() {
+		if (pnMetodoPago == null) {
+			pnMetodoPago = new JPanel();
+			pnMetodoPago.setBorder(new TitledBorder(null, "Forma de pago", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnMetodoPago.setBounds(10, 280, 233, 68);
+			pnMetodoPago.setLayout(null);
+			pnMetodoPago.add(getRdbtnEfectivo());
+			pnMetodoPago.add(getRdbtnCuota());
+		}
+		return pnMetodoPago;
+	}
+	private JRadioButton getRdbtnEfectivo() {
+		if (rdbtnEfectivo == null) {
+			rdbtnEfectivo = new JRadioButton("Efectivo");
+			rdbtnEfectivo.setToolTipText("Seleccione si desea pagar en el momento de usar la instalac\u00EDon.");
+			rdbtnEfectivo.setMnemonic('E');
+			buttonGroup.add(rdbtnEfectivo);
+			rdbtnEfectivo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			rdbtnEfectivo.setBounds(6, 28, 89, 23);
+		}
+		return rdbtnEfectivo;
+	}
+	private JRadioButton getRdbtnCuota() {
+		if (rdbtnCuota == null) {
+			rdbtnCuota = new JRadioButton("Cuota Mensual");
+			rdbtnCuota.setToolTipText("Selecciona Para que se a\u00F1ada el pago a su cuota mensual.");
+			buttonGroup.add(rdbtnCuota);
+			rdbtnCuota.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			rdbtnCuota.setSelected(true);
+			rdbtnCuota.setBounds(97, 28, 130, 23);
+		}
+		return rdbtnCuota;
 	}
 }
