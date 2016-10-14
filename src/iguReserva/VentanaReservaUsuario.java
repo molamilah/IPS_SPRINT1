@@ -16,14 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import logica.BaseDatos;
-import logica.Reserva;
 import logica.Sala;
 import logica.Usuario;
-
-import javax.swing.SwingConstants;
 
 public class VentanaReservaUsuario extends JDialog {
 	/**
