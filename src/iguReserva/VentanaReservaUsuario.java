@@ -184,6 +184,7 @@ public class VentanaReservaUsuario extends JDialog {
 					desactivarReserva();
 					cargarDias();
 					generarHorasInicio();
+					generarHorasFin(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
 				}
 			});
 			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -285,6 +286,7 @@ public class VentanaReservaUsuario extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					desactivarReserva();
 					generarHorasInicio();
+					generarHorasFin(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
 				}
 			});
 			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -346,6 +348,7 @@ public class VentanaReservaUsuario extends JDialog {
 			cbInicio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					desactivarReserva();
+					generarHorasFin(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
 				}
 			});
 			cbInicio.setBounds(10, 42, 89, 26);
@@ -367,7 +370,6 @@ public class VentanaReservaUsuario extends JDialog {
 
 	private JComboBox<String> getCbFin() {
 		if (cbFin == null) {
-			String[] horas = generarHorasFin();
 			cbFin = new JComboBox<String>();
 			cbFin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -375,7 +377,6 @@ public class VentanaReservaUsuario extends JDialog {
 				}
 			});
 			cbFin.setBounds(109, 42, 89, 26);
-			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
 		}
 		return cbFin;
 	}
@@ -451,9 +452,9 @@ public class VentanaReservaUsuario extends JDialog {
 			int diferencia = 24 - hora;
 			if (min != 0) {
 				diferencia--;
-				String[] horas = new String[diferencia-1];
+				String[] horas = new String[diferencia - 1];
 				int j = hora + 2;
-				for (int i = 0; i < diferencia-1; i++) {
+				for (int i = 0; i < diferencia - 1; i++) {
 					if (j < 10) {
 						horas[i] = "0" + j + ":00";
 						j++;
@@ -464,9 +465,9 @@ public class VentanaReservaUsuario extends JDialog {
 				}
 				cbInicio.setModel(new DefaultComboBoxModel<String>(horas));
 			} else {
-				String[] horas = new String[diferencia-1];
+				String[] horas = new String[diferencia - 1];
 				int j = hora + 1;
-				for (int i = 0; i < diferencia-1; i++) {
+				for (int i = 0; i < diferencia - 1; i++) {
 					if (j < 10) {
 						horas[i] = "0" + j + ":00";
 						j++;
@@ -490,16 +491,24 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 	}
 
-	private String[] generarHorasFin() {
-		String[] horas = new String[24];
-		for (int i = 0; i < 24; i++) {
-			if (i < 10) {
-				horas[i] = "0" + i + ":59";
-			} else {
-				horas[i] = i + ":59";
+	private void generarHorasFin(String horaInicio) {
+		if (horaInicio.equals("23:00")) {
+			String[] horas = new String[] { "23:59" };
+			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
+		} else {
+			String[] horas = new String[2];
+			int hora = Integer.parseInt(horaInicio.split(":")[0]);
+			for (int i = 0; i < 2; i++) {
+				if (hora < 10) {
+					horas[i] = "0" + hora + ":59";
+					hora++;
+				} else {
+					horas[i] = hora + ":59";
+					hora++;
+				}
 			}
+			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
 		}
-		return horas;
 	}
 
 	private void desactivarReserva() {
