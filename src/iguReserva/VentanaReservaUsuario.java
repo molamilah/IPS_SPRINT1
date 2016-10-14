@@ -448,6 +448,7 @@ public class VentanaReservaUsuario extends JDialog {
 						if(comprobarDisponibilidadHora()){
 							txDisponibilidad.setText("Disponible");
 							txDisponibilidad.setBackground(Color.GREEN);
+							btReserva.setEnabled(true);
 						}else{
 							txDisponibilidad.setText("Reservada");
 							txDisponibilidad.setBackground(Color.RED);
