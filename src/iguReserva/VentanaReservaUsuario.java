@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import logica.BaseDatos;
+import logica.Reserva;
 import logica.Sala;
 import logica.Usuario;
 
@@ -438,12 +439,44 @@ public class VentanaReservaUsuario extends JDialog {
 			btnComprobar.setMnemonic('C');
 			btnComprobar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					if (comprobarDisponibilidadHora()) {
+						System.out.println("Disponible");
+					} else {
+						System.out.println("Reservada");
+					}
 				}
 			});
 			btnComprobar.setFont(new Font("Tahoma", Font.PLAIN, 18));
 			btnComprobar.setBounds(358, 196, 121, 38);
 		}
 		return btnComprobar;
+	}
+
+	@SuppressWarnings("deprecation")
+	private boolean comprobarDisponibilidadHora() {
+		int mesEscogido;
+		if (cbMes.getSelectedIndex() == 0) {
+			mesEscogido = mes;
+		} else {
+			mesEscogido = mes + 1;
+		}
+		if (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
+				- Integer.parseInt(cbInicio.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) < 1) {
+			Timestamp fecha = new Timestamp(año, mesEscogido,
+					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
+			return bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()), fecha);
+		} else {
+			Timestamp fecha1 = new Timestamp(año, mesEscogido,
+					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
+
+			Timestamp fecha2 = new Timestamp(año, mesEscogido,
+					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+					Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]), 0, 0, 0);
+			return (bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()), fecha1)
+					&& bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()), fecha2)) ? true : false;
+		}
 	}
 
 	private void generarHorasInicio() {
