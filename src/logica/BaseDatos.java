@@ -99,6 +99,11 @@ public class BaseDatos {
 			while (rs.next()) {
 				salas.add(new Sala(rs.getString(1), rs.getString(2), rs.getDouble(3), reservas));
 			}
+			rs.close();
+			rs1.close();
+			ps.close();
+			ps1.close();
+			con.close();
 			return salas;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -115,6 +120,9 @@ public class BaseDatos {
 			while (rs.next()) {
 				salas.add(new Sala(rs.getString(1), rs.getString(2), rs.getDouble(3), null));
 			}
+			rs.close();
+			ps.close();
+			con.close();
 			return salas;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -139,8 +147,14 @@ public class BaseDatos {
 			ps.setTimestamp(2, horaInicio);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
+				rs.close();
+				ps.close();
+				con.close();
 				return false;
 			} else {
+				rs.close();
+				ps.close();
+				con.close();
 				return true;
 			}
 		} catch (SQLException e) {
@@ -164,8 +178,14 @@ public class BaseDatos {
 			ps.setTimestamp(2, horaInicio);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
+				rs.close();
+				ps.close();
+				con.close();
 				return false;
 			} else {
+				rs.close();
+				ps.close();
+				con.close();
 				return true;
 			}
 		} catch (SQLException e) {
