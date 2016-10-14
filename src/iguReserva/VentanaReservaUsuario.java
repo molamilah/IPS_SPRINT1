@@ -1,5 +1,6 @@
 package iguReserva;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
@@ -415,6 +417,7 @@ public class VentanaReservaUsuario extends JDialog {
 	private JTextField getTxDisponibilidad() {
 		if (txDisponibilidad == null) {
 			txDisponibilidad = new JTextField();
+			txDisponibilidad.setHorizontalAlignment(SwingConstants.CENTER);
 			txDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txDisponibilidad.setEditable(false);
 			txDisponibilidad.setBounds(341, 276, 159, 38);
@@ -439,10 +442,18 @@ public class VentanaReservaUsuario extends JDialog {
 			btnComprobar.setMnemonic('C');
 			btnComprobar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (comprobarDisponibilidadHora()) {
-						System.out.println("Disponible");
+					if (!comprobarReservaSimultanea()) {
+						JOptionPane.showMessageDialog(null,
+								"Ya tiene una reserva para el mismo dia a la misma hora.", "ERROR",
+								JOptionPane.ERROR_MESSAGE);
 					} else {
-						System.out.println("Reservada");
+						if(comprobarDisponibilidadHora()){
+							txDisponibilidad.setText("Disponible");
+							txDisponibilidad.setBackground(Color.GREEN);
+						}else{
+							txDisponibilidad.setText("Reservada");
+							txDisponibilidad.setBackground(Color.RED);
+						}
 					}
 				}
 			});
@@ -450,6 +461,33 @@ public class VentanaReservaUsuario extends JDialog {
 			btnComprobar.setBounds(358, 196, 121, 38);
 		}
 		return btnComprobar;
+	}
+
+	@SuppressWarnings("deprecation")
+	private boolean comprobarReservaSimultanea() {
+		int mesEscogido;
+		if (cbMes.getSelectedIndex() == 0) {
+			mesEscogido = mes;
+		} else {
+			mesEscogido = mes + 1;
+		}
+		if (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
+				- Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) < 1) {
+			Timestamp fecha = new Timestamp(año, mesEscogido,
+					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
+			return bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha);
+		} else {
+			Timestamp fecha1 = new Timestamp(año, mesEscogido,
+					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
+
+			Timestamp fecha2 = new Timestamp(año, mesEscogido,
+					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+					Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]), 0, 0, 0);
+			return (bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha1)
+					&& bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha2)) ? true : false;
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -461,7 +499,7 @@ public class VentanaReservaUsuario extends JDialog {
 			mesEscogido = mes + 1;
 		}
 		if (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
-				- Integer.parseInt(cbInicio.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) < 1) {
+				- Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) < 1) {
 			Timestamp fecha = new Timestamp(año, mesEscogido,
 					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
 					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);

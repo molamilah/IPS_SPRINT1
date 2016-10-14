@@ -123,7 +123,9 @@ public class BaseDatos {
 	}
 
 	/**
-	 * Devuelve verdadero si esta disponible y false en caso de que este ocupada.
+	 * Devuelve verdadero si esta disponible y false en caso de que este
+	 * ocupada.
+	 * 
 	 * @param codigoSala
 	 * @param horaInicio
 	 * @return
@@ -134,6 +136,31 @@ public class BaseDatos {
 			PreparedStatement ps = con.prepareStatement(
 					"SELECT R.ID_RESERVA FROM RESERVA r WHERE r.CODIGO_SALA = ? AND r.HORA_INICIO = ?");
 			ps.setString(1, codigoSala);
+			ps.setTimestamp(2, horaInicio);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return false;
+			} else {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * Devuelve verdadero si esta no tiene reserva simultanea y false en caso contrario.
+	 * @param id_usuario
+	 * @param horaInicio
+	 * @return
+	 */
+	public boolean comprobarReservaSimultaneaUsuario(String id_usuario, Timestamp horaInicio) {
+		try {
+			Connection con = conectar();
+			PreparedStatement ps = con.prepareStatement(
+					"SELECT R.ID_RESERVA FROM RESERVA r WHERE r.ID_USUARIO = ? AND r.HORA_INICIO = ?");
+			ps.setString(1, id_usuario);
 			ps.setTimestamp(2, horaInicio);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
