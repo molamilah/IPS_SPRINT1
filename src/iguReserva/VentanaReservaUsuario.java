@@ -58,6 +58,8 @@ public class VentanaReservaUsuario extends JDialog {
 	private int dia = c.get(Calendar.DATE);
 	private int mes = c.get(Calendar.MONTH);
 	private int año = c.get(Calendar.YEAR) - 1900;
+	private int hora = c.get(Calendar.HOUR_OF_DAY);
+	private int min = c.get(Calendar.MINUTE);
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
@@ -179,7 +181,9 @@ public class VentanaReservaUsuario extends JDialog {
 			cbMes = new JComboBox<String>();
 			cbMes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					desactivarReserva();
 					cargarDias();
+					generarHorasInicio();
 				}
 			});
 			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -279,6 +283,8 @@ public class VentanaReservaUsuario extends JDialog {
 			cbDia = new JComboBox<String>();
 			cbDia.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					desactivarReserva();
+					generarHorasInicio();
 				}
 			});
 			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -336,14 +342,14 @@ public class VentanaReservaUsuario extends JDialog {
 
 	private JComboBox<String> getCbInicio() {
 		if (cbInicio == null) {
-			String[] horas = generarHorasInicio();
 			cbInicio = new JComboBox<String>();
 			cbInicio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					desactivarReserva();
 				}
 			});
 			cbInicio.setBounds(10, 42, 89, 26);
-			cbInicio.setModel(new DefaultComboBoxModel<String>(horas));
+			generarHorasInicio();
 		}
 		return cbInicio;
 	}
@@ -365,6 +371,7 @@ public class VentanaReservaUsuario extends JDialog {
 			cbFin = new JComboBox<String>();
 			cbFin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					desactivarReserva();
 				}
 			});
 			cbFin.setBounds(109, 42, 89, 26);
@@ -438,20 +445,49 @@ public class VentanaReservaUsuario extends JDialog {
 		return btnComprobar;
 	}
 
-	private void reservasDiasUsuario(String identificador) {
-
-	}
-
-	private String[] generarHorasInicio() {
-		String[] horas = new String[24];
-		for (int i = 0; i < 24; i++) {
-			if (i < 10) {
-				horas[i] = "0" + i + ":00";
+	private void generarHorasInicio() {
+		int aux = Integer.parseInt(cbDia.getSelectedItem().toString());
+		if (dia == aux) {
+			int diferencia = 24 - hora;
+			if (min != 0) {
+				diferencia--;
+				String[] horas = new String[diferencia-1];
+				int j = hora + 2;
+				for (int i = 0; i < diferencia-1; i++) {
+					if (j < 10) {
+						horas[i] = "0" + j + ":00";
+						j++;
+					} else {
+						horas[i] = j + ":00";
+						j++;
+					}
+				}
+				cbInicio.setModel(new DefaultComboBoxModel<String>(horas));
 			} else {
-				horas[i] = i + ":00";
+				String[] horas = new String[diferencia-1];
+				int j = hora + 1;
+				for (int i = 0; i < diferencia-1; i++) {
+					if (j < 10) {
+						horas[i] = "0" + j + ":00";
+						j++;
+					} else {
+						horas[i] = j + ":00";
+						j++;
+					}
+				}
+				cbInicio.setModel(new DefaultComboBoxModel<String>(horas));
 			}
+		} else {
+			String[] horas = new String[24];
+			for (int i = 0; i < 24; i++) {
+				if (i < 10) {
+					horas[i] = "0" + i + ":00";
+				} else {
+					horas[i] = i + ":00";
+				}
+			}
+			cbInicio.setModel(new DefaultComboBoxModel<String>(horas));
 		}
-		return horas;
 	}
 
 	private String[] generarHorasFin() {
