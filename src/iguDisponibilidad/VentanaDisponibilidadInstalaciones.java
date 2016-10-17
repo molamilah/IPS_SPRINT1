@@ -52,6 +52,9 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 	private BaseDatos bd;
 	private List<Sala> salasGimnasio;
 	Usuario usuario;
+	
+	String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
+			"Octubre", "Noviembre", "Diciembre" };
 
 	@SuppressWarnings("serial")
 	/**
@@ -121,7 +124,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 		getContentPane().add(getScReservas());
 
 		cbDia.setSelectedIndex(dia - 1);
-		cbMes.setSelectedIndex(mes);
+		cbMes.setSelectedIndex(0);
 	}
 
 	private JLabel getLblHorariosInstalaciones() {
@@ -235,9 +238,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 	}
 
 	private JComboBox<String> getCbMes() {
-		if (cbMes == null) {
-			String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
-					"Octubre", "Noviembre", "Diciembre" };
+		if (cbMes == null) {			
 			cbMes = new JComboBox<String>();
 			cbMes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -245,7 +246,13 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 				}
 			});
 			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			cbMes.setModel(new DefaultComboBoxModel<String>(meses));
+			String[] mesesMostrar = new String[meses.length-mes];
+			int j = 0;
+			for(int i=mes;i<meses.length;i++){
+				mesesMostrar[j] = meses[i];
+				j++;
+			}
+			cbMes.setModel(new DefaultComboBoxModel<String>(mesesMostrar));
 			cbMes.setBounds(280, 120, 113, 28);
 		}
 		return cbMes;
@@ -287,8 +294,8 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 							.cargarDisponibilidadSalaSeleccionada(cbSalas.getItemAt(cbSalas.getSelectedIndex()));
 					Sala sala = salasGimnasio.get(0);
 					int dia = Integer.valueOf(cbDia.getSelectedIndex()) + 1;
-					int mes = Integer.valueOf(cbMes.getSelectedIndex());
-					Timestamp inicio = new Timestamp(año, mes, dia, 0, 0, 0, 0);
+					int month = mes + Integer.valueOf(cbMes.getSelectedIndex());
+					Timestamp inicio = new Timestamp(año, month, dia, 0, 0, 0, 0);
 					Usuario[] horasReservadas = sala.reservasDia(inicio);
 					for (int i = 0; i < horasReservadas.length; i++) {
 						if (horasReservadas[i] == null) {
