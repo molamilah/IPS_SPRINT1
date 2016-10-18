@@ -5,25 +5,34 @@ import java.util.List;
 
 public class Sala {
 
-	private String codigo;
+	private int id_sala;
 	private String descripcion;
 	private double precio;
+	private boolean ocupada;
 	private List<Reserva> reservas;
 
-	public Sala(String codigo, String descripcion, double precio,List<Reserva> reservas) {
+	public Sala(int id_sala, String descripcion, double precio,List<Reserva> reservas) {
 		super();
-		this.codigo = codigo;
+		this.id_sala = id_sala;
 		this.descripcion = descripcion;
 		this.precio = precio;
 		this.reservas = reservas;
 	}
 
-	public String getCodigo() {
-		return codigo;
+	public int getId_sala() {
+		return id_sala;
 	}
 
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
+	public void setId_sala(int id_sala) {
+		this.id_sala = id_sala;
+	}
+
+	public boolean isOcupada() {
+		return ocupada;
+	}
+
+	public void setOcupada(boolean ocupada) {
+		this.ocupada = ocupada;
 	}
 
 	public String getDescripcion() {

@@ -149,23 +149,24 @@ public class LogIn extends JFrame {
 									"Los campos usuario y contraseña han de rellenarse obligatoriamente.", "ERROR",
 									JOptionPane.ERROR_MESSAGE);
 						} else if (user.equals("ADMIN")) {
-							if (bd.comprobarUserPassword(user, password)) {
+							if (bd.comprobarUserPasswordAdmin(user, password)) {
 								dispose();
-								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(new Usuario(user));
+								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(
+										new Usuario(user));
 								vp.setLocationRelativeTo(null);
 								vp.setVisible(true);
 							}
-
 						} else if (user.equals("CONTABLE")) {
-							if (bd.comprobarUserPassword(user, password)) {
+							if (bd.comprobarUserPasswordAdmin(user, password)) {
 								dispose();
-								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(new Usuario(user));
+								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(
+										new Usuario(user));
 								vp.setLocationRelativeTo(null);
 								vp.setVisible(true);
 							}
 
 						} else {
-							if (bd.comprobarUserPassword(user, password)) {
+							if (bd.comprobarUserPassword(Integer.parseInt(user), password)) {
 								dispose();
 								VentanaPrincipalUsuarios vpu = new VentanaPrincipalUsuarios(new Usuario(user));
 								vpu.setLocationRelativeTo(null);
@@ -173,12 +174,12 @@ public class LogIn extends JFrame {
 							}
 
 						}
-					}catch (ExceptionUsuarioContraseña e) {
+					} catch (ExceptionUsuarioContraseña e) {
 						JOptionPane.showMessageDialog(null, "El usuario y la contraseña no se corresponden.", "ERROR",
 								JOptionPane.ERROR_MESSAGE);
-					}catch(ExcepcionUsuarioNoEncontrado e1){
+					} catch (ExcepcionUsuarioNoEncontrado e1) {
 						JOptionPane.showMessageDialog(null, "El usuario no existe en la base de datos.", "ERROR",
-								JOptionPane.ERROR_MESSAGE);						
+								JOptionPane.ERROR_MESSAGE);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -38,7 +38,7 @@ public class VentanaPrincipalUsuarios extends JFrame {
 	public VentanaPrincipalUsuarios(Usuario usuario) {
 		this.usuario = usuario;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaPrincipalAdministracion.class.getResource("/img/img-recepcion-2.jpg")));
-		setTitle("Socio:"+usuario.getIdentificador());
+		setTitle("Socio:"+usuario.getId_usuario());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 848, 593);
 		contentPane = new JPanel();

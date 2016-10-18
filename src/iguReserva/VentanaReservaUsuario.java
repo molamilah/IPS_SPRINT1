@@ -134,7 +134,7 @@ public class VentanaReservaUsuario extends JDialog {
 			int tamaño = salasGimnasio.size();
 			String[] salas = new String[tamaño];
 			for (int i = 0; i < salasGimnasio.size(); i++)
-				salas[i] = salasGimnasio.get(i).getCodigo();
+				salas[i] = salasGimnasio.get(i).getDescripcion();
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbSalas.setBounds(10, 123, 97, 28);
 			cbSalas.setModel(new DefaultComboBoxModel<String>(salas));
@@ -483,7 +483,7 @@ public class VentanaReservaUsuario extends JDialog {
 			Timestamp fecha = new Timestamp(año, mesEscogido,
 					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
 					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-			return bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha);
+			return bd.comprobarReservaSimultaneaUsuario(usuario.getId_usuario(), fecha);
 		} else {
 			Timestamp fecha1 = new Timestamp(año, mesEscogido,
 					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
@@ -492,8 +492,8 @@ public class VentanaReservaUsuario extends JDialog {
 			Timestamp fecha2 = new Timestamp(año, mesEscogido,
 					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
 					Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-			return (bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha1)
-					&& bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha2)) ? true : false;
+			return (bd.comprobarReservaSimultaneaUsuario(usuario.getId_usuario(), fecha1)
+					&& bd.comprobarReservaSimultaneaUsuario(usuario.getId_usuario(), fecha2)) ? true : false;
 		}
 	}
 

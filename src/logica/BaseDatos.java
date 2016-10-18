@@ -41,7 +41,7 @@ public class BaseDatos {
 		return conexion;
 	}
 
-	public boolean comprobarUserPassword(String user, String password) throws Exception {
+	public boolean comprobarUserPassword(int user, String password) throws Exception {
 		Usuario usuario = cargarUsuario(user);
 		if (usuario == null) {
 			throw new ExcepcionUsuarioNoEncontrado("El usuario no existe en la base de datos");
@@ -51,16 +51,36 @@ public class BaseDatos {
 		else
 			throw new ExceptionUsuarioContraseña("EL usuario y la contraseña no coinciden.");
 	}
-
-	public Usuario cargarUsuario(String identificador) {
+	
+	/**
+	 * Comprobar administrador y contraseña.
+	 * @param user
+	 * @param password
+	 * @return
+	 * @throws ExcepcionUsuarioNoEncontrado
+	 * @throws ExceptionUsuarioContraseña
+	 */
+	public boolean comprobarUserPasswordAdmin(String user, String password)
+			throws ExcepcionUsuarioNoEncontrado, ExceptionUsuarioContraseña {
+		Usuario usuario = cargarAdministrador(user);
+		if (usuario == null) {
+			throw new ExcepcionUsuarioNoEncontrado("El usuario no existe en la base de datos");
+		}
+		if (usuario.getPassword().equals(password))
+			return true;
+		else
+			throw new ExceptionUsuarioContraseña("EL usuario y la contraseña no coinciden.");
+	}
+	
+	public Usuario cargarAdministrador(String identificador) {
 		try {
 			Usuario user = null;
 			Connection con = conectar();
-			PreparedStatement ps = con.prepareStatement("Select * from USUARIO WHERE ID = ?");
+			PreparedStatement ps = con.prepareStatement("Select * from USUARIO WHERE NOMBRE = ?");
 			ps.setString(1, identificador);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				String user_id = rs.getString("ID");
+				int user_id = rs.getInt("ID_USUARIO");
 				String dni = rs.getString("DNI");
 				String nombre = rs.getString("NOMBRE");
 				String apellidos = rs.getString("APELLIDOS");
@@ -68,7 +88,10 @@ public class BaseDatos {
 				String email = rs.getString("EMAIL");
 				String ciudad = rs.getString("CIUDAD");
 				String password = rs.getString("PASSWORD");
-				user = new Usuario(user_id, dni, nombre, apellidos, direccion, email, ciudad, password);
+				double cuota = rs.getDouble("CUOTA");
+				boolean baja = rs.getBoolean("BAJA");
+				Timestamp fecha_baja = rs.getTimestamp("FECHA_BAJA");
+				user = new Usuario(user_id, dni, nombre, apellidos, direccion, email, ciudad, password,cuota,baja,fecha_baja);
 			}
 			rs.close();
 			ps.close();
@@ -80,24 +103,59 @@ public class BaseDatos {
 		return null;
 	}
 
-	public List<Sala> cargarDisponibilidadSalaSeleccionada(String codigo) {
+	public Usuario cargarUsuario(int identificador) {
+		try {
+			Usuario user = null;
+			Connection con = conectar();
+			PreparedStatement ps = con.prepareStatement("Select * from USUARIO WHERE ID_USUARIO = ?");
+			ps.setInt(1, identificador);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				int user_id = rs.getInt("ID_USUARIO");
+				String dni = rs.getString("DNI");
+				String nombre = rs.getString("NOMBRE");
+				String apellidos = rs.getString("APELLIDOS");
+				String direccion = rs.getString("DIRECCION");
+				String email = rs.getString("EMAIL");
+				String ciudad = rs.getString("CIUDAD");
+				String password = rs.getString("PASSWORD");
+				double cuota = rs.getDouble("CUOTA");
+				boolean baja = rs.getBoolean("BAJA");
+				Timestamp fecha_baja = rs.getTimestamp("FECHA_BAJA");
+				user = new Usuario(user_id, dni, nombre, apellidos, direccion, email, ciudad, password,cuota,baja,fecha_baja);
+			}
+			rs.close();
+			ps.close();
+			con.close();
+			return user;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<Sala> cargarDisponibilidadSalaSeleccionada(int codigo) {
 		try {
 			List<Sala> salas = new ArrayList<Sala>();
 			Connection con = conectar();
-			PreparedStatement ps = con.prepareStatement("Select * from SALA WHERE CODIGO = ?");
-			ps.setString(1, codigo);
+			PreparedStatement ps = con.prepareStatement("Select * from SALA WHERE ID_SALA = ?");
+			ps.setInt(1, codigo);
 			ResultSet rs = ps.executeQuery();
 
-			PreparedStatement ps1 = con.prepareStatement("SELECT * FROM RESERVA WHERE CODIGO_SALA = ?");
-			ps1.setString(1, codigo);
+			PreparedStatement ps1 = con.prepareStatement("SELECT * FROM RESERVA WHERE ID_SALA = ?");
+			ps1.setInt(1, codigo);
 			ResultSet rs1 = ps1.executeQuery();
 			List<Reserva> reservas = new ArrayList<Reserva>();
 			while (rs1.next()) {
-				reservas.add(new Reserva(rs1.getString(1), rs1.getTimestamp(2), rs1.getTimestamp(3), rs1.getString(4),
-						rs1.getString(5)));
+				int id = rs1.getInt("ID_RESERVA");
+				Timestamp hora_inicio = rs1.getTimestamp("HORA_INICIO");
+				Timestamp hora_fin = rs1.getTimestamp("HORA_FIN");
+				int id_usuario = rs1.getInt("ID_USUARIO");
+				int id_sala = rs1.getInt("ID_SALA");
+				reservas.add(new Reserva(id, id_usuario, id_sala, hora_inicio, hora_fin, null, null));
 			}
 			while (rs.next()) {
-				salas.add(new Sala(rs.getString(1), rs.getString(2), rs.getDouble(3), reservas));
+				salas.add(new Sala(rs.getInt(1), rs.getString(2), rs.getDouble(3), reservas));
 			}
 			rs.close();
 			rs1.close();
@@ -118,7 +176,7 @@ public class BaseDatos {
 			PreparedStatement ps = con.prepareStatement("Select * from SALA");
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				salas.add(new Sala(rs.getString(1), rs.getString(2), rs.getDouble(3), null));
+				salas.add(new Sala(rs.getInt(1), rs.getString(2), rs.getDouble(3), null));
 			}
 			rs.close();
 			ps.close();
@@ -142,7 +200,7 @@ public class BaseDatos {
 		try {
 			Connection con = conectar();
 			PreparedStatement ps = con.prepareStatement(
-					"SELECT R.ID_RESERVA FROM RESERVA r WHERE r.CODIGO_SALA = ? AND r.HORA_INICIO = ?");
+					"SELECT R.ID_RESERVA FROM RESERVA r WHERE r.ID_SALA = ? AND r.HORA_INICIO = ?");
 			ps.setString(1, codigoSala);
 			ps.setTimestamp(2, horaInicio);
 			ResultSet rs = ps.executeQuery();
@@ -164,17 +222,19 @@ public class BaseDatos {
 	}
 
 	/**
-	 * Devuelve verdadero si esta no tiene reserva simultanea y false en caso contrario.
+	 * Devuelve verdadero si esta no tiene reserva simultanea y false en caso
+	 * contrario.
+	 * 
 	 * @param id_usuario
 	 * @param horaInicio
 	 * @return
 	 */
-	public boolean comprobarReservaSimultaneaUsuario(String id_usuario, Timestamp horaInicio) {
+	public boolean comprobarReservaSimultaneaUsuario(int id_usuario, Timestamp horaInicio) {
 		try {
 			Connection con = conectar();
 			PreparedStatement ps = con.prepareStatement(
 					"SELECT R.ID_RESERVA FROM RESERVA r WHERE r.ID_USUARIO = ? AND r.HORA_INICIO = ?");
-			ps.setString(1, id_usuario);
+			ps.setInt(1, id_usuario);
 			ps.setTimestamp(2, horaInicio);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {

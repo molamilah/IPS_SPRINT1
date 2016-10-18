@@ -82,7 +82,6 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 			}
 			return this;
 		}
-
 	}
 
 	@SuppressWarnings("serial")
@@ -158,13 +157,12 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 			cbSalas.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					borrarModelo();
-
 				}
 			});
 			int tamaño = salasGimnasio.size();
 			String[] salas = new String[tamaño];
 			for (int i = 0; i < salasGimnasio.size(); i++)
-				salas[i] = salasGimnasio.get(i).getCodigo();
+				salas[i] = salasGimnasio.get(i).getDescripcion();
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			cbSalas.setBounds(33, 120, 139, 30);
 			cbSalas.setModel(new DefaultComboBoxModel<String>(salas));
@@ -291,7 +289,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					borrarModelo();
 					salasGimnasio = bd
-							.cargarDisponibilidadSalaSeleccionada(cbSalas.getItemAt(cbSalas.getSelectedIndex()));
+							.cargarDisponibilidadSalaSeleccionada(salasGimnasio.get(cbSalas.getSelectedIndex()).getId_sala());
 					Sala sala = salasGimnasio.get(0);
 					int dia = Integer.valueOf(cbDia.getSelectedIndex()) + 1;
 					int month = mes + Integer.valueOf(cbMes.getSelectedIndex());
@@ -301,7 +299,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 						if (horasReservadas[i] == null) {
 							modeloTablaReservas
 									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Disponible" });
-						} else if (usuario.getIdentificador().equals(horasReservadas[i].getIdentificador())) {
+						} else if (usuario.getId_usuario() == (horasReservadas[i].getId_usuario())) {
 							modeloTablaReservas
 									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reserva Propia" });
 						} else {
@@ -309,7 +307,8 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reservada" });
 						}
 					}
-				}
+					salasGimnasio = bd.cargarSalas();
+				}				
 			});
 			btComprobar.setBounds(453, 120, 119, 28);
 		}
