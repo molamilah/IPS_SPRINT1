@@ -21,8 +21,6 @@ import iguUsuario.VentanaPrincipalUsuarios;
 import logica.BaseDatos;
 import logica.BaseDatos.ExcepcionUsuarioNoEncontrado;
 import logica.BaseDatos.ExceptionUsuarioContraseña;
-import logica.Usuario;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
