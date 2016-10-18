@@ -21,7 +21,6 @@ public class BaseDatos {
 		public ExceptionUsuarioContraseña(String msg) {
 			super(msg);
 		}
-
 	}
 
 	@SuppressWarnings("serial")

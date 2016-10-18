@@ -308,7 +308,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 						}
 					}
 					salasGimnasio = bd.cargarSalas();
-				}				
+				}
 			});
 			btComprobar.setBounds(453, 120, 119, 28);
 		}

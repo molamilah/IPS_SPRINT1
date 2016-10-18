@@ -151,28 +151,24 @@ public class LogIn extends JFrame {
 						} else if (user.equals("ADMIN")) {
 							if (bd.comprobarUserPasswordAdmin(user, password)) {
 								dispose();
-								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(
-										new Usuario(user));
+								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(bd.cargarAdministrador(user));
 								vp.setLocationRelativeTo(null);
 								vp.setVisible(true);
 							}
 						} else if (user.equals("CONTABLE")) {
 							if (bd.comprobarUserPasswordAdmin(user, password)) {
 								dispose();
-								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(
-										new Usuario(user));
+								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(bd.cargarAdministrador(user));
 								vp.setLocationRelativeTo(null);
 								vp.setVisible(true);
 							}
-
 						} else {
 							if (bd.comprobarUserPassword(Integer.parseInt(user), password)) {
 								dispose();
-								VentanaPrincipalUsuarios vpu = new VentanaPrincipalUsuarios(new Usuario(user));
+								VentanaPrincipalUsuarios vpu = new VentanaPrincipalUsuarios(bd.cargarUsuario(Integer.parseInt(user)));
 								vpu.setLocationRelativeTo(null);
 								vpu.setVisible(true);
 							}
-
 						}
 					} catch (ExceptionUsuarioContraseña e) {
 						JOptionPane.showMessageDialog(null, "El usuario y la contraseña no se corresponden.", "ERROR",
