@@ -1,10 +1,8 @@
 package iguReserva;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
@@ -22,6 +20,8 @@ import javax.swing.border.TitledBorder;
 import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
+import reservas.Reservador;
+
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 
@@ -51,7 +51,6 @@ public class VentanaReservaUsuario extends JDialog {
 	private JButton btAtras;
 	private JTextField txDisponibilidad;
 	private JLabel lblDisponibilidad;
-	private JButton btnComprobar;
 
 	private Usuario usuario;
 	private BaseDatos bd;
@@ -60,7 +59,7 @@ public class VentanaReservaUsuario extends JDialog {
 	private Calendar c = Calendar.getInstance();
 	private int dia = c.get(Calendar.DATE);
 	private int mes = c.get(Calendar.MONTH);
-	private int año = c.get(Calendar.YEAR) - 1900;
+	// private int año = c.get(Calendar.YEAR) - 1900;
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
 	private int min = c.get(Calendar.MINUTE);
 
@@ -93,7 +92,6 @@ public class VentanaReservaUsuario extends JDialog {
 		getContentPane().add(getBtAtras());
 		getContentPane().add(getTxDisponibilidad());
 		getContentPane().add(getLblDisponibilidad());
-		getContentPane().add(getBtnComprobar());
 
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
@@ -127,7 +125,6 @@ public class VentanaReservaUsuario extends JDialog {
 			cbSalas = new JComboBox<String>();
 			cbSalas.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					desactivarReserva();
 					ponerPrecio();
 				}
 			});
@@ -189,7 +186,6 @@ public class VentanaReservaUsuario extends JDialog {
 			cbMes = new JComboBox<String>();
 			cbMes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					desactivarReserva();
 					cargarDias();
 					generarHorasInicio();
 					generarHorasFin(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
@@ -292,7 +288,6 @@ public class VentanaReservaUsuario extends JDialog {
 			cbDia = new JComboBox<String>();
 			cbDia.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					desactivarReserva();
 					generarHorasInicio();
 					generarHorasFin(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
 				}
@@ -356,7 +351,6 @@ public class VentanaReservaUsuario extends JDialog {
 			cbInicio = new JComboBox<String>();
 			cbInicio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					desactivarReserva();
 					generarHorasFin(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
 				}
 			});
@@ -380,11 +374,6 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> getCbFin() {
 		if (cbFin == null) {
 			cbFin = new JComboBox<String>();
-			cbFin.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					desactivarReserva();
-				}
-			});
 			cbFin.setBounds(109, 42, 89, 26);
 		}
 		return cbFin;
@@ -393,10 +382,25 @@ public class VentanaReservaUsuario extends JDialog {
 	private JButton getBtReserva() {
 		if (btReserva == null) {
 			btReserva = new JButton("Reservar");
-			btReserva.setEnabled(false);
+			btReserva.setEnabled(true);
 			btReserva.setMnemonic('R');
 			btReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					boolean tipo = false;
+					boolean success = false;
+					if (rdbtnEfectivo.isSelected())
+						tipo = true;
+					success = Reservador.reservar(usuario.getId_usuario(), cbSalas.getSelectedItem().toString(),
+							Integer.parseInt(txAno.getText()), cbMes.getSelectedIndex(),
+							Integer.parseInt(cbDia.getSelectedItem().toString()),
+							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
+							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
+									+ cbFin.getSelectedIndex() + 1,
+							tipo);
+					if (!success)
+						JOptionPane.showMessageDialog(getContentPane(),
+								"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
+										+ "reservada o el usuario ya posee otra reserva");
 				}
 			});
 			btReserva.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -442,87 +446,59 @@ public class VentanaReservaUsuario extends JDialog {
 		return lblDisponibilidad;
 	}
 
-	private JButton getBtnComprobar() {
-		if (btnComprobar == null) {
-			btnComprobar = new JButton("Comprobar");
-			btnComprobar.setMnemonic('C');
-			btnComprobar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (!comprobarReservaSimultanea()) {
-						JOptionPane.showMessageDialog(null,
-								"Ya tiene una reserva para el mismo dia a la misma hora.", "ERROR",
-								JOptionPane.ERROR_MESSAGE);
-					} else {
-						if(comprobarDisponibilidadHora()){
-							txDisponibilidad.setText("Disponible");
-							txDisponibilidad.setBackground(Color.GREEN);
-							btReserva.setEnabled(true);
-						}else{
-							txDisponibilidad.setText("Reservada");
-							txDisponibilidad.setBackground(Color.RED);
-						}
-					}
-				}
-			});
-			btnComprobar.setFont(new Font("Tahoma", Font.PLAIN, 18));
-			btnComprobar.setBounds(358, 196, 121, 38);
-		}
-		return btnComprobar;
-	}
-
-	@SuppressWarnings("deprecation")
-	private boolean comprobarReservaSimultanea() {
-		int mesEscogido;
-		if (cbMes.getSelectedIndex() == 0) {
-			mesEscogido = mes;
-		} else {
-			mesEscogido = mes + 1;
-		}
-		if (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
-				- Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) < 1) {
-			Timestamp fecha = new Timestamp(año, mesEscogido,
-					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-			return bd.comprobarReservaSimultaneaUsuario(usuario.getId_usuario(), fecha);
-		} else {
-			Timestamp fecha1 = new Timestamp(año, mesEscogido,
-					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-
-			Timestamp fecha2 = new Timestamp(año, mesEscogido,
-					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-					Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-			return (bd.comprobarReservaSimultaneaUsuario(usuario.getId_usuario(), fecha1)
-					&& bd.comprobarReservaSimultaneaUsuario(usuario.getId_usuario(), fecha2)) ? true : false;
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private boolean comprobarDisponibilidadHora() {
-		int mesEscogido;
-		if (cbMes.getSelectedIndex() == 0) {
-			mesEscogido = mes;
-		} else {
-			mesEscogido = mes + 1;
-		}
-		if (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
-				- Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) < 1) {
-			Timestamp fecha = new Timestamp(año, mesEscogido,
-					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-			return bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()), fecha);
-		} else {
-			Timestamp fecha1 = new Timestamp(año, mesEscogido,
-					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-					Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-
-			Timestamp fecha2 = new Timestamp(año, mesEscogido,
-					Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-					Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]), 0, 0, 0);
-			return (bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()), fecha1)
-					&& bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()), fecha2)) ? true : false;
-		}
-	}
+	/**
+	 * @SuppressWarnings("deprecation") private boolean
+	 * comprobarReservaSimultanea() { int mesEscogido; if
+	 * (cbMes.getSelectedIndex() == 0) { mesEscogido = mes; } else { mesEscogido
+	 * = mes + 1; } if
+	 * (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
+	 * ":")[0]) -
+	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
+	 * < 1) { Timestamp fecha = new Timestamp(año, mesEscogido,
+	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
+	 * ":")[0]), 0, 0, 0); return
+	 * bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha);
+	 * } else { Timestamp fecha1 = new Timestamp(año, mesEscogido,
+	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
+	 * ":")[0]), 0, 0, 0);
+	 * 
+	 * Timestamp fecha2 = new Timestamp(año, mesEscogido,
+	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
+	 * , 0, 0, 0); return
+	 * (bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha1)
+	 * && bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(),
+	 * fecha2)) ? true : false; } }
+	 **/
+	/**
+	 * @SuppressWarnings("deprecation") private boolean
+	 * comprobarDisponibilidadHora() { int mesEscogido; if
+	 * (cbMes.getSelectedIndex() == 0) { mesEscogido = mes; } else { mesEscogido
+	 * = mes + 1; } if
+	 * (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
+	 * ":")[0]) -
+	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
+	 * < 1) { Timestamp fecha = new Timestamp(año, mesEscogido,
+	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
+	 * ":")[0]), 0, 0, 0); return
+	 * bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()),
+	 * fecha); } else { Timestamp fecha1 = new Timestamp(año, mesEscogido,
+	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
+	 * ":")[0]), 0, 0, 0);
+	 * 
+	 * Timestamp fecha2 = new Timestamp(año, mesEscogido,
+	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
+	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
+	 * , 0, 0, 0); return
+	 * (bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()),
+	 * fecha1) &&
+	 * bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()),
+	 * fecha2)) ? true : false; } }
+	 **/
 
 	private void generarHorasInicio() {
 		int aux = Integer.parseInt(cbDia.getSelectedItem().toString());
@@ -589,15 +565,11 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 	}
 
-	private void desactivarReserva() {
-		txDisponibilidad.setText("");
-		txDisponibilidad.setBackground(null);
-		btReserva.setEnabled(false);
-	}
 	private JPanel getPnMetodoPago() {
 		if (pnMetodoPago == null) {
 			pnMetodoPago = new JPanel();
-			pnMetodoPago.setBorder(new TitledBorder(null, "Forma de pago", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnMetodoPago.setBorder(
+					new TitledBorder(null, "Forma de pago", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnMetodoPago.setBounds(10, 280, 233, 68);
 			pnMetodoPago.setLayout(null);
 			pnMetodoPago.add(getRdbtnEfectivo());
@@ -605,9 +577,11 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return pnMetodoPago;
 	}
+
 	private JRadioButton getRdbtnEfectivo() {
 		if (rdbtnEfectivo == null) {
 			rdbtnEfectivo = new JRadioButton("Efectivo");
+			rdbtnEfectivo.setActionCommand("Hola");
 			rdbtnEfectivo.setToolTipText("Seleccione si desea pagar en el momento de usar la instalac\u00EDon.");
 			rdbtnEfectivo.setMnemonic('E');
 			buttonGroup.add(rdbtnEfectivo);
@@ -616,9 +590,11 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return rdbtnEfectivo;
 	}
+
 	private JRadioButton getRdbtnCuota() {
 		if (rdbtnCuota == null) {
 			rdbtnCuota = new JRadioButton("Cuota Mensual");
+			rdbtnCuota.setActionCommand("false");
 			rdbtnCuota.setToolTipText("Selecciona Para que se a\u00F1ada el pago a su cuota mensual.");
 			buttonGroup.add(rdbtnCuota);
 			rdbtnCuota.setFont(new Font("Tahoma", Font.PLAIN, 15));
