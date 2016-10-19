@@ -292,13 +292,13 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 					for (int i = 0; i < horasReservadas.length; i++) {
 						if (horasReservadas[i] == null) {
 							modeloTablaReservas
-									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Disponible" });
+									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 0) + ":59", "Disponible" });
 						} else if (usuario.getId_usuario() == (horasReservadas[i].getId_usuario())) {
 							modeloTablaReservas
-									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reserva Propia" });
+									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 0) + ":59", "Reserva Propia" });
 						} else {
 							modeloTablaReservas
-									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reservada" });
+									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 0) + ":59", "Reservada" });
 						}
 					}
 					salasGimnasio = bd.cargarSalas();

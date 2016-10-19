@@ -397,10 +397,14 @@ public class VentanaReservaUsuario extends JDialog {
 							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 									+ cbFin.getSelectedIndex() + 1,
 							tipo);
-					if (!success)
+					if (!success){
 						JOptionPane.showMessageDialog(getContentPane(),
 								"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
 										+ "reservada o el usuario ya posee otra reserva");
+					}else{
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Su reserva ha sido realizada con exito.");
+					}
 				}
 			});
 			btReserva.setFont(new Font("Tahoma", Font.PLAIN, 16));

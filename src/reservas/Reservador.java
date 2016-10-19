@@ -51,9 +51,7 @@ public class Reservador {
 		Calendar c2 = (Calendar) fecha.clone();
 		Calendar actual = Calendar.getInstance();
 		c1.set(Calendar.HOUR_OF_DAY, horaInicial);
-		System.out.println(c1.getTime());
 		c2.set(Calendar.HOUR_OF_DAY, horaFinal);
-		System.out.println(c2.getTime());
 		if (horaInicial == 23)
 			c2.add(Calendar.DAY_OF_MONTH, +1);
 		long duracion = c2.getTimeInMillis() - c1.getTimeInMillis();
