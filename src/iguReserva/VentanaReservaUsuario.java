@@ -49,8 +49,6 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> cbFin;
 	private JButton btReserva;
 	private JButton btAtras;
-	private JTextField txDisponibilidad;
-	private JLabel lblDisponibilidad;
 
 	private Usuario usuario;
 	private BaseDatos bd;
@@ -78,7 +76,7 @@ public class VentanaReservaUsuario extends JDialog {
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
 		this.usuario = usuario;
-		setBounds(100, 100, 533, 383);
+		setBounds(100, 100, 528, 350);
 		setTitle("Reserva Instalaciones");
 		getContentPane().setLayout(null);
 		getContentPane().add(getLbReservas());
@@ -90,8 +88,6 @@ public class VentanaReservaUsuario extends JDialog {
 		getContentPane().add(getPnHorario());
 		getContentPane().add(getBtReserva());
 		getContentPane().add(getBtAtras());
-		getContentPane().add(getTxDisponibilidad());
-		getContentPane().add(getLblDisponibilidad());
 
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
@@ -408,7 +404,7 @@ public class VentanaReservaUsuario extends JDialog {
 				}
 			});
 			btReserva.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			btReserva.setBounds(412, 325, 109, 23);
+			btReserva.setBounds(408, 295, 109, 23);
 		}
 		return btReserva;
 	}
@@ -423,31 +419,9 @@ public class VentanaReservaUsuario extends JDialog {
 				}
 			});
 			btAtras.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			btAtras.setBounds(318, 325, 89, 23);
+			btAtras.setBounds(309, 295, 89, 23);
 		}
 		return btAtras;
-	}
-
-	private JTextField getTxDisponibilidad() {
-		if (txDisponibilidad == null) {
-			txDisponibilidad = new JTextField();
-			txDisponibilidad.setHorizontalAlignment(SwingConstants.CENTER);
-			txDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txDisponibilidad.setEditable(false);
-			txDisponibilidad.setBounds(341, 276, 159, 38);
-			txDisponibilidad.setColumns(10);
-		}
-		return txDisponibilidad;
-	}
-
-	private JLabel getLblDisponibilidad() {
-		if (lblDisponibilidad == null) {
-			lblDisponibilidad = new JLabel("Disponibilidad");
-			lblDisponibilidad.setHorizontalAlignment(SwingConstants.CENTER);
-			lblDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			lblDisponibilidad.setBounds(341, 245, 159, 20);
-		}
-		return lblDisponibilidad;
 	}
 
 	/**
@@ -574,7 +548,7 @@ public class VentanaReservaUsuario extends JDialog {
 			pnMetodoPago = new JPanel();
 			pnMetodoPago.setBorder(
 					new TitledBorder(null, "Forma de pago", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnMetodoPago.setBounds(10, 280, 233, 68);
+			pnMetodoPago.setBounds(258, 193, 233, 68);
 			pnMetodoPago.setLayout(null);
 			pnMetodoPago.add(getRdbtnEfectivo());
 			pnMetodoPago.add(getRdbtnCuota());
