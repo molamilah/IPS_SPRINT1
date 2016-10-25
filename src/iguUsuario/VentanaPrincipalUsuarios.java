@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import iguAdministracion.VentanaPrincipalAdministracion;
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
+import iguReserva.VentanaReserasPropiasUsuario;
 import iguReserva.VentanaReservaUsuario;
 import logica.Usuario;
 import javax.swing.UIManager;
@@ -136,6 +137,10 @@ public class VentanaPrincipalUsuarios extends JFrame {
 			btnReservasPropias = new JButton("Reservas Propias");
 			btnReservasPropias.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					VentanaReserasPropiasUsuario vrpu = new VentanaReserasPropiasUsuario(usuario);
+					vrpu.setModal(true);
+					vrpu.setLocationRelativeTo(null);
+					vrpu.setVisible(true);
 				}
 			});
 			btnReservasPropias.setFont(new Font("Tahoma", Font.PLAIN, 16));

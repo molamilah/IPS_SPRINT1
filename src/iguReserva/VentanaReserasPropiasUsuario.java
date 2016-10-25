@@ -3,8 +3,12 @@ package iguReserva;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
+import logica.Usuario;
+
 import javax.swing.JRadioButton;
 import java.awt.Font;
+import javax.swing.ButtonGroup;
 
 public class VentanaReserasPropiasUsuario extends JDialog {
 	
@@ -13,24 +17,14 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JRadioButton rdbtnCanceladas;
 	private JRadioButton rdbtnPendientes;
 	private JRadioButton rdbtnRealizadas;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			VentanaReserasPropiasUsuario dialog = new VentanaReserasPropiasUsuario();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	
+	private Usuario usuario;
 	/**
 	 * Create the dialog.
 	 */
-	public VentanaReserasPropiasUsuario() {
+	public VentanaReserasPropiasUsuario(Usuario usuario) {
+		this.usuario = usuario;
 		setTitle("Reservas Propias");
 		setBounds(100, 100, 678, 536);
 		getContentPane().setLayout(null);
@@ -51,6 +45,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JRadioButton getRdbtnCanceladas() {
 		if (rdbtnCanceladas == null) {
 			rdbtnCanceladas = new JRadioButton("Canceladas");
+			buttonGroup.add(rdbtnCanceladas);
 			rdbtnCanceladas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			rdbtnCanceladas.setBounds(476, 27, 109, 23);
 		}
@@ -59,6 +54,8 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JRadioButton getRdbtnPendientes() {
 		if (rdbtnPendientes == null) {
 			rdbtnPendientes = new JRadioButton("Pendientes");
+			buttonGroup.add(rdbtnPendientes);
+			rdbtnPendientes.setSelected(true);
 			rdbtnPendientes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			rdbtnPendientes.setBounds(250, 29, 109, 23);
 		}
@@ -67,6 +64,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JRadioButton getRdbtnRealizadas() {
 		if (rdbtnRealizadas == null) {
 			rdbtnRealizadas = new JRadioButton("Realizadas");
+			buttonGroup.add(rdbtnRealizadas);
 			rdbtnRealizadas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			rdbtnRealizadas.setBounds(44, 27, 109, 23);
 		}
