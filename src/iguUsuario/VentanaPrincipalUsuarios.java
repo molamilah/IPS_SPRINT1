@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -87,10 +88,14 @@ public class VentanaPrincipalUsuarios extends JFrame {
 			btnReservar = new JButton("Reservar");
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					try{
 					VentanaReservaUsuario vru = new VentanaReservaUsuario(usuario);
 					vru.setModal(true);
 					vru.setLocationRelativeTo(null);
 					vru.setVisible(true);
+					}catch(Exception n){
+						JOptionPane.showMessageDialog(null, "El sistema esta en mantenimiento, por favor intentelo más tarde.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			});
 			btnReservar.setMnemonic('R');
