@@ -104,7 +104,6 @@ public class BBDDReservas {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -125,7 +124,6 @@ public class BBDDReservas {
 				ps.close();
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return fechaBaja;
@@ -146,7 +144,6 @@ public class BBDDReservas {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -166,14 +163,13 @@ public class BBDDReservas {
 			idReserva = rs2.getInt("id");
 			rs2.close();
 			st.close();
-			ps = conexion.prepareStatement("insert into Pago (id_reserva, precio, contado) values(?,?,?)");
+			ps = conexion.prepareStatement("insert into Pago (id_reserva, precio, contado, pagado) values(?,?,?,false)");
 			ps.setInt(1, idReserva);
 			ps.setDouble(2, precio);
 			ps.setBoolean(3, tipoPago);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -191,7 +187,6 @@ public class BBDDReservas {
 			rs.next();
 			sala = rs.getInt(1);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return sala;

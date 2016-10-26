@@ -136,8 +136,8 @@ public class VentanaReservaAdministracion extends JDialog {
 			});
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbSalas.setBounds(10, 120, 127, 28);
-			int tamaño = salasGimnasio.size();
-			String[] salas = new String[tamaño];
+			int tamano = salasGimnasio.size();
+			String[] salas = new String[tamano];
 			for (int i = 0; i < salasGimnasio.size(); i++)
 				salas[i] = salasGimnasio.get(i).getDescripcion();
 			cbSalas.setModel(new DefaultComboBoxModel<String>(salas));
@@ -148,7 +148,7 @@ public class VentanaReservaAdministracion extends JDialog {
 	}
 
 	private void ponerPrecio() {
-		txPrecio.setText(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio() + "€");
+		txPrecio.setText(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio() + "ï¿½");
 	}
 
 	private JLabel getLbPrecio() {

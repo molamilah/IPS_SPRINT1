@@ -1,0 +1,3 @@
+VentanaReservaUsuario
+	-ComboBox que limita los dias incorrecto, da por hecho que todos los meses tienen 30 dias
+	-No hay cambio de año si se reserva a finales de diciembre

@@ -21,15 +21,15 @@ public class BaseDatos {
 	private Connection conexion;
 
 	@SuppressWarnings("serial")
-	public class ExceptionUsuarioContraseña extends Exception {
-		public ExceptionUsuarioContraseña(String msg) {
+	public class ExceptionUserPassword extends Exception {
+		public ExceptionUserPassword(String msg) {
 			super(msg);
 		}
 	}
 
 	@SuppressWarnings("serial")
-	public class ExcepcionUsuarioNoEncontrado extends Exception {
-		public ExcepcionUsuarioNoEncontrado(String msg) {
+	public class ExcepcionUserNotFound extends Exception {
+		public ExcepcionUserNotFound(String msg) {
 			super(msg);
 		}
 
@@ -63,32 +63,32 @@ public class BaseDatos {
 	public boolean comprobarUserPassword(int user, String password) throws Exception {
 		Usuario usuario = cargarUsuario(user);
 		if (usuario == null) {
-			throw new ExcepcionUsuarioNoEncontrado("El usuario no existe en la base de datos");
+			throw new ExcepcionUserNotFound("El usuario no existe en la base de datos");
 		}
 		if (usuario.getPassword().equals(password))
 			return true;
 		else
-			throw new ExceptionUsuarioContraseña("EL usuario y la contraseña no coinciden.");
+			throw new ExceptionUserPassword("EL usuario y la contraseï¿½a no coinciden.");
 	}
 	
 	/**
-	 * Comprobar administrador y contraseña.
+	 * Comprobar administrador y contraseï¿½a.
 	 * @param user
 	 * @param password
 	 * @return
 	 * @throws ExcepcionUsuarioNoEncontrado
-	 * @throws ExceptionUsuarioContraseña
+	 * @throws ExceptionUsuarioContraseï¿½a
 	 */
 	public boolean comprobarUserPasswordAdmin(String user, String password)
-			throws ExcepcionUsuarioNoEncontrado, ExceptionUsuarioContraseña {
+			throws ExcepcionUserNotFound, ExceptionUserPassword {
 		Usuario usuario = cargarAdministrador(user);
 		if (usuario == null) {
-			throw new ExcepcionUsuarioNoEncontrado("El usuario no existe en la base de datos");
+			throw new ExcepcionUserNotFound("El usuario no existe en la base de datos");
 		}
 		if (usuario.getPassword().equals(password))
 			return true;
 		else
-			throw new ExceptionUsuarioContraseña("EL usuario y la contraseña no coinciden.");
+			throw new ExceptionUserPassword("EL usuario y la contraseï¿½a no coinciden.");
 	}
 	
 	public Usuario cargarAdministrador(String identificador) {
@@ -273,7 +273,7 @@ public class BaseDatos {
 		return false;
 	}
 	
-	private int findID_Usuario(String DNI) throws ExcepcionUsuarioNoEncontrado {
+	private int findID_Usuario(String DNI) throws ExcepcionUserNotFound {
 		Connection con = null;
 		PreparedStatement psID_USUARIO = null;
 		ResultSet rsID_USUARIO = null;
@@ -292,7 +292,7 @@ public class BaseDatos {
 				rsID_USUARIO.close();
 				psID_USUARIO.close();
 				con.close();
-				throw new ExcepcionUsuarioNoEncontrado("El usuario no se encuentra en la base de datos");
+				throw new ExcepcionUserNotFound("El usuario no se encuentra en la base de datos");
 			}
 			return idUsuario;
 		} catch (SQLException e) {
@@ -362,7 +362,7 @@ public class BaseDatos {
 		return idPago;
 	}
 	
-	public void pasarPagoAPagado( String DNI, Timestamp fecha ) throws ExcepcionUsuarioNoEncontrado, ExcepcionReservaNoEncontrada, ExcepcionPagoNoEncontrado, IOException {
+	public void pasarPagoAPagado( String DNI, Timestamp fecha ) throws ExcepcionUserNotFound, ExcepcionReservaNoEncontrada, ExcepcionPagoNoEncontrado, IOException {
 		Connection con = null;		
 		PreparedStatement psUPDATE_PAGO = null;
 		
@@ -423,12 +423,12 @@ public class BaseDatos {
         BufferedWriter bw;
         if(archivo.exists()) {
             bw = new BufferedWriter(new FileWriter(archivo));
-            bw.write("Número de recibo: " + idPago);
+            bw.write("Nï¿½mero de recibo: " + idPago);
             bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ".");
             bw.write("Importe a pagar: " + importe + ".");
         } else {
             bw = new BufferedWriter(new FileWriter(archivo));
-            bw.write("Número de recibo: " + idPago);
+            bw.write("Nï¿½mero de recibo: " + idPago);
             bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ".");
             bw.write("Importe a pagar: " + importe + ".");
         }

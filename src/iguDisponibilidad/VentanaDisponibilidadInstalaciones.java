@@ -44,7 +44,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 	private Calendar c = Calendar.getInstance();
 	private int dia = c.get(Calendar.DATE);
 	private int mes = c.get(Calendar.MONTH);
-	private int año = c.get(Calendar.YEAR) - 1900;
+	private int anno = c.get(Calendar.YEAR) - 1900;
 	private JScrollPane scReservas;
 	private JTable tablaReservas;
 	private DefaultTableModel modeloTablaReservas;
@@ -159,8 +159,8 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 					borrarModelo();
 				}
 			});
-			int tamaño = salasGimnasio.size();
-			String[] salas = new String[tamaño];
+			int tamano = salasGimnasio.size();
+			String[] salas = new String[tamano];
 			for (int i = 0; i < salasGimnasio.size(); i++)
 				salas[i] = salasGimnasio.get(i).getDescripcion();
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -287,18 +287,18 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 					Sala sala = salasGimnasio.get(0);
 					int dia = Integer.valueOf(cbDia.getSelectedIndex()) + 1;
 					int month = Integer.valueOf(cbMes.getSelectedIndex());
-					Timestamp inicio = new Timestamp(año, month, dia, 0, 0, 0, 0);
+					Timestamp inicio = new Timestamp(anno, month, dia, 0, 0, 0, 0);
 					Usuario[] horasReservadas = sala.reservasDia(inicio);
 					for (int i = 0; i < horasReservadas.length; i++) {
 						if (horasReservadas[i] == null) {
 							modeloTablaReservas
-									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 0) + ":59", "Disponible" });
+									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Disponible" });
 						} else if (usuario.getId_usuario() == (horasReservadas[i].getId_usuario())) {
 							modeloTablaReservas
-									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 0) + ":59", "Reserva Propia" });
+									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reserva Propia" });
 						} else {
 							modeloTablaReservas
-									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 0) + ":59", "Reservada" });
+									.addRow(new Object[] { "" + (i + 0) + ":00", (i + 1) + ":00", "Reservada" });
 						}
 					}
 					salasGimnasio = bd.cargarSalas();

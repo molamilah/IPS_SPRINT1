@@ -51,7 +51,7 @@ public class VentanaReservaUsuario extends JDialog {
 	private JButton btAtras;
 	private JTextField txtDisponibilidad;
 	private JLabel lblDisponibilidad;
-	private JTextField txAno;
+	private JTextField txtAnno;
 
 	private Usuario usuario;
 	private BaseDatos bd;
@@ -60,9 +60,10 @@ public class VentanaReservaUsuario extends JDialog {
 	private Calendar c = Calendar.getInstance();
 	private int dia = c.get(Calendar.DATE);
 	private int mes = c.get(Calendar.MONTH);
-	//private int año = c.get(Calendar.YEAR) - 1900;
+	// private int anno = c.get(Calendar.YEAR) - 1900;
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
 	private int min = c.get(Calendar.MINUTE);
+	private int diferencia = 15;
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
@@ -101,16 +102,17 @@ public class VentanaReservaUsuario extends JDialog {
 
 	}
 
-	private JTextField getTxAno() {
-		if (txAno == null) {
-			txAno = new JTextField();
-			txAno.setHorizontalAlignment(SwingConstants.CENTER);
-			txAno.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txAno.setEditable(false);
-			txAno.setColumns(10);
-			txAno.setBounds(206, 33, 86, 26);
+	private JTextField getTxAnno() {
+		if (txtAnno == null) {
+			txtAnno = new JTextField();
+			txtAnno.setHorizontalAlignment(SwingConstants.CENTER);
+			txtAnno.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtAnno.setEditable(false);
+			txtAnno.setColumns(10);
+			txtAnno.setBounds(206, 33, 86, 26);
+			txtAnno.setText(String.valueOf(c.get(Calendar.YEAR)));
 		}
-		return txAno;
+		return txtAnno;
 	}
 
 	private JLabel getLbReservas() {
@@ -140,8 +142,8 @@ public class VentanaReservaUsuario extends JDialog {
 					ponerPrecio();
 				}
 			});
-			int tamaño = salasGimnasio.size();
-			String[] salas = new String[tamaño];
+			int tamano = salasGimnasio.size();
+			String[] salas = new String[tamano];
 			for (int i = 0; i < salasGimnasio.size(); i++)
 				salas[i] = salasGimnasio.get(i).getDescripcion();
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -153,7 +155,7 @@ public class VentanaReservaUsuario extends JDialog {
 	}
 
 	private void ponerPrecio() {
-		txtPrecio.setText(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio() + "ï¿½");
+		txtPrecio.setText("0.0\u20AC");
 	}
 
 	private JLabel getLbPrecio() {
@@ -172,7 +174,7 @@ public class VentanaReservaUsuario extends JDialog {
 			txtPrecio.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtPrecio.setEditable(false);
 			txtPrecio.setColumns(10);
-			txtPrecio.setBounds(122, 124, 86, 28);
+			txtPrecio.setBounds(132, 124, 86, 28);
 		}
 		return txtPrecio;
 	}
@@ -188,7 +190,7 @@ public class VentanaReservaUsuario extends JDialog {
 			pnFecha.add(getLbDia());
 			pnFecha.add(getCbDia());
 			pnFecha.add(getLbAno());
-			pnFecha.add(getTxAno());
+			pnFecha.add(getTxAnno());
 		}
 		return pnFecha;
 	}
@@ -263,12 +265,13 @@ public class VentanaReservaUsuario extends JDialog {
 
 	private void cargarDias() {
 		if (cbMes.getSelectedIndex() == 0) {
-			String[] diasMes = calcularDiasMes(cbMes.getItemAt(0));
-			int diferencia = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia);
-			if (diferencia < 15) {
-				String[] dias = new String[diferencia];
+			String[] diasMes = calcularDiasMes((String) cbMes.getSelectedItem());
+			int diff = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia)-1;
+			this.diferencia -= diff;
+			if (diff < 15) {
+				String[] dias = new String[diff];
 				int j = 0;
-				for (int i = dia; i < diasMes.length; i++) {
+				for (int i = dia; i <= diasMes.length; i++) {
 					dias[j] = i + "";
 					j++;
 				}
@@ -391,7 +394,7 @@ public class VentanaReservaUsuario extends JDialog {
 					if (rdbtnEfectivo.isSelected())
 						tipo = true;
 					success = Reservador.reservar(usuario.getId_usuario(), cbSalas.getSelectedItem().toString(),
-							Integer.parseInt(txAno.getText()), cbMes.getSelectedIndex(),
+							Integer.parseInt(txtAnno.getText()), cbMes.getSelectedIndex(),
 							Integer.parseInt(cbDia.getSelectedItem().toString()),
 							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
@@ -400,10 +403,10 @@ public class VentanaReservaUsuario extends JDialog {
 					if (!success) {
 						JOptionPane.showMessageDialog(getContentPane(),
 								"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
-										+ "reservada o el usuario ya posee otra reserva");
+										+ "reservada, ha vencido su per\u00EDodo de reserva o el usuario ya posee otra reserva");
 						txtDisponibilidad.setBackground(Color.RED);
 					} else {
-						JOptionPane.showMessageDialog(getContentPane(), "Reserva realizada con exito");
+						JOptionPane.showMessageDialog(getContentPane(), "Reserva realizada con \u00E9xito");
 						txtDisponibilidad.setBackground(Color.GREEN);
 					}
 
@@ -512,7 +515,7 @@ public class VentanaReservaUsuario extends JDialog {
 			int diferencia = 24 - hora;
 			if (min != 0) {
 				diferencia--;
-				String[] horas = new String[diferencia-1];
+				String[] horas = new String[diferencia - 1];
 				int j = hora + 2;
 				for (int i = 0; i < diferencia - 1; i++) {
 					if (j < 10) {
