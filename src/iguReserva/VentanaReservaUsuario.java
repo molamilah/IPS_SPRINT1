@@ -248,11 +248,11 @@ public class VentanaReservaUsuario extends JDialog {
 	private void cargarDias() {
 		if (cbMes.getSelectedIndex() == 0) {
 			String[] diasMes = calcularDiasMes(cbMes.getItemAt(0));
-			int diferencia = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia);
+			int diferencia = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia) + 1;
 			if (diferencia < 15) {
 				String[] dias = new String[diferencia];
 				int j = 0;
-				for (int i = dia; i < diasMes.length; i++) {
+				for (int i = dia; i <= diasMes.length; i++) {
 					dias[j] = i + "";
 					j++;
 				}
