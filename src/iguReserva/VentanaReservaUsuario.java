@@ -248,11 +248,11 @@ public class VentanaReservaUsuario extends JDialog {
 	private void cargarDias() {
 		if (cbMes.getSelectedIndex() == 0) {
 			String[] diasMes = calcularDiasMes(cbMes.getItemAt(0));
-			int diferencia = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia);
+			int diferencia = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia) + 1;
 			if (diferencia < 15) {
 				String[] dias = new String[diferencia];
 				int j = 0;
-				for (int i = dia; i < diasMes.length; i++) {
+				for (int i = dia; i <= diasMes.length; i++) {
 					dias[j] = i + "";
 					j++;
 				}
@@ -393,13 +393,12 @@ public class VentanaReservaUsuario extends JDialog {
 							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 									+ cbFin.getSelectedIndex() + 1,
 							tipo);
-					if (!success){
+					if (!success) {
 						JOptionPane.showMessageDialog(getContentPane(),
 								"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
 										+ "reservada o el usuario ya posee otra reserva");
-					}else{
-						JOptionPane.showMessageDialog(getContentPane(),
-								"Su reserva ha sido realizada con exito.");
+					} else {
+						JOptionPane.showMessageDialog(getContentPane(), "Su reserva ha sido realizada con exito.");
 					}
 				}
 			});
@@ -423,60 +422,6 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return btAtras;
 	}
-
-	/**
-	 * @SuppressWarnings("deprecation") private boolean
-	 * comprobarReservaSimultanea() { int mesEscogido; if
-	 * (cbMes.getSelectedIndex() == 0) { mesEscogido = mes; } else { mesEscogido
-	 * = mes + 1; } if
-	 * (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
-	 * ":")[0]) -
-	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
-	 * < 1) { Timestamp fecha = new Timestamp(año, mesEscogido,
-	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
-	 * ":")[0]), 0, 0, 0); return
-	 * bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha);
-	 * } else { Timestamp fecha1 = new Timestamp(año, mesEscogido,
-	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
-	 * ":")[0]), 0, 0, 0);
-	 * 
-	 * Timestamp fecha2 = new Timestamp(año, mesEscogido,
-	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
-	 * , 0, 0, 0); return
-	 * (bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(), fecha1)
-	 * && bd.comprobarReservaSimultaneaUsuario(usuario.getIdentificador(),
-	 * fecha2)) ? true : false; } }
-	 **/
-	/**
-	 * @SuppressWarnings("deprecation") private boolean
-	 * comprobarDisponibilidadHora() { int mesEscogido; if
-	 * (cbMes.getSelectedIndex() == 0) { mesEscogido = mes; } else { mesEscogido
-	 * = mes + 1; } if
-	 * (Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
-	 * ":")[0]) -
-	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
-	 * < 1) { Timestamp fecha = new Timestamp(año, mesEscogido,
-	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
-	 * ":")[0]), 0, 0, 0); return
-	 * bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()),
-	 * fecha); } else { Timestamp fecha1 = new Timestamp(año, mesEscogido,
-	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-	 * Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(
-	 * ":")[0]), 0, 0, 0);
-	 * 
-	 * Timestamp fecha2 = new Timestamp(año, mesEscogido,
-	 * Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
-	 * Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0])
-	 * , 0, 0, 0); return
-	 * (bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()),
-	 * fecha1) &&
-	 * bd.comprobarReservaSala(cbSalas.getItemAt(cbSalas.getSelectedIndex()),
-	 * fecha2)) ? true : false; } }
-	 **/
 
 	private void generarHorasInicio() {
 		int aux = Integer.parseInt(cbDia.getSelectedItem().toString());
