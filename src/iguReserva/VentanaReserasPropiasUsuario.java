@@ -9,8 +9,11 @@ import logica.BaseDatos;
 import logica.Usuario;
 
 import javax.swing.JRadioButton;
+
+import java.awt.AWTEvent;
 import java.awt.Font;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -20,7 +23,10 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class VentanaReserasPropiasUsuario extends JDialog {
 
@@ -54,6 +60,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private int mes = c.get(Calendar.MONTH);
 	private int año = c.get(Calendar.YEAR);
 
+	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
+			"Octubre", "Noviembre", "Diciembre" };
+
 	/**
 	 * Create the dialog.
 	 */
@@ -63,12 +72,15 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		setTitle("Reservas Propias");
 		setBounds(100, 100, 683, 602);
 		getContentPane().setLayout(null);
-		getContentPane().add(getPnFiltro());
 		getContentPane().add(getPnFechas());
 		getContentPane().add(getBtnMostrarReserva());
 		getContentPane().add(getBtnAnularReserva());
 		getContentPane().add(getBtnAtras());
 		getContentPane().add(getScrollPane_1());
+
+		cargarDias();
+		cargarAño();
+		getContentPane().add(getPnFiltro());
 	}
 
 	private JPanel getPnFiltro() {
@@ -88,6 +100,16 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JRadioButton getRdbtnCanceladas() {
 		if (rdbtnCanceladas == null) {
 			rdbtnCanceladas = new JRadioButton("Canceladas");
+			rdbtnCanceladas.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					borrarModelo();
+					cbMes.setEnabled(true);
+					cbDia.setEnabled(true);
+					cbAno.setEnabled(true);
+					cbMesH.setSelectedIndex(mes);
+					cbMes.setSelectedIndex(mes);
+				}
+			});
 			buttonGroup.add(rdbtnCanceladas);
 			rdbtnCanceladas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			rdbtnCanceladas.setBounds(476, 27, 109, 23);
@@ -98,6 +120,16 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JRadioButton getRdbtnPendientes() {
 		if (rdbtnPendientes == null) {
 			rdbtnPendientes = new JRadioButton("Pendientes");
+			rdbtnPendientes.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent arg0) {
+					borrarModelo();
+					cbMes.setEnabled(false);
+					cbDia.setEnabled(false);
+					cbAno.setEnabled(false);
+					cbMesH.setSelectedIndex(mes);
+					cbMes.setSelectedIndex(mes);
+				}
+			});
 			buttonGroup.add(rdbtnPendientes);
 			rdbtnPendientes.setSelected(true);
 			rdbtnPendientes.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -109,6 +141,16 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JRadioButton getRdbtnRealizadas() {
 		if (rdbtnRealizadas == null) {
 			rdbtnRealizadas = new JRadioButton("Realizadas");
+			rdbtnRealizadas.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					borrarModelo();
+					cbMes.setEnabled(true);
+					cbDia.setEnabled(true);
+					cbAno.setEnabled(true);
+					cbMesH.setSelectedIndex(mes);
+					cbMes.setSelectedIndex(mes);
+				}
+			});
 			buttonGroup.add(rdbtnRealizadas);
 			rdbtnRealizadas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			rdbtnRealizadas.setBounds(44, 27, 109, 23);
@@ -137,7 +179,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JComboBox<String> getCbDia() {
 		if (cbDia == null) {
 			cbDia = new JComboBox<String>();
-			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			cbDia.setBounds(10, 47, 59, 25);
 		}
 		return cbDia;
@@ -146,7 +188,13 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JComboBox<String> getCbMes() {
 		if (cbMes == null) {
 			cbMes = new JComboBox<String>();
-			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			cbMes.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					cargarDias();
+				}
+			});
+			cbMes.setModel(new DefaultComboBoxModel<String>(meses));
+			cbMes.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			cbMes.setBounds(79, 47, 129, 25);
 		}
 		return cbMes;
@@ -155,6 +203,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JComboBox<String> getCbAno() {
 		if (cbAno == null) {
 			cbAno = new JComboBox<String>();
+			cbAno.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			cbAno.setBounds(218, 47, 84, 25);
 		}
 		return cbAno;
@@ -181,6 +230,12 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private JComboBox<String> getCbMesH() {
 		if (cbMesH == null) {
 			cbMesH = new JComboBox<String>();
+			cbMesH.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					cargarDias();
+				}
+			});
+			cbMesH.setModel(new DefaultComboBoxModel<String>(meses));
 			cbMesH.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			cbMesH.setBounds(398, 47, 129, 25);
 		}
@@ -204,7 +259,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		}
 		return lblHasta;
 	}
-	
+
 	/**
 	 * Borra los elementos de la tabla
 	 */
@@ -221,25 +276,31 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 				@SuppressWarnings("deprecation")
 				public void actionPerformed(ActionEvent e) {
 					borrarModelo();
-					// llamar a un metodo de la base de datos que me coja las
-					// reservas del usuario entre las fechas seleccionadas
-					// comprobar que no este cancelada.
+					List<String> result;
 					if (rdbtnPendientes.isSelected()) {
-						bd.cargarReservasPendientesUsuario(usuario, new Timestamp(año-1900, mes, dia, 0, 0, 0, 0),
-								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())),
-										mes + cbMes.getSelectedIndex(),
-										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0));
+						result = bd.cargarReservasPendientesUsuario(usuario,
+								new Timestamp(año - 1900, mes, dia, 0, 0, 0, 0),
+								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
+										cbMesH.getSelectedIndex(),
+										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 23, 59, 0, 0));
 					} else if (rdbtnRealizadas.isSelected()) {
-						bd.cargarReservasRealizadasUsuario(usuario,
-								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())),
-										mes + cbMes.getSelectedIndex(),
+						result = bd.cargarReservasRealizadasUsuario(usuario,
+								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
+										cbMes.getSelectedIndex(),
 										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0),
-								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())),
-										mes + cbMes.getSelectedIndex(),
-										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0));
-					}else{
-						//Cargar las reservas canceladas.
+								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
+										cbMesH.getSelectedIndex(),
+										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 0, 0, 0, 0));
+					} else {
+						result = bd.cargarReservasRealizadasUsuario(usuario,
+								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
+										cbMes.getSelectedIndex(),
+										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0),
+								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
+										cbMesH.getSelectedIndex(),
+										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 0, 0, 0, 0));
 					}
+					cargarElementosTabla(result);
 				}
 			});
 			btnMostrarReserva.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -248,14 +309,25 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		return btnMostrarReserva;
 	}
 
+	private void cargarElementosTabla(List<String> result) {
+		// TODO Auto-generated method stub
+		for (int i = 0; i < result.size(); i++) {
+			String[] cachos;
+			cachos = result.get(i).split(";");
+			modeloTablaReservas.addRow(cachos);
+		}
+	}
+
 	private JButton getBtnAnularReserva() {
 		if (btnAnularReserva == null) {
 			btnAnularReserva = new JButton("Anular Reserva");
 			btnAnularReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					String horaInicio = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 1);
-					String horaFin = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 2);
-					bd.cancelarReservaUsuario(usuario, horaInicio, horaFin);
+					if (tbReservas.getSelectedRow() != -1) {
+						String horaInicio = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 1);
+						String horaFin = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 2);
+						bd.cancelarReservaUsuario(usuario, horaInicio, horaFin);
+					}
 				}
 			});
 			btnAnularReserva.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -295,5 +367,51 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 			tbReservas.getTableHeader().setReorderingAllowed(false);
 		}
 		return tbReservas;
+	}
+
+	/**
+	 * Metodo para calcular el numero de dias que tiene un mes.
+	 * 
+	 * @return numero de dias por mes.
+	 */
+	private String[] calcularDiasMes(String mes) {
+		String[] dias;
+		String aux = mes;
+		if (aux.equals("Enero") || aux.equals("Marzo") || aux.equals("Mayo") || aux.equals("Julio")
+				|| aux.equals("Agosto") || aux.equals("Octubre") || aux.equals("Diciembre")) {
+			dias = new String[31];
+			for (int i = 0; i < 31; i++)
+				dias[i] = "" + (i + 1);
+		} else if (aux.equals("Febrero")) {
+			dias = new String[28];
+			for (int i = 0; i < 28; i++)
+				dias[i] = "" + (i + 1);
+		} else {
+			dias = new String[30];
+			for (int i = 0; i < 30; i++)
+				dias[i] = "" + (i + 1);
+		}
+		return dias;
+	}
+
+	/**
+	 * Metodo que carga el numero de dias del mes que se ha seleccionado en el
+	 * combobox.
+	 */
+	private void cargarDias() {
+		cbDia.setModel(
+				new DefaultComboBoxModel<String>(calcularDiasMes((String) cbMes.getItemAt(cbMes.getSelectedIndex()))));
+		cbDiaH.setModel(new DefaultComboBoxModel<String>(
+				calcularDiasMes((String) cbMesH.getItemAt(cbMesH.getSelectedIndex()))));
+	}
+
+	/**
+	 * Metodo que carga el años en el combobox dedicado a tal efecto.Se cargara
+	 * el año en curso y el siguiente.
+	 */
+	private void cargarAño() {
+		String[] años = { año + "", año + 1 + "" };
+		cbAno.setModel(new DefaultComboBoxModel<String>(años));
+		cbAnoH.setModel(new DefaultComboBoxModel<String>(años));
 	}
 }

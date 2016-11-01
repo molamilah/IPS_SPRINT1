@@ -454,7 +454,7 @@ public class BaseDatos {
 			Connection con = conectar();
 			// Falta añadir la comprobacion de que no este cancelada.
 			PreparedStatement ps = con.prepareStatement(
-					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.HORA_INICIO BETWEEN ? AND ?;");
+					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.HORA_INICIO BETWEEN ? AND ? and (R.ESTADO<>'CANCELADA' or r.estado IS NULL);");
 			ps.setInt(1, user.getId_usuario());
 			ps.setTimestamp(2, fechaActual);
 			ps.setTimestamp(3, fechaHasta);
@@ -548,7 +548,7 @@ public class BaseDatos {
 		try {
 			Connection con = conectar();
 			PreparedStatement ps = con.prepareStatement(
-					"UPDATE RESERVAS R SET ESTADO ='CANCELADA' WHERE R.ID_USUARIO=? AND R.HORA_INICIO = ? AND R.HORA_FIN = ?");
+					"UPDATE RESERVA R SET ESTADO ='CANCELADA' WHERE R.ID_USUARIO=? AND R.HORA_INICIO = ? AND R.HORA_FIN = ?");
 			ps.setInt(1, user.getId_usuario());
 			ps.setString(2, fechaDesde);
 			ps.setString(3, fechaHasta);
