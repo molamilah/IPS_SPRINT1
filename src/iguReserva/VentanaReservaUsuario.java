@@ -1,6 +1,5 @@
 package iguReserva;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +31,6 @@ public class VentanaReservaUsuario extends JDialog {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JLabel lbReservas;
-	private JLabel lbSalas;
 	private JComboBox<String> cbSalas;
 	private JLabel lbPrecio;
 	private JTextField txtPrecio;
@@ -49,8 +47,6 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> cbFin;
 	private JButton btReserva;
 	private JButton btAtras;
-	private JTextField txtDisponibilidad;
-	private JLabel lblDisponibilidad;
 	private JTextField txtAnno;
 
 	private Usuario usuario;
@@ -63,6 +59,7 @@ public class VentanaReservaUsuario extends JDialog {
 	// private int anno = c.get(Calendar.YEAR) - 1900;
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
 	private int min = c.get(Calendar.MINUTE);
+	@SuppressWarnings("unused")
 	private int diferencia = 15;
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
@@ -71,6 +68,7 @@ public class VentanaReservaUsuario extends JDialog {
 	private JRadioButton rdbtnEfectivo;
 	private JRadioButton rdbtnCuota;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JPanel pnSala;
 
 	/**
 	 * Create the dialog.
@@ -81,25 +79,23 @@ public class VentanaReservaUsuario extends JDialog {
 		salasGimnasio = bd.cargarSalas();
 		this.usuario = usuario;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 533, 383);
+		setBounds(100, 100, 557, 390);
 		setTitle("Reserva Instalaciones");
 		getContentPane().setLayout(null);
 		getContentPane().add(getLbReservas());
-		getContentPane().add(getLbSalas());
 		getContentPane().add(getTxPrecio());
-		getContentPane().add(getCbSalas());
 		getContentPane().add(getLbPrecio());
 		getContentPane().add(getPnFecha());
 		getContentPane().add(getPnHorario());
 		getContentPane().add(getBtReserva());
 		getContentPane().add(getBtAtras());
-		getContentPane().add(getTxtDisponibilidad());
-		getContentPane().add(getLblDisponibilidad());
+		getContentPane().add(getPnMetodoPago());
+		getContentPane().add(getPnSala());
 
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
 		cbSalas.setSelectedIndex(0);
-		getContentPane().add(getPnMetodoPago());
+		
 
 	}
 
@@ -125,19 +121,10 @@ public class VentanaReservaUsuario extends JDialog {
 		return lbReservas;
 	}
 
-	private JLabel getLbSalas() {
-		if (lbSalas == null) {
-			lbSalas = new JLabel("Salas:");
-			lbSalas.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			lbSalas.setDisplayedMnemonic('S');
-			lbSalas.setBounds(10, 95, 52, 20);
-		}
-		return lbSalas;
-	}
-
 	private JComboBox<String> getCbSalas() {
 		if (cbSalas == null) {
 			cbSalas = new JComboBox<String>();
+			cbSalas.setBounds(37, 25, 119, 25);
 			cbSalas.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					ponerPrecio();
@@ -148,22 +135,21 @@ public class VentanaReservaUsuario extends JDialog {
 			for (int i = 0; i < salasGimnasio.size(); i++)
 				salas[i] = salasGimnasio.get(i).getDescripcion();
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			cbSalas.setBounds(10, 123, 97, 28);
 			cbSalas.setModel(new DefaultComboBoxModel<String>(salas));
-			ponerPrecio();
 		}
 		return cbSalas;
 	}
 
 	private void ponerPrecio() {
-		txtPrecio.setText("0.0\u20AC");
+		txtPrecio.setText(
+				(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio()) * (cbFin.getSelectedIndex() + 1) + "€");
 	}
 
 	private JLabel getLbPrecio() {
 		if (lbPrecio == null) {
 			lbPrecio = new JLabel("Precio");
-			lbPrecio.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			lbPrecio.setBounds(122, 99, 46, 14);
+			lbPrecio.setFont(new Font("Tahoma", Font.BOLD, 16));
+			lbPrecio.setBounds(343, 208, 86, 28);
 		}
 		return lbPrecio;
 	}
@@ -175,7 +161,7 @@ public class VentanaReservaUsuario extends JDialog {
 			txtPrecio.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtPrecio.setEditable(false);
 			txtPrecio.setColumns(10);
-			txtPrecio.setBounds(132, 124, 86, 28);
+			txtPrecio.setBounds(343, 247, 136, 38);
 		}
 		return txtPrecio;
 	}
@@ -185,7 +171,7 @@ public class VentanaReservaUsuario extends JDialog {
 			pnFecha = new JPanel();
 			pnFecha.setLayout(null);
 			pnFecha.setBorder(new TitledBorder(null, "Fecha", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnFecha.setBounds(218, 95, 308, 70);
+			pnFecha.setBounds(234, 100, 307, 70);
 			pnFecha.add(getCbMes());
 			pnFecha.add(getLbMes());
 			pnFecha.add(getLbDia());
@@ -267,7 +253,7 @@ public class VentanaReservaUsuario extends JDialog {
 	private void cargarDias() {
 		if (cbMes.getSelectedIndex() == 0) {
 			String[] diasMes = calcularDiasMes((String) cbMes.getSelectedItem());
-			int diff = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia)-1;
+			int diff = Integer.parseInt(diasMes[diasMes.length - 1]) - (dia) - 1;
 			this.diferencia -= diff;
 			if (diff < 15) {
 				String[] dias = new String[diff];
@@ -330,7 +316,7 @@ public class VentanaReservaUsuario extends JDialog {
 			pnHorario.setLayout(null);
 			pnHorario.setBorder(new TitledBorder(null, "Horario( Max 2 horas)", TitledBorder.LEADING, TitledBorder.TOP,
 					null, null));
-			pnHorario.setBounds(10, 181, 212, 82);
+			pnHorario.setBounds(20, 187, 212, 82);
 			pnHorario.add(getLbInicio());
 			pnHorario.add(getCbInicio());
 			pnHorario.add(getLbFin());
@@ -378,6 +364,11 @@ public class VentanaReservaUsuario extends JDialog {
 	private JComboBox<String> getCbFin() {
 		if (cbFin == null) {
 			cbFin = new JComboBox<String>();
+			cbFin.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					ponerPrecio();
+				}
+			});
 			cbFin.setBounds(109, 42, 89, 26);
 		}
 		return cbFin;
@@ -405,10 +396,8 @@ public class VentanaReservaUsuario extends JDialog {
 						JOptionPane.showMessageDialog(getContentPane(),
 								"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
 										+ "reservada, ha vencido su per\u00EDodo de reserva o el usuario ya posee otra reserva");
-						txtDisponibilidad.setBackground(Color.RED);
 					} else {
 						JOptionPane.showMessageDialog(getContentPane(), "Reserva realizada con \u00E9xito");
-						txtDisponibilidad.setBackground(Color.GREEN);
 					}
 
 				}
@@ -432,28 +421,6 @@ public class VentanaReservaUsuario extends JDialog {
 			btAtras.setBounds(318, 325, 89, 23);
 		}
 		return btAtras;
-	}
-
-	private JTextField getTxtDisponibilidad() {
-		if (txtDisponibilidad == null) {
-			txtDisponibilidad = new JTextField();
-			txtDisponibilidad.setHorizontalAlignment(SwingConstants.CENTER);
-			txtDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txtDisponibilidad.setEditable(false);
-			txtDisponibilidad.setBounds(332, 240, 159, 38);
-			txtDisponibilidad.setColumns(10);
-		}
-		return txtDisponibilidad;
-	}
-
-	private JLabel getLblDisponibilidad() {
-		if (lblDisponibilidad == null) {
-			lblDisponibilidad = new JLabel("Disponibilidad");
-			lblDisponibilidad.setHorizontalAlignment(SwingConstants.CENTER);
-			lblDisponibilidad.setFont(new Font("Tahoma", Font.BOLD, 16));
-			lblDisponibilidad.setBounds(332, 198, 159, 20);
-		}
-		return lblDisponibilidad;
 	}
 
 	/**
@@ -612,5 +579,15 @@ public class VentanaReservaUsuario extends JDialog {
 			rdbtnCuota.setBounds(97, 28, 130, 23);
 		}
 		return rdbtnCuota;
+	}
+	private JPanel getPnSala() {
+		if (pnSala == null) {
+			pnSala = new JPanel();
+			pnSala.setBorder(new TitledBorder(null, "Sala", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnSala.setBounds(10, 100, 199, 70);
+			pnSala.setLayout(null);
+			pnSala.add(getCbSalas());
+		}
+		return pnSala;
 	}
 }

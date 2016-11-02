@@ -95,6 +95,7 @@ public class VentanaPrincipalUsuarios extends JFrame {
 					vru.setLocationRelativeTo(null);
 					vru.setVisible(true);
 					}catch(Exception n){
+						n.printStackTrace();
 						JOptionPane.showMessageDialog(null, "El sistema esta en mantenimiento, por favor intentelo m�s tarde.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
