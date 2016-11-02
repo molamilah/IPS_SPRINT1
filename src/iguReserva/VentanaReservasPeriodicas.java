@@ -5,15 +5,23 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+import java.util.List;
+
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
+import logica.BaseDatos;
+import logica.Sala;
+import reservas.Reservador;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import javax.swing.JCheckBox;
 
 public class VentanaReservasPeriodicas extends JDialog {
 
@@ -48,10 +56,13 @@ public class VentanaReservasPeriodicas extends JDialog {
 	private JLabel lblAnno;
 	private JLabel lblMes;
 	private JLabel lblDia;
+	private BaseDatos bd;
 	private JLabel lblSemana;
-	private final int id = 0;
 	private JButton btnValidarFecha;
 	private JButton btnCambiar;
+	private JCheckBox chkDiaCompleto;
+	private JComboBox<String> cbSalas;
+	private List<Sala> salasGimnasio;
 
 	public VentanaReservasPeriodicas() {
 		setResizable(false);
@@ -61,6 +72,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 		setBounds(100, 100, 652, 467);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(null);
+		salasGimnasio = bd.cargarSalas();
 		getContentPane().add(getPnFecha());
 		getContentPane().add(getPnHora());
 		getContentPane().add(getBtnReservar());
@@ -68,6 +80,8 @@ public class VentanaReservasPeriodicas extends JDialog {
 		getContentPane().add(getLblTitulo());
 		getContentPane().add(getBtnValidarFecha());
 		getContentPane().add(getBtnCambiar());
+		getContentPane().add(getChkDiaCompleto());
+		getContentPane().add(getCbSalas());
 		rellenarCbAnno();
 		rellenarDiaSemana();
 
@@ -159,23 +173,19 @@ public class VentanaReservasPeriodicas extends JDialog {
 	}
 
 	private void generarHorasFin(String horaInicio) {
-		if (horaInicio.equals("23:00")) {
-			String[] horas = new String[] { "23:59" };
-			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
-		} else {
-			String[] horas = new String[2];
-			int hora = Integer.parseInt(horaInicio.split(":")[0]);
-			for (int i = 0; i < 2; i++) {
-				if (hora < 10) {
-					horas[i] = "0" + hora + ":59";
-					hora++;
-				} else {
-					horas[i] = hora + ":59";
-					hora++;
-				}
+		int hora = Integer.parseInt(horaInicio.split(":")[0]);
+		int tamano = 24 - hora;
+		String[] horas = new String[tamano];
+		for (int i = hora; i < 24; i++) {
+			if (hora < 10) {
+				horas[i] = "0" + hora + ":59";
+				hora++;
+			} else {
+				horas[i] = hora + ":59";
+				hora++;
 			}
-			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
 		}
+		cbFin.setModel(new DefaultComboBoxModel<String>(horas));
 		cbFin.setEnabled(true);
 	}
 
@@ -296,6 +306,15 @@ public class VentanaReservasPeriodicas extends JDialog {
 			btnReservar = new JButton("Reservar");
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					if (chkDiaCompleto.isSelected())
+						Reservador.reservarPeriodico(fechaInicial, fechaFinal, 0, 23, cbDiaSemana.getSelectedIndex(),
+								cbSalas.getItemAt(cbSalas.getSelectedIndex()));
+					else
+						Reservador.reservarPeriodico(fechaInicial, fechaFinal,
+								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex())),
+								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex())),
+								cbDiaSemana.getSelectedIndex(),
+								cbSalas.getItemAt(cbSalas.getSelectedIndex()));
 				}
 			});
 			btnReservar.setBounds(497, 380, 89, 34);
@@ -560,4 +579,27 @@ public class VentanaReservasPeriodicas extends JDialog {
 		}
 		return btnCambiar;
 	}
+
+	private JCheckBox getChkDiaCompleto() {
+		if (chkDiaCompleto == null) {
+			chkDiaCompleto = new JCheckBox("Todo el dia");
+			chkDiaCompleto.setBounds(96, 391, 97, 23);
+		}
+		return chkDiaCompleto;
+	}
+
+	private JComboBox<String> getCbSalas() {
+		if (cbSalas == null) {
+			cbSalas = new JComboBox<String>();		
+			int tamano = salasGimnasio.size();
+			String[] salas = new String[tamano];
+			for (int i = 0; i < salasGimnasio.size(); i++)
+				salas[i] = salasGimnasio.get(i).getDescripcion();
+			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			cbSalas.setBounds(10, 123, 97, 28);
+			cbSalas.setModel(new DefaultComboBoxModel<String>(salas));
+		}
+		return cbSalas;
+	}
+
 }
