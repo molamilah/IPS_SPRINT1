@@ -80,6 +80,7 @@ public class VentanaReservaUsuario extends JDialog {
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
 		this.usuario = usuario;
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 533, 383);
 		setTitle("Reserva Instalaciones");
 		getContentPane().setLayout(null);

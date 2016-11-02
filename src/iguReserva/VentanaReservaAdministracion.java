@@ -75,9 +75,11 @@ public class VentanaReservaAdministracion extends JDialog {
 	 * Create the dialog.
 	 */
 	public VentanaReservaAdministracion(Usuario user) {
+		setResizable(false);
 		this.usuario = user;
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Reserva Instalaciones Administracion");
 		setBounds(100, 100, 556, 438);
 		getContentPane().setLayout(null);

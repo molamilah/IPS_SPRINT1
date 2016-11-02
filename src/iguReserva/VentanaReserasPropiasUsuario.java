@@ -36,6 +36,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 			pnFiltro.setBorder(new TitledBorder(null, "Filtro Reservas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnFiltro.setBounds(10, 11, 642, 69);
 			pnFiltro.setLayout(null);
+			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			pnFiltro.add(getRdbtnCanceladas());
 			pnFiltro.add(getRdbtnPendientes());
 			pnFiltro.add(getRdbtnRealizadas());

@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
+import iguReserva.VentanaReservasPeriodicas;
 import logica.Usuario;
 import ocupacion.OcupacionSalas;
 
@@ -34,6 +35,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private Usuario usuario;
 	private JButton btnLlegada;
 	private JButton btnSalida;
+	private JButton btnSimultanea;
 
 	/**
 	 * Create the frame.
@@ -41,6 +43,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	 * @param usuario
 	 */
 	public VentanaPrincipalAdministracion(Usuario usuario) {
+		setResizable(false);
 		this.usuario = usuario;
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(VentanaPrincipalAdministracion.class.getResource("/img/img-recepcion-2.jpg")));
@@ -68,6 +71,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnInstalaciones.add(getBtnSalida());
 			pnInstalaciones.add(getBtDisponibilidad());
 			pnInstalaciones.add(getBtnReservas());
+			pnInstalaciones.add(getBtnSimultanea());
 		}
 		return pnInstalaciones;
 	}
@@ -92,7 +96,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 
 	private JButton getBtnReservas() {
 		if (btnReservas == null) {
-			btnReservas = new JButton("Reservas");
+			btnReservas = new JButton("Reserva Unica");
 			btnReservas.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
@@ -144,19 +148,22 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JButton getBtnLlegada() {
 		if (btnLlegada == null) {
 			btnLlegada = new JButton("Indicar Llegada");
+			btnLlegada.setMnemonic('L');
 			btnLlegada.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String respuesta = JOptionPane.showInputDialog(contentPane,
 							"Introduzca el dni del usuario que ha llegado");
-					if (respuesta.equals(""))
-						JOptionPane.showMessageDialog(contentPane, "No se ha indicado ningun cliente");
-					else {
-						boolean estado = OcupacionSalas.indicarLlegada(respuesta);
-						if (!estado)
-							JOptionPane.showMessageDialog(contentPane,
-									"El ciente con el DNI indicado no tiene una reserva y no puede pasar a usar las instalaciones");
-						else
-							JOptionPane.showMessageDialog(contentPane, "La llegada ha sido indicada correctamente");
+					if (respuesta != null) {
+						if (respuesta.equals(""))
+							JOptionPane.showMessageDialog(contentPane, "No se ha indicado ningun cliente");
+						else {
+							boolean estado = OcupacionSalas.indicarLlegada(respuesta);
+							if (!estado)
+								JOptionPane.showMessageDialog(contentPane,
+										"El ciente con el DNI indicado no tiene una reserva y no puede pasar a usar las instalaciones");
+							else
+								JOptionPane.showMessageDialog(contentPane, "La llegada ha sido indicada correctamente");
+						}
 					}
 				}
 			});
@@ -168,24 +175,44 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JButton getBtnSalida() {
 		if (btnSalida == null) {
 			btnSalida = new JButton("Indicar Salida");
+			btnSalida.setMnemonic('S');
 			btnSalida.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String respuesta = JOptionPane.showInputDialog(contentPane,
 							"Introduzca el dni del usuario que se va");
-					if (respuesta.equals(""))
-						JOptionPane.showMessageDialog(contentPane, "No se ha indicado ningun cliente");
-					else {
-						boolean estado = OcupacionSalas.indicarSalida(respuesta);
-						if (!estado)
-							JOptionPane.showMessageDialog(contentPane,
-									"No se ha podido encontrar ningun cliente usando las instalaciones con ese DNI");
-						else
-							JOptionPane.showMessageDialog(contentPane, "La salida ha sido indicada correctamente");
+					if (respuesta != null) {
+						if (respuesta.equals(""))
+							JOptionPane.showMessageDialog(contentPane, "No se ha indicado ningun cliente");
+
+						else {
+							boolean estado = OcupacionSalas.indicarSalida(respuesta);
+							if (!estado)
+								JOptionPane.showMessageDialog(contentPane,
+										"No se ha podido encontrar ningun cliente usando las instalaciones con ese DNI");
+							else
+								JOptionPane.showMessageDialog(contentPane, "La salida ha sido indicada correctamente");
+						}
 					}
 				}
 			});
 			btnSalida.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
 		return btnSalida;
+	}
+	private JButton getBtnSimultanea() {
+		if (btnSimultanea == null) {
+			btnSimultanea = new JButton("Reserva periodica");
+			btnSimultanea.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					VentanaReservasPeriodicas vrp = new VentanaReservasPeriodicas();
+					vrp.setModal(true);
+					vrp.setLocationRelativeTo(null);
+					vrp.setVisible(true);
+				}
+			});
+			btnSimultanea.setMnemonic('P');
+			btnSimultanea.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnSimultanea;
 	}
 }

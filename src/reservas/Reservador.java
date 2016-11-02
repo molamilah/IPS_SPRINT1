@@ -45,20 +45,22 @@ public class Reservador {
 	}
 
 	private static boolean validarHoras(Calendar fecha, int horaInicial, int horaFinal) {
-		if (!validarHoraInicial(horaInicial) || !validarHoraFinal(horaFinal))
-			return false;
-		Calendar c1 = (Calendar) fecha.clone();
-		Calendar c2 = (Calendar) fecha.clone();
-		Calendar actual = Calendar.getInstance();
-		c1.set(Calendar.HOUR_OF_DAY, horaInicial);
-		c2.set(Calendar.HOUR_OF_DAY, horaFinal);
-		if (horaInicial == 23)
-			c2.add(Calendar.DAY_OF_MONTH, +1);
-		long duracion = c2.getTimeInMillis() - c1.getTimeInMillis();
-		long maximo = 7200000;
-		if (duracion > maximo || duracion <= 0 || c1.getTimeInMillis() - actual.getTimeInMillis() <= 3600000) {
-			return false;
-		} else
+//		if (!validarHoraInicial(horaInicial) || !validarHoraFinal(horaFinal))
+//			return false;
+//		Calendar c1 = (Calendar) fecha.clone();
+//		Calendar c2 = (Calendar) fecha.clone();
+//		Calendar actual = Calendar.getInstance();
+//		c1.set(Calendar.HOUR_OF_DAY, horaInicial);
+//		c2.set(Calendar.HOUR_OF_DAY, horaFinal);
+//		if (horaInicial == 23){
+//			c2.add(Calendar.DAY_OF_MONTH, +1);
+//			c2.set(Calendar.HOUR_OF_DAY, 0);
+//		}
+//		long duracion = c2.getTimeInMillis() - c1.getTimeInMillis();
+//		long maximo = 7200000;
+//		if (duracion > maximo || duracion <= 0 || c1.getTimeInMillis() - actual.getTimeInMillis() <= 3600000) {
+//			return false;
+//		} else
 			return true;
 	}
 
@@ -70,26 +72,26 @@ public class Reservador {
 	}
 
 	private static boolean validarHoraFinal(int horaFinal) {
-		if (horaFinal < 0 || horaFinal > 23) {
+		if (horaFinal < 0 || horaFinal > 25) {
 			return false;
 		} else
 			return true;
 	}
 
 	private static boolean validarFecha(int day, int month, int year) {
-		Calendar reserva = Calendar.getInstance();
-		Calendar actual = Calendar.getInstance();
-		Calendar maximo = Calendar.getInstance();
-		maximo.add(Calendar.DAY_OF_MONTH, +15);
-		if (!validarAnno(year) || !validarMes(year, month) || !validarDia(month, year, day))
-			return false;
-		else {
-			reserva.set(Calendar.YEAR, year);
-			reserva.set(Calendar.MONTH, month - 1);
-			reserva.set(Calendar.DAY_OF_MONTH, day);
-			if (reserva.before(actual) || reserva.after(maximo))
-				return false;
-		}
+//		Calendar reserva = Calendar.getInstance();
+//		Calendar actual = Calendar.getInstance();
+//		Calendar maximo = Calendar.getInstance();
+//		maximo.add(Calendar.DAY_OF_MONTH, +15);
+//		if (!validarAnno(year) || !validarMes(year, month) || !validarDia(month, year, day))
+//			return false;
+//		else {
+//			reserva.set(Calendar.YEAR, year);
+//			reserva.set(Calendar.MONTH, month - 1);
+//			reserva.set(Calendar.DAY_OF_MONTH, day);
+//			if (reserva.before(actual) || reserva.after(maximo))
+//				return false;
+//		}
 
 		return true;
 	}

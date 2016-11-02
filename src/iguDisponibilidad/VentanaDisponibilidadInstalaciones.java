@@ -108,6 +108,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
 		setResizable(false);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Disponiblidad de Instalaciones");
 		setBounds(100, 100, 664, 552);
 		getContentPane().setLayout(null);
