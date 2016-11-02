@@ -553,7 +553,6 @@ public class VentanaReservasPeriodicas extends JDialog {
 					cbInicio.setEnabled(false);
 					cbFin.setEnabled(false);
 					btnReservar.setEnabled(false);
-
 				}
 			});
 			btnCambiar.setEnabled(false);
