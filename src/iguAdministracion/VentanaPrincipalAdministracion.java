@@ -14,7 +14,9 @@ import javax.swing.border.TitledBorder;
 
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
+import iguReserva.VentanaReserasPropiasUsuario;
 import iguReserva.VentanaReservaAdministracion;
+import iguReserva.VentanaReservasPropiasAdministracion;
 import logica.Usuario;
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -33,6 +35,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JPanel pnActividades;
 	private JPanel pnZonaAdministracion;
 	private Usuario usuario;
+	private JButton btnReservasPropias;
 
 	/**
 	 * Create the frame.
@@ -126,7 +129,24 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnZonaAdministracion = new JPanel();
 			pnZonaAdministracion.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Zona Administraci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			pnZonaAdministracion.setBounds(10, 336, 812, 140);
+			pnZonaAdministracion.add(getBtnReservasPropias());
 		}
 		return pnZonaAdministracion;
+	}
+	
+	private JButton getBtnReservasPropias() {
+		if (btnReservasPropias == null) {
+			btnReservasPropias = new JButton("Reservas Propias");
+			btnReservasPropias.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VentanaReservasPropiasAdministracion vrpa = new VentanaReservasPropiasAdministracion(usuario);
+					vrpa.setModal(true);
+					vrpa.setLocationRelativeTo(null);
+					vrpa.setVisible(true);
+				}
+			});
+			btnReservasPropias.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnReservasPropias;
 	}
 }
