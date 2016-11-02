@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Reservador {
 
-	public static boolean reservar(int idSocio, String idSala, int year, int mes, int day, int horaInicial,
+	public static boolean reservarSocio(int idSocio, String idSala, int year, int mes, int day, int horaInicial,
 			int horaFinal, boolean tipoPago) {
 		Calendar fechaInicial = Calendar.getInstance();
 		int month = fechaInicial.get(Calendar.MONTH) + mes + 1;
@@ -37,6 +37,29 @@ public class Reservador {
 		return false;
 	}
 
+	public static boolean hacerReservaAdmin(String idSala, int year, int month, int day, int horaInicial,
+			int horaFinal){
+		Calendar fechaInicial = Calendar.getInstance();
+		fechaInicial.set(Calendar.YEAR, year);
+		fechaInicial.set(Calendar.MONTH, month - 1);
+		fechaInicial.set(Calendar.DAY_OF_MONTH, day);
+		fechaInicial.set(Calendar.HOUR_OF_DAY, horaInicial);
+		Calendar fechaFinal = Calendar.getInstance();
+		fechaFinal.set(Calendar.YEAR, year);
+		fechaFinal.set(Calendar.MONTH, month - 1);
+		fechaFinal.set(Calendar.DAY_OF_MONTH, day);
+		fechaFinal.set(Calendar.HOUR_OF_DAY, horaFinal);
+		
+		int idInstalacion = BBDDReservas.buscarInstalacion(idSala);
+		BBDDReservas.id = 0;
+		
+				if (BBDDReservas.comprobarDisponibilidadInstalacion(idInstalacion, fechaInicial, fechaFinal)) {
+					BBDDReservas.hacerReserva(idInstalacion, fechaInicial, fechaFinal);
+					return true;
+		}
+		return false;
+	}
+	
 	private static double calcularPrecio(int id, int horaInicial, int horaFinal) {
 		int duracion = horaFinal - horaInicial;
 		double precio = BBDDReservas.buscarPrecioInstalacion(id);

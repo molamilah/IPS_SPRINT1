@@ -386,7 +386,7 @@ public class VentanaReservaUsuario extends JDialog {
 					boolean success = false;
 					if (rdbtnEfectivo.isSelected())
 						tipo = true;
-					success = Reservador.reservar(usuario.getId_usuario(), cbSalas.getSelectedItem().toString(),
+					success = Reservador.reservarSocio(usuario.getId_usuario(), cbSalas.getSelectedItem().toString(),
 							Integer.parseInt(txAno.getText()), cbMes.getSelectedIndex(),
 							Integer.parseInt(cbDia.getSelectedItem().toString()),
 							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
