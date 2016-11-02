@@ -164,7 +164,7 @@ public class BaseDatos {
 			ps.setInt(1, codigo);
 			ResultSet rs = ps.executeQuery();
 
-			PreparedStatement ps1 = con.prepareStatement("SELECT * FROM RESERVA WHERE ID_SALA = ?");
+			PreparedStatement ps1 = con.prepareStatement("SELECT * FROM RESERVA R WHERE ID_SALA = ? and (R.ESTADO<>'CANCELADA' or r.estado IS NULL)");
 			ps1.setInt(1, codigo);
 			ResultSet rs1 = ps1.executeQuery();
 			List<Reserva> reservas = new ArrayList<Reserva>();
