@@ -98,7 +98,7 @@ public class VentanaReservaAdministracion extends JDialog {
 		if (lbReservaInstalaciones == null) {
 			lbReservaInstalaciones = new JLabel("Reserva de instalaciones");
 			lbReservaInstalaciones.setFont(new Font("Tahoma", Font.PLAIN, 18));
-			lbReservaInstalaciones.setBounds(225, 24, 199, 38);
+			lbReservaInstalaciones.setBounds(163, 24, 199, 38);
 		}
 		return lbReservaInstalaciones;
 	}

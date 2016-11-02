@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -15,8 +16,11 @@ import javax.swing.border.TitledBorder;
 import iguAdministracion.VentanaPrincipalAdministracion;
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
+import iguReserva.VentanaReserasPropiasUsuario;
 import iguReserva.VentanaReservaUsuario;
 import logica.Usuario;
+import javax.swing.UIManager;
+import java.awt.Color;
 
 public class VentanaPrincipalUsuarios extends JFrame {
 	/**
@@ -26,11 +30,12 @@ public class VentanaPrincipalUsuarios extends JFrame {
 	private JPanel contentPane;
 	private JPanel pnInstalaciones;
 	private JButton btnNewButton;
-	private JButton btnReservas;
+	private JButton btnReservar;
 	private JButton btnSalir;
 	private JPanel pnActividades;
-	private JPanel pnCursillos;
+	private JPanel pnZonaUsuario;
 	private Usuario usuario;
+	private JButton btnReservasPropias;
 
 	/**
 	 * Create the frame.
@@ -48,7 +53,7 @@ public class VentanaPrincipalUsuarios extends JFrame {
 		contentPane.add(getPnInstalaciones());
 		contentPane.add(getBtnSalir());
 		contentPane.add(getPnActividades());
-		contentPane.add(getPnCursillos());
+		contentPane.add(getPnZonaUsuario());
 	}
 	private JPanel getPnInstalaciones() {
 		if (pnInstalaciones == null) {
@@ -57,7 +62,7 @@ public class VentanaPrincipalUsuarios extends JFrame {
 			pnInstalaciones.setBounds(10, 22, 812, 146);
 			pnInstalaciones.setLayout(new GridLayout(1, 1, 0, 0));
 			pnInstalaciones.add(getBtnNewButton());
-			pnInstalaciones.add(getBtnReservas());
+			pnInstalaciones.add(getBtnReservar());
 		}
 		return pnInstalaciones;
 	}
@@ -78,21 +83,25 @@ public class VentanaPrincipalUsuarios extends JFrame {
 		}
 		return btnNewButton;
 	}
-	private JButton getBtnReservas() {
-		if (btnReservas == null) {
-			btnReservas = new JButton("Reservas");
-			btnReservas.addActionListener(new ActionListener() {
+	private JButton getBtnReservar() {
+		if (btnReservar == null) {
+			btnReservar = new JButton("Reservar");
+			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					try{
 					VentanaReservaUsuario vru = new VentanaReservaUsuario(usuario);
 					vru.setModal(true);
 					vru.setLocationRelativeTo(null);
 					vru.setVisible(true);
+					}catch(Exception n){
+						JOptionPane.showMessageDialog(null, "El sistema esta en mantenimiento, por favor intentelo más tarde.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			});
-			btnReservas.setMnemonic('R');
-			btnReservas.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			btnReservar.setMnemonic('R');
+			btnReservar.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
-		return btnReservas;
+		return btnReservar;
 	}
 	private JButton getBtnSalir() {
 		if (btnSalir == null) {
@@ -118,12 +127,29 @@ public class VentanaPrincipalUsuarios extends JFrame {
 		}
 		return pnActividades;
 	}
-	private JPanel getPnCursillos() {
-		if (pnCursillos == null) {
-			pnCursillos = new JPanel();
-			pnCursillos.setBorder(new TitledBorder(null, "Cursillos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnCursillos.setBounds(10, 336, 812, 140);
+	private JPanel getPnZonaUsuario() {
+		if (pnZonaUsuario == null) {
+			pnZonaUsuario = new JPanel();
+			pnZonaUsuario.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Zona Usuario", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			pnZonaUsuario.setBounds(10, 336, 812, 140);
+			pnZonaUsuario.setLayout(new GridLayout(1, 0, 0, 0));
+			pnZonaUsuario.add(getBtnReservasPropias());
 		}
-		return pnCursillos;
+		return pnZonaUsuario;
+	}
+	private JButton getBtnReservasPropias() {
+		if (btnReservasPropias == null) {
+			btnReservasPropias = new JButton("Reservas Propias");
+			btnReservasPropias.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VentanaReserasPropiasUsuario vrpu = new VentanaReserasPropiasUsuario(usuario);
+					vrpu.setModal(true);
+					vrpu.setLocationRelativeTo(null);
+					vrpu.setVisible(true);
+				}
+			});
+			btnReservasPropias.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnReservasPropias;
 	}
 }
