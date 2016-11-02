@@ -64,7 +64,7 @@ public class BBDDReservas {
 
 		try {
 			ps = conexion.prepareStatement("select id_reserva from Reserva where id_sala = ? "
-					+ "and ((? > hora_inicio and ? < hora_fin) or (? < hora_inicio and ?> hora_inicio) or (? = hora_inicio and ? = hora_fin))");
+					+ "and ((? > hora_inicio and ? < hora_fin) or (? < hora_inicio and ?> hora_inicio) or (? = hora_inicio and ? = hora_fin)) and estado IS NULL");
 			ps.setTimestamp(2, horaInicial);
 			ps.setTimestamp(3, horaInicial);
 			ps.setTimestamp(4, horaInicial);
