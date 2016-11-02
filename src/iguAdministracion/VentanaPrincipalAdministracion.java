@@ -16,6 +16,8 @@ import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
 import iguReserva.VentanaReservaAdministracion;
 import logica.Usuario;
+import javax.swing.UIManager;
+import java.awt.Color;
 
 public class VentanaPrincipalAdministracion extends JFrame {
 
@@ -29,7 +31,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JButton btnReservas;
 	private JButton btnSalir;
 	private JPanel pnActividades;
-	private JPanel pnCursillos;
+	private JPanel pnZonaAdministracion;
 	private Usuario usuario;
 
 	/**
@@ -49,7 +51,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		contentPane.add(getPnInstalaciones());
 		contentPane.add(getBtnSalir());
 		contentPane.add(getPnActividades());
-		contentPane.add(getPnCursillos());
+		contentPane.add(getPnZonaAdministracion());
 	}
 	private JPanel getPnInstalaciones() {
 		if (pnInstalaciones == null) {
@@ -119,12 +121,12 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return pnActividades;
 	}
-	private JPanel getPnCursillos() {
-		if (pnCursillos == null) {
-			pnCursillos = new JPanel();
-			pnCursillos.setBorder(new TitledBorder(null, "Cursillos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnCursillos.setBounds(10, 336, 812, 140);
+	private JPanel getPnZonaAdministracion() {
+		if (pnZonaAdministracion == null) {
+			pnZonaAdministracion = new JPanel();
+			pnZonaAdministracion.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Zona Administraci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			pnZonaAdministracion.setBounds(10, 336, 812, 140);
 		}
-		return pnCursillos;
+		return pnZonaAdministracion;
 	}
 }
