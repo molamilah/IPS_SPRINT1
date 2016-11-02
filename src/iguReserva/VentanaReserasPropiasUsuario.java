@@ -1,32 +1,30 @@
 package iguReserva;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import logica.BaseDatos;
 import logica.Usuario;
-
-import javax.swing.JRadioButton;
-
-import java.awt.AWTEvent;
-import java.awt.Font;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import java.awt.event.ActionListener;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 
 public class VentanaReserasPropiasUsuario extends JDialog {
 
@@ -108,6 +106,8 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 					cbAno.setEnabled(true);
 					cbMesH.setSelectedIndex(mes);
 					cbMes.setSelectedIndex(mes);
+					cbDia.setSelectedIndex(dia-1);
+					cbDiaH.setSelectedIndex(dia-1);
 				}
 			});
 			buttonGroup.add(rdbtnCanceladas);
@@ -128,6 +128,8 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 					cbAno.setEnabled(false);
 					cbMesH.setSelectedIndex(mes);
 					cbMes.setSelectedIndex(mes);
+					cbDia.setSelectedIndex(dia-1);
+					cbDiaH.setSelectedIndex(dia-1);
 				}
 			});
 			buttonGroup.add(rdbtnPendientes);
@@ -149,6 +151,8 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 					cbAno.setEnabled(true);
 					cbMesH.setSelectedIndex(mes);
 					cbMes.setSelectedIndex(mes);
+					cbDia.setSelectedIndex(dia-1);
+					cbDiaH.setSelectedIndex(dia-1);
 				}
 			});
 			buttonGroup.add(rdbtnRealizadas);
@@ -290,7 +294,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0),
 								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
 										cbMesH.getSelectedIndex(),
-										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 0, 0, 0, 0));
+										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 23, 59, 0, 0));
 					} else {
 						result = bd.cargarReservasRealizadasUsuario(usuario,
 								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
@@ -298,7 +302,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0),
 								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
 										cbMesH.getSelectedIndex(),
-										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 0, 0, 0, 0));
+										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 23, 59, 0, 0));
 					}
 					cargarElementosTabla(result);
 				}
