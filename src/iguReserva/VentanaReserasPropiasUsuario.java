@@ -314,7 +314,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 							cbMesH.getSelectedIndex(), Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())),
 							23, 59, 0, 0));
 		} else {
-			result = bd.cargarReservasRealizadasUsuario(usuario,
+			result = bd.cargarReservasCanceladasUsuario(usuario,
 					new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
 							cbMes.getSelectedIndex(), Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0,
 							0, 0),
