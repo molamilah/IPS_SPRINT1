@@ -1,5 +1,6 @@
 package iguAdministracion;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -9,17 +10,15 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
-import iguReserva.VentanaReserasPropiasUsuario;
 import iguReserva.VentanaReservaAdministracion;
 import iguReserva.VentanaReservasPropiasAdministracion;
 import logica.Usuario;
-import javax.swing.UIManager;
-import java.awt.Color;
 
 public class VentanaPrincipalAdministracion extends JFrame {
 
@@ -129,6 +128,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnZonaAdministracion = new JPanel();
 			pnZonaAdministracion.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Zona Administraci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			pnZonaAdministracion.setBounds(10, 336, 812, 140);
+			pnZonaAdministracion.setLayout(new GridLayout(0, 1, 0, 0));
 			pnZonaAdministracion.add(getBtnReservasPropias());
 		}
 		return pnZonaAdministracion;

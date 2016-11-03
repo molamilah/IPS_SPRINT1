@@ -27,8 +27,10 @@ import logica.BaseDatos;
 import logica.Usuario;
 
 public class VentanaReservasPropiasAdministracion extends JDialog {
-
-	private static final long serialVersionUID = 6735821194521131468L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel pnFiltro;
 	private JRadioButton rdbtnCanceladas;
 	private JRadioButton rdbtnPendientes;
