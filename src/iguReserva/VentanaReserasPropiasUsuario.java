@@ -6,7 +6,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -15,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -57,6 +60,8 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private int dia = c.get(Calendar.DATE);
 	private int mes = c.get(Calendar.MONTH);
 	private int año = c.get(Calendar.YEAR);
+	private int hora = c.get(Calendar.HOUR_OF_DAY);
+	private int minuto = c.get(Calendar.MINUTE);
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
@@ -106,8 +111,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 					cbAno.setEnabled(true);
 					cbMesH.setSelectedIndex(mes);
 					cbMes.setSelectedIndex(mes);
-					cbDia.setSelectedIndex(dia-1);
-					cbDiaH.setSelectedIndex(dia-1);
+					cbDia.setSelectedIndex(dia - 1);
+					cbDiaH.setSelectedIndex(dia - 1);
+					btnAnularReserva.setEnabled(false);
 				}
 			});
 			buttonGroup.add(rdbtnCanceladas);
@@ -128,8 +134,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 					cbAno.setEnabled(false);
 					cbMesH.setSelectedIndex(mes);
 					cbMes.setSelectedIndex(mes);
-					cbDia.setSelectedIndex(dia-1);
-					cbDiaH.setSelectedIndex(dia-1);
+					cbDia.setSelectedIndex(dia - 1);
+					cbDiaH.setSelectedIndex(dia - 1);
+					btnAnularReserva.setEnabled(true);
 				}
 			});
 			buttonGroup.add(rdbtnPendientes);
@@ -151,8 +158,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 					cbAno.setEnabled(true);
 					cbMesH.setSelectedIndex(mes);
 					cbMes.setSelectedIndex(mes);
-					cbDia.setSelectedIndex(dia-1);
-					cbDiaH.setSelectedIndex(dia-1);
+					cbDia.setSelectedIndex(dia - 1);
+					cbDiaH.setSelectedIndex(dia - 1);
+					btnAnularReserva.setEnabled(false);
 				}
 			});
 			buttonGroup.add(rdbtnRealizadas);
@@ -277,34 +285,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		if (btnMostrarReserva == null) {
 			btnMostrarReserva = new JButton("Mostrar Reserva");
 			btnMostrarReserva.addActionListener(new ActionListener() {
-				@SuppressWarnings("deprecation")
 				public void actionPerformed(ActionEvent e) {
 					borrarModelo();
-					List<String> result;
-					if (rdbtnPendientes.isSelected()) {
-						result = bd.cargarReservasPendientesUsuario(usuario,
-								new Timestamp(año - 1900, mes, dia, 0, 0, 0, 0),
-								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
-										cbMesH.getSelectedIndex(),
-										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 23, 59, 0, 0));
-					} else if (rdbtnRealizadas.isSelected()) {
-						result = bd.cargarReservasRealizadasUsuario(usuario,
-								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
-										cbMes.getSelectedIndex(),
-										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0),
-								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
-										cbMesH.getSelectedIndex(),
-										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 23, 59, 0, 0));
-					} else {
-						result = bd.cargarReservasRealizadasUsuario(usuario,
-								new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
-										cbMes.getSelectedIndex(),
-										Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0, 0, 0),
-								new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
-										cbMesH.getSelectedIndex(),
-										Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())), 23, 59, 0, 0));
-					}
-					cargarElementosTabla(result);
+					cargarElementosTabla();
 				}
 			});
 			btnMostrarReserva.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -313,8 +296,32 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		return btnMostrarReserva;
 	}
 
-	private void cargarElementosTabla(List<String> result) {
+	@SuppressWarnings("deprecation")
+	private void cargarElementosTabla() {
 		// TODO Auto-generated method stub
+		List<String> result;
+		if (rdbtnPendientes.isSelected()) {
+			result = bd.cargarReservasPendientesUsuario(usuario, new Timestamp(año - 1900, mes, dia, 0, 0, 0, 0),
+					new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
+							cbMesH.getSelectedIndex(), Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())),
+							23, 59, 0, 0));
+		} else if (rdbtnRealizadas.isSelected()) {
+			result = bd.cargarReservasRealizadasUsuario(usuario,
+					new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
+							cbMes.getSelectedIndex(), Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0,
+							0, 0),
+					new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
+							cbMesH.getSelectedIndex(), Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())),
+							23, 59, 0, 0));
+		} else {
+			result = bd.cargarReservasRealizadasUsuario(usuario,
+					new Timestamp(Integer.parseInt(cbAno.getItemAt(cbAno.getSelectedIndex())) - 1900,
+							cbMes.getSelectedIndex(), Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 0,
+							0, 0),
+					new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
+							cbMesH.getSelectedIndex(), Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())),
+							23, 59, 0, 0));
+		}
 		for (int i = 0; i < result.size(); i++) {
 			String[] cachos;
 			cachos = result.get(i).split(";");
@@ -326,11 +333,34 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		if (btnAnularReserva == null) {
 			btnAnularReserva = new JButton("Anular Reserva");
 			btnAnularReserva.addActionListener(new ActionListener() {
+				@SuppressWarnings("deprecation")
 				public void actionPerformed(ActionEvent e) {
 					if (tbReservas.getSelectedRow() != -1) {
 						String horaInicio = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 1);
 						String horaFin = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 2);
-						bd.cancelarReservaUsuario(usuario, horaInicio, horaFin);
+						// Comprobacion de que la cancelacion se haga como
+						// minimo una hora antes de el unicio de la reserva.
+						try {
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+							Date parsedDate = dateFormat.parse(horaInicio);
+							Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+							long aux1 = timestamp.getTime();
+							long aux2 = new Timestamp(año - 1900, mes, dia, hora, minuto, 0, 0).getTime();
+							if (aux1 - aux2 <= 0) {
+								JOptionPane.showMessageDialog(null,
+										"No se puede cancelar una hora con menos de una hora de antelación,disculpe las molestias.",
+										"ERROR", JOptionPane.ERROR_MESSAGE);
+							} else {
+								bd.cancelarReservaUsuario(usuario, horaInicio, horaFin);
+								JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
+										"Informacion", JOptionPane.INFORMATION_MESSAGE);
+								borrarModelo();
+								cargarElementosTabla();
+							}
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+
 					}
 				}
 			});
