@@ -55,6 +55,9 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 	
 	String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
+	private JLabel lblDisponible;
+	private JLabel lblReservada;
+	private JLabel lblReservaPropia;
 
 	@SuppressWarnings("serial")
 	/**
@@ -109,7 +112,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 		salasGimnasio = bd.cargarSalas();
 		setResizable(false);
 		setTitle("Disponiblidad de Instalaciones");
-		setBounds(100, 100, 664, 552);
+		setBounds(100, 100, 627, 587);
 		getContentPane().setLayout(null);
 		getContentPane().add(getCbMes());
 		getContentPane().add(getLblHorariosInstalaciones());
@@ -124,6 +127,9 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 
 		cbDia.setSelectedIndex(dia - 1);
 		cbMes.setSelectedIndex(mes);
+		getContentPane().add(getLblDisponible());
+		getContentPane().add(getLblReservada());
+		getContentPane().add(getLblReservaPropia());
 	}
 
 	private JLabel getLblHorariosInstalaciones() {
@@ -146,7 +152,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 					dispose();
 				}
 			});
-			btnAtras.setBounds(547, 479, 89, 34);
+			btnAtras.setBounds(524, 514, 89, 34);
 		}
 		return btnAtras;
 	}
@@ -321,9 +327,42 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 	private JScrollPane getScReservas() {
 		if (scReservas == null) {
 			scReservas = new JScrollPane();
-			scReservas.setBounds(33, 161, 603, 307);
+			scReservas.setBounds(10, 159, 603, 307);
 			scReservas.setViewportView(getTablaReservas());
 		}
 		return scReservas;
+	}
+	private JLabel getLblDisponible() {
+		if (lblDisponible == null) {
+			lblDisponible = new JLabel("Disponible");
+			lblDisponible.setOpaque(true);
+			lblDisponible.setHorizontalAlignment(SwingConstants.CENTER);
+			lblDisponible.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			lblDisponible.setBounds(159, 473, 90, 23);
+			lblDisponible.setBackground(Color.GREEN);
+		}
+		return lblDisponible;
+	}
+	private JLabel getLblReservada() {
+		if (lblReservada == null) {
+			lblReservada = new JLabel("Reservada");
+			lblReservada.setHorizontalAlignment(SwingConstants.CENTER);
+			lblReservada.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			lblReservada.setBackground(Color.RED);
+			lblReservada.setOpaque(true);
+			lblReservada.setBounds(263, 473, 90, 23);
+		}
+		return lblReservada;
+	}
+	private JLabel getLblReservaPropia() {
+		if (lblReservaPropia == null) {
+			lblReservaPropia = new JLabel("Reserva Propia");
+			lblReservaPropia.setOpaque(true);
+			lblReservaPropia.setBackground(Color.ORANGE);
+			lblReservaPropia.setHorizontalAlignment(SwingConstants.CENTER);
+			lblReservaPropia.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			lblReservaPropia.setBounds(374, 473, 113, 23);
+		}
+		return lblReservaPropia;
 	}
 }
