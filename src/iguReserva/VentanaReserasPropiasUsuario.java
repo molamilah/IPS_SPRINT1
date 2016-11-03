@@ -298,7 +298,6 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 
 	@SuppressWarnings("deprecation")
 	private void cargarElementosTabla() {
-		// TODO Auto-generated method stub
 		List<String> result;
 		if (rdbtnPendientes.isSelected()) {
 			result = bd.cargarReservasPendientesUsuario(usuario, new Timestamp(año - 1900, mes, dia, 0, 0, 0, 0),

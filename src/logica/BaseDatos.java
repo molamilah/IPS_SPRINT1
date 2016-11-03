@@ -59,6 +59,14 @@ public class BaseDatos {
 		}
 		return conexion;
 	}
+	
+	public boolean comprobarUsuario(int user) throws Exception{
+		Usuario usuario = cargarUsuario(user);
+		if (usuario == null) {
+			throw new ExcepcionUsuarioNoEncontrado("El usuario no existe en la base de datos");
+		}else
+			return true;
+	}
 
 	public boolean comprobarUserPassword(int user, String password) throws Exception {
 		Usuario usuario = cargarUsuario(user);

@@ -25,7 +25,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import logica.BaseDatos;
+import logica.BaseDatos.ExcepcionUsuarioNoEncontrado;
 import logica.Usuario;
+import javax.swing.JTextField;
 
 public class VentanaReservasPropiasAdministracion extends JDialog {
 	/**
@@ -63,6 +65,11 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
+	private JPanel pnPropietarioReserva;
+	private JRadioButton rdbtnAdministracion;
+	private JRadioButton rdbtnSocio;
+	private JTextField txUsuario;
+	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 
 	/**
 	 * Create the dialog.
@@ -71,7 +78,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 		this.usuario = usuario;
 		bd = new BaseDatos();
 		setTitle("Reservas Propias");
-		setBounds(100, 100, 683, 602);
+		setBounds(100, 100, 683, 645);
 		getContentPane().setLayout(null);
 		getContentPane().add(getPnFechas());
 		getContentPane().add(getBtnMostrarReserva());
@@ -82,6 +89,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 		cargarDias();
 		cargarAño();
 		getContentPane().add(getPnFiltro());
+		getContentPane().add(getPnPropietarioReserva());
 	}
 
 	private JPanel getPnFiltro() {
@@ -169,7 +177,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 		if (pnFechas == null) {
 			pnFechas = new JPanel();
 			pnFechas.setBorder(new TitledBorder(null, "Fechas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnFechas.setBounds(10, 104, 642, 91);
+			pnFechas.setBounds(10, 147, 642, 91);
 			pnFechas.setLayout(null);
 			pnFechas.add(getCbDia());
 			pnFechas.add(getCbMes());
@@ -282,18 +290,17 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 			btnMostrarReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					borrarModelo();
-					cargarElementosTabla();
+					cargarElementosTabla(propietarioReserva());
 				}
 			});
 			btnMostrarReserva.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			btnMostrarReserva.setBounds(130, 206, 147, 23);
+			btnMostrarReserva.setBounds(132, 249, 147, 23);
 		}
 		return btnMostrarReserva;
 	}
 
 	@SuppressWarnings("deprecation")
-	private void cargarElementosTabla() {
-		// TODO Auto-generated method stub
+	private void cargarElementosTabla(Usuario usuario) {
 		List<String> result;
 		if (rdbtnPendientes.isSelected()) {
 			result = bd.cargarReservasPendientesUsuario(usuario, new Timestamp(año - 1900, mes, dia, 0, 0, 0, 0),
@@ -324,6 +331,31 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 		}
 	}
 
+	/**
+	 * Metodo que devuelve el usuario sobre el que se van a realizar las labora
+	 * de cancelacion de las reservas.
+	 * 
+	 * @return
+	 */
+	private Usuario propietarioReserva() {
+		if (rdbtnAdministracion.isSelected()) {
+			return usuario;
+		} else {
+			try {
+				if (txUsuario.getText().length() > 0 && bd.comprobarUsuario(Integer.parseInt(txUsuario.getText())))
+					return bd.cargarUsuario(Integer.parseInt(txUsuario.getText()));
+			} catch (ExcepcionUsuarioNoEncontrado e) {
+				JOptionPane.showMessageDialog(null, "El usuario no existe en la base de datos.", "ERROR",
+						JOptionPane.ERROR_MESSAGE);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+	}
+
 	private JButton getBtnAnularReserva() {
 		if (btnAnularReserva == null) {
 			btnAnularReserva = new JButton("Anular Reserva");
@@ -336,12 +368,12 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 						JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.", "Informacion",
 								JOptionPane.INFORMATION_MESSAGE);
 						borrarModelo();
-						cargarElementosTabla();
+						cargarElementosTabla(propietarioReserva());
 					}
 				}
 			});
 			btnAnularReserva.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			btnAnularReserva.setBounds(372, 206, 147, 23);
+			btnAnularReserva.setBounds(372, 249, 147, 23);
 		}
 		return btnAnularReserva;
 	}
@@ -355,7 +387,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 				}
 			});
 			btnAtras.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			btnAtras.setBounds(563, 530, 89, 23);
+			btnAtras.setBounds(563, 573, 89, 23);
 		}
 		return btnAtras;
 	}
@@ -363,7 +395,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 	private JScrollPane getScrollPane_1() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
-			scrollPane.setBounds(10, 240, 642, 279);
+			scrollPane.setBounds(10, 283, 642, 279);
 			scrollPane.setViewportView(getTbReservas());
 		}
 		return scrollPane;
@@ -423,5 +455,63 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 		String[] años = { año + "", año + 1 + "" };
 		cbAno.setModel(new DefaultComboBoxModel<String>(años));
 		cbAnoH.setModel(new DefaultComboBoxModel<String>(años));
+	}
+
+	private JPanel getPnPropietarioReserva() {
+		if (pnPropietarioReserva == null) {
+			pnPropietarioReserva = new JPanel();
+			pnPropietarioReserva.setBorder(
+					new TitledBorder(null, "Propietario Reserva", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnPropietarioReserva.setBounds(10, 91, 642, 53);
+			pnPropietarioReserva.setLayout(null);
+			pnPropietarioReserva.add(getTxUsuario());
+			pnPropietarioReserva.add(getRdbtnAdministracion());
+			pnPropietarioReserva.add(getRdbtnSocio());
+		}
+		return pnPropietarioReserva;
+	}
+
+	private JRadioButton getRdbtnAdministracion() {
+		if (rdbtnAdministracion == null) {
+			rdbtnAdministracion = new JRadioButton("Administracion");
+			rdbtnAdministracion.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent arg0) {
+					txUsuario.setEnabled(false);
+					borrarModelo();
+				}
+			});
+			buttonGroup_1.add(rdbtnAdministracion);
+			rdbtnAdministracion.setSelected(true);
+			rdbtnAdministracion.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			rdbtnAdministracion.setBounds(32, 23, 131, 23);
+		}
+		return rdbtnAdministracion;
+	}
+
+	private JRadioButton getRdbtnSocio() {
+		if (rdbtnSocio == null) {
+			rdbtnSocio = new JRadioButton("Socio");
+			rdbtnSocio.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					txUsuario.setEnabled(true);
+					borrarModelo();
+				}
+			});
+			buttonGroup_1.add(rdbtnSocio);
+			rdbtnSocio.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			rdbtnSocio.setBounds(176, 23, 75, 23);
+		}
+		return rdbtnSocio;
+	}
+
+	private JTextField getTxUsuario() {
+		if (txUsuario == null) {
+			txUsuario = new JTextField();
+			txUsuario.setEnabled(false);
+			txUsuario.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			txUsuario.setBounds(263, 22, 109, 23);
+			txUsuario.setColumns(10);
+		}
+		return txUsuario;
 	}
 }
