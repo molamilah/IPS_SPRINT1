@@ -338,7 +338,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 			lblDisponible.setOpaque(true);
 			lblDisponible.setHorizontalAlignment(SwingConstants.CENTER);
 			lblDisponible.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			lblDisponible.setBounds(159, 473, 90, 23);
+			lblDisponible.setBounds(165, 473, 90, 23);
 			lblDisponible.setBackground(Color.GREEN);
 		}
 		return lblDisponible;
@@ -361,7 +361,7 @@ public class VentanaDisponibilidadInstalaciones extends JDialog {
 			lblReservaPropia.setBackground(Color.ORANGE);
 			lblReservaPropia.setHorizontalAlignment(SwingConstants.CENTER);
 			lblReservaPropia.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			lblReservaPropia.setBounds(374, 473, 113, 23);
+			lblReservaPropia.setBounds(360, 473, 113, 23);
 		}
 		return lblReservaPropia;
 	}

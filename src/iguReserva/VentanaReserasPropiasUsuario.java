@@ -61,7 +61,6 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private int mes = c.get(Calendar.MONTH);
 	private int año = c.get(Calendar.YEAR);
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
-	private int minuto = c.get(Calendar.MINUTE);
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
@@ -335,6 +334,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 				@SuppressWarnings("deprecation")
 				public void actionPerformed(ActionEvent e) {
 					if (tbReservas.getSelectedRow() != -1) {
+						String nombre = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 0);
 						String horaInicio = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 1);
 						String horaFin = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 2);
 						// Comprobacion de que la cancelacion se haga como
@@ -342,15 +342,39 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 						try {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 							Date parsedDate = dateFormat.parse(horaInicio);
-							Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
-							long aux1 = timestamp.getTime();
-							long aux2 = new Timestamp(año - 1900, mes, dia, hora, minuto, 0, 0).getTime();
-							if (aux1 - aux2 <= 0) {
-								JOptionPane.showMessageDialog(null,
-										"No se puede cancelar una hora con menos de una hora de antelación,disculpe las molestias.",
-										"ERROR", JOptionPane.ERROR_MESSAGE);
+							Timestamp timestampReserva = new java.sql.Timestamp(parsedDate.getTime());
+							Timestamp timestampActual = new Timestamp(año - 1900, mes, dia, hora, 0, 0, 0);
+
+							if (timestampActual.getYear() <= timestampReserva.getYear()) {
+								if (timestampActual.getMonth() <= timestampReserva.getMonth()) {
+									if (timestampActual.getDate() <= timestampReserva.getDate()) {
+										if (timestampActual.getHours() >= timestampReserva.getHours() - 1) {
+											JOptionPane.showMessageDialog(null,
+													"No se puede cancelar una hora con menos de una hora de antelación,disculpe las molestias.",
+													"ERROR", JOptionPane.ERROR_MESSAGE);
+										} else {
+											bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
+											JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
+													"Informacion", JOptionPane.INFORMATION_MESSAGE);
+											borrarModelo();
+											cargarElementosTabla();
+										}
+									} else {
+										bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
+										JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
+												"Informacion", JOptionPane.INFORMATION_MESSAGE);
+										borrarModelo();
+										cargarElementosTabla();
+									}
+								} else {
+									bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
+									JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
+											"Informacion", JOptionPane.INFORMATION_MESSAGE);
+									borrarModelo();
+									cargarElementosTabla();
+								}
 							} else {
-								bd.cancelarReservaUsuario(usuario, horaInicio, horaFin);
+								bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
 								JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
 										"Informacion", JOptionPane.INFORMATION_MESSAGE);
 								borrarModelo();

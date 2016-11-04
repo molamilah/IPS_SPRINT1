@@ -290,7 +290,12 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 			btnMostrarReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					borrarModelo();
+					try{
 					cargarElementosTabla(propietarioReserva());
+					}catch(NullPointerException x){
+						JOptionPane.showMessageDialog(null, "Es obligatorio introducir el id del socio.", "ERROR",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			});
 			btnMostrarReserva.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -342,16 +347,14 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 			return usuario;
 		} else {
 			try {
-				if (txUsuario.getText().length() > 0 && bd.comprobarUsuario(Integer.parseInt(txUsuario.getText())))
-					return bd.cargarUsuario(Integer.parseInt(txUsuario.getText()));
+				if (!txUsuario.getText().equals("")) {
+					if (bd.comprobarUsuario(Integer.parseInt(txUsuario.getText())))
+						return bd.cargarUsuario(Integer.parseInt(txUsuario.getText()));
+				}
 			} catch (ExcepcionUsuarioNoEncontrado e) {
 				JOptionPane.showMessageDialog(null, "El usuario no existe en la base de datos.", "ERROR",
 						JOptionPane.ERROR_MESSAGE);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-
 			return null;
 		}
 	}
@@ -362,9 +365,10 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 			btnAnularReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (tbReservas.getSelectedRow() != -1) {
+						String nombre = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 0);
 						String horaInicio = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 1);
 						String horaFin = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 2);
-						bd.cancelarReservaUsuario(usuario, horaInicio, horaFin);
+						bd.cancelarReservaUsuario(propietarioReserva(), nombre, horaInicio, horaFin);
 						JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.", "Informacion",
 								JOptionPane.INFORMATION_MESSAGE);
 						borrarModelo();
