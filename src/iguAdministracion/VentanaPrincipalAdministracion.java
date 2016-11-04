@@ -1,5 +1,6 @@
 package iguAdministracion;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -9,12 +10,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
 import iguReserva.VentanaReservaAdministracion;
+import iguReserva.VentanaReservasPropiasAdministracion;
 import logica.Usuario;
 
 public class VentanaPrincipalAdministracion extends JFrame {
@@ -29,8 +32,9 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JButton btnReservas;
 	private JButton btnSalir;
 	private JPanel pnActividades;
-	private JPanel pnCursillos;
+	private JPanel pnZonaAdministracion;
 	private Usuario usuario;
+	private JButton btnReservasPropias;
 
 	/**
 	 * Create the frame.
@@ -49,7 +53,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		contentPane.add(getPnInstalaciones());
 		contentPane.add(getBtnSalir());
 		contentPane.add(getPnActividades());
-		contentPane.add(getPnCursillos());
+		contentPane.add(getPnZonaAdministracion());
 	}
 	private JPanel getPnInstalaciones() {
 		if (pnInstalaciones == null) {
@@ -119,12 +123,30 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return pnActividades;
 	}
-	private JPanel getPnCursillos() {
-		if (pnCursillos == null) {
-			pnCursillos = new JPanel();
-			pnCursillos.setBorder(new TitledBorder(null, "Cursillos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnCursillos.setBounds(10, 336, 812, 140);
+	private JPanel getPnZonaAdministracion() {
+		if (pnZonaAdministracion == null) {
+			pnZonaAdministracion = new JPanel();
+			pnZonaAdministracion.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Zona Administraci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			pnZonaAdministracion.setBounds(10, 336, 812, 140);
+			pnZonaAdministracion.setLayout(new GridLayout(0, 1, 0, 0));
+			pnZonaAdministracion.add(getBtnReservasPropias());
 		}
-		return pnCursillos;
+		return pnZonaAdministracion;
+	}
+	
+	private JButton getBtnReservasPropias() {
+		if (btnReservasPropias == null) {
+			btnReservasPropias = new JButton("Reservas Propias");
+			btnReservasPropias.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VentanaReservasPropiasAdministracion vrpa = new VentanaReservasPropiasAdministracion(usuario);
+					vrpa.setModal(true);
+					vrpa.setLocationRelativeTo(null);
+					vrpa.setVisible(true);
+				}
+			});
+			btnReservasPropias.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnReservasPropias;
 	}
 }

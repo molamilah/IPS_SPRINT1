@@ -60,6 +60,14 @@ public class BaseDatos {
 		return conexion;
 	}
 
+	public boolean comprobarUsuario(int user) throws ExcepcionUsuarioNoEncontrado {
+		Usuario usuario = cargarUsuario(user);
+		if (usuario == null) {
+			throw new ExcepcionUsuarioNoEncontrado("El usuario no existe en la base de datos");
+		} else
+			return true;
+	}
+
 	public boolean comprobarUserPassword(int user, String password) throws Exception {
 		Usuario usuario = cargarUsuario(user);
 		if (usuario == null) {
@@ -164,7 +172,8 @@ public class BaseDatos {
 			ps.setInt(1, codigo);
 			ResultSet rs = ps.executeQuery();
 
-			PreparedStatement ps1 = con.prepareStatement("SELECT * FROM RESERVA R WHERE ID_SALA = ? and (R.ESTADO<>'CANCELADA' or r.estado IS NULL)");
+			PreparedStatement ps1 = con.prepareStatement(
+					"SELECT * FROM RESERVA R WHERE ID_SALA = ? and (R.ESTADO<>'CANCELADA' or r.estado IS NULL)");
 			ps1.setInt(1, codigo);
 			ResultSet rs1 = ps1.executeQuery();
 			List<Reserva> reservas = new ArrayList<Reserva>();
@@ -454,7 +463,7 @@ public class BaseDatos {
 			Connection con = conectar();
 			// Falta añadir la comprobacion de que no este cancelada.
 			PreparedStatement ps = con.prepareStatement(
-					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.HORA_INICIO BETWEEN ? AND ? and (R.ESTADO<>'CANCELADA' or r.estado IS NULL);");
+					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.HORA_INICIO BETWEEN ? AND ? and (R.ESTADO<>'CANCELADA' or r.estado IS NULL) ORDER BY R.HORA_INICIO;");
 			ps.setInt(1, user.getId_usuario());
 			ps.setTimestamp(2, fechaActual);
 			ps.setTimestamp(3, fechaHasta);
@@ -487,7 +496,7 @@ public class BaseDatos {
 		try {
 			Connection con = conectar();
 			PreparedStatement ps = con.prepareStatement(
-					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.HORA_INICIO BETWEEN ? AND ?;");
+					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.HORA_INICIO BETWEEN ? AND ? ORDER BY R.HORA_INICIO;");
 			ps.setInt(1, user.getId_usuario());
 			ps.setTimestamp(2, fechaDesde);
 			ps.setTimestamp(3, fechaHasta);
@@ -519,7 +528,7 @@ public class BaseDatos {
 		try {
 			Connection con = conectar();
 			PreparedStatement ps = con.prepareStatement(
-					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.ESTADO = 'CANCELADA' AND R.HORA_INICIO BETWEEN ? AND ?;");
+					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.ESTADO = 'CANCELADA' AND R.HORA_INICIO BETWEEN ? AND ? ORDER BY R.HORA_INICIO;");
 			ps.setInt(1, user.getId_usuario());
 			ps.setTimestamp(2, fechaDesde);
 			ps.setTimestamp(3, fechaHasta);
@@ -544,17 +553,37 @@ public class BaseDatos {
 	 * @param fechaDesde
 	 * @param fechaHasta
 	 */
-	public void cancelarReservaUsuario(Usuario user, String fechaDesde, String fechaHasta) {
+	public void cancelarReservaUsuario(Usuario user, String nombreSala, String fechaDesde, String fechaHasta) {
 		try {
 			Connection con = conectar();
 			PreparedStatement ps = con.prepareStatement(
-					"UPDATE RESERVA R SET ESTADO ='CANCELADA' WHERE R.ID_USUARIO=? AND R.HORA_INICIO = ? AND R.HORA_FIN = ?");
+					"UPDATE RESERVA R SET ESTADO ='CANCELADA' WHERE R.ID_USUARIO=? AND R.HORA_INICIO = ? AND R.HORA_FIN = ? and R.ID_SALA = ?");
 			ps.setInt(1, user.getId_usuario());
 			ps.setString(2, fechaDesde);
 			ps.setString(3, fechaHasta);
+			int i = cargarIDSalaNombre(nombreSala);
+			ps.setInt(4, i);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private int cargarIDSalaNombre(String nombre) {
+		try {
+			Connection con = conectar();
+			PreparedStatement ps = con.prepareStatement("SELECT ID_SALA FROM SALA S WHERE S.DESCRIPCION=?");
+			ps.setString(1, nombre);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getInt("ID_SALA");
+			}
+			rs.close();
+			ps.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 }
