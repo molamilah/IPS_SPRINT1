@@ -47,15 +47,17 @@ public class Reservador {
 		fechasReserva.clear();
 		errors.clear();
 		BBDDReservas.id = 0;
-
-		for (Calendar iter = fechaInicio; iter.before(fechaFin); iter.add(Calendar.DAY_OF_MONTH, +1)) {
-			if (iter.get(Calendar.DAY_OF_WEEK) == diaSemana)
-				fechasReserva.add(iter);
+		for (Calendar iter = fechaInicio; iter.before(fechaFin) || iter.equals(fechaFin); iter
+				.add(Calendar.DAY_OF_MONTH, +1)) {
+			if (iter.get(Calendar.DAY_OF_WEEK) == diaSemana) {
+				fechasReserva.add((Calendar) iter.clone());
+			}
 		}
 
 		for (Calendar c : fechasReserva) {
 			Calendar c2 = Calendar.getInstance();
 			c.set(Calendar.HOUR_OF_DAY, horaInicio);
+			c2.setTime(c.getTime());
 			c2.set(Calendar.HOUR_OF_DAY, horaFin);
 			if (BBDDReservas.comprobarDisponibilidadInstalacion(idInstalacion, c, c2)) {
 				BBDDReservas.hacerReserva(idInstalacion, c, c2);

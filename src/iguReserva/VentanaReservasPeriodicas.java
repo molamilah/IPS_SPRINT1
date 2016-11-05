@@ -133,8 +133,10 @@ public class VentanaReservasPeriodicas extends JDialog {
 	}
 
 	private void generarHorasInicio() {
-		int aux = Integer.parseInt(cbDiaInicial.getSelectedItem().toString());
-		if (dia == aux) {
+		Calendar aux = Calendar.getInstance();
+		if (fechaInicial.get(Calendar.YEAR) == aux.get(Calendar.YEAR)
+				&& fechaInicial.get(Calendar.MONTH) == aux.get(Calendar.MONTH)
+				&& fechaInicial.get(Calendar.DAY_OF_MONTH) == aux.get(Calendar.DAY_OF_MONTH)) {
 			int diferencia = 24 - hora;
 			if (min != 0) {
 				diferencia--;
@@ -182,7 +184,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 		int hora = Integer.parseInt(horaInicio.split(":")[0]);
 		int tamano = 24 - hora;
 		String[] horas = new String[tamano];
-		for (int i = hora; i < 24; i++) {
+		for (int i = 0; i < tamano; i++) {
 			if (hora < 10) {
 				horas[i] = "0" + hora + ":59";
 				hora++;
@@ -288,7 +290,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 	}
 
 	private void rellenarDiaSemana() {
-		String[] semana = { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo" };
+		String[] semana = { "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" };
 		cbDiaSemana.setModel(new DefaultComboBoxModel<String>(semana));
 	}
 
@@ -320,9 +322,9 @@ public class VentanaReservasPeriodicas extends JDialog {
 								cbSalas.getItemAt(cbSalas.getSelectedIndex()));
 					else
 						Reservador.reservarPeriodico(fechaInicial, fechaFinal,
-								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex())),
-								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex())),
-								cbDiaSemana.getSelectedIndex(), cbSalas.getItemAt(cbSalas.getSelectedIndex()));
+								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
+								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) + 1,
+								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()));
 				}
 			});
 			btnReservar.setBounds(522, 380, 89, 34);
@@ -546,8 +548,6 @@ public class VentanaReservasPeriodicas extends JDialog {
 					fin.set(Calendar.MONTH, cbMesFinal.getSelectedIndex());
 					fin.set(Calendar.DAY_OF_MONTH, cbDiaFinal.getSelectedIndex() + 1);
 					fin.set(Calendar.HOUR_OF_DAY, 0);
-					System.out.println(inicio.getTime());
-					System.out.println(fin.getTime());
 					if (!fin.after(inicio))
 						JOptionPane.showMessageDialog(getContentPane(),
 								"La fecha final ha de ser mayor que la inicial");
@@ -586,6 +586,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 					cbFin.setEnabled(false);
 					btnReservar.setEnabled(false);
 					chkDiaCompleto.setEnabled(false);
+					btnCambiar.setEnabled(false);
 				}
 			});
 			btnCambiar.setEnabled(false);

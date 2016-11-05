@@ -57,6 +57,10 @@ public class BBDDReservas {
 		conectar();
 		PreparedStatement ps;
 		ResultSet rs;
+		fechaInicial.set(Calendar.MINUTE, 0);
+		fechaInicial.set(Calendar.SECOND, 0);
+		fechaFinal.set(Calendar.MINUTE, 0);
+		fechaFinal.set(Calendar.SECOND, 0);
 		Timestamp horaInicial = new Timestamp(fechaInicial.getTimeInMillis());
 		Timestamp horaFinal = new Timestamp(fechaFinal.getTimeInMillis());
 		horaInicial.setNanos(0);
@@ -90,6 +94,10 @@ public class BBDDReservas {
 	public static void hacerReserva(int idInstalacion, Calendar fechaInicial, Calendar fechaFinal) {
 		conectar();
 		PreparedStatement ps;
+		fechaInicial.set(Calendar.MINUTE, 0);
+		fechaInicial.set(Calendar.SECOND, 0);
+		fechaFinal.set(Calendar.MINUTE, 0);
+		fechaFinal.set(Calendar.SECOND, 0);
 		Timestamp horaInicial = new Timestamp(fechaInicial.getTimeInMillis());
 		Timestamp horaFinal = new Timestamp(fechaFinal.getTimeInMillis());
 		horaInicial.setNanos(0);
