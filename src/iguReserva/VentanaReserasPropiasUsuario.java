@@ -352,7 +352,10 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 							
 							if(diferenciaHoras >= 1){
 								bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
+								JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
+										"Informacion", JOptionPane.INFORMATION_MESSAGE);
 								borrarModelo();
+								cargarElementosTabla();
 							}else{
 								
 							}
