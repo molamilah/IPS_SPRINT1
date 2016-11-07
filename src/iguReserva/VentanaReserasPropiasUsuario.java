@@ -344,43 +344,17 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 							Date parsedDate = dateFormat.parse(horaInicio);
 							Timestamp timestampReserva = new java.sql.Timestamp(parsedDate.getTime());
 							Timestamp timestampActual = new Timestamp(año - 1900, mes, dia, hora, 0, 0, 0);
-//							if(timestampActual.before(timestampReserva)){
-//								
-//							}
-							if (timestampActual.getYear() <= timestampReserva.getYear()) {
-								if (timestampActual.getMonth() <= timestampReserva.getMonth()) {
-									if (timestampActual.getDate() <= timestampReserva.getDate()) {
-										if (timestampActual.getHours() >= timestampReserva.getHours() - 1) {
-											JOptionPane.showMessageDialog(null,
-													"No se puede cancelar una hora con menos de una hora de antelación,disculpe las molestias.",
-													"ERROR", JOptionPane.ERROR_MESSAGE);
-										} else {
-											bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
-											JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
-													"Informacion", JOptionPane.INFORMATION_MESSAGE);
-											borrarModelo();
-											cargarElementosTabla();
-										}
-									} else {
-										bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
-										JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
-												"Informacion", JOptionPane.INFORMATION_MESSAGE);
-										borrarModelo();
-										cargarElementosTabla();
-									}
-								} else {
-									bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
-									JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
-											"Informacion", JOptionPane.INFORMATION_MESSAGE);
-									borrarModelo();
-									cargarElementosTabla();
-								}
-							} else {
+							long millisHour = 60 * 60 * 1000;
+							
+							long diferenciaEnMillis = timestampReserva.getTime() - timestampActual.getTime();
+							
+							long diferenciaHoras = diferenciaEnMillis/millisHour;
+							
+							if(diferenciaHoras >= 1){
 								bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
-								JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
-										"Informacion", JOptionPane.INFORMATION_MESSAGE);
 								borrarModelo();
-								cargarElementosTabla();
+							}else{
+								
 							}
 						} catch (Exception ex) {
 							ex.printStackTrace();
