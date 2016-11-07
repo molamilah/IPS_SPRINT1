@@ -322,8 +322,9 @@ public class VentanaReservaAdministracion extends JDialog {
 					if (rdbtnAdministracion.isSelected()) {
 						// Codigo hacer reservas administracion
 						boolean success = false;
-						success = Reservador.hacerReservaAdmin(cbSalas.getSelectedItem().toString(), ano,
-								cbMes.getSelectedIndex(), Integer.parseInt(cbDia.getSelectedItem().toString()),
+						success = Reservador.reservarAdministracion(cbSalas.getSelectedItem().toString(),
+								Integer.parseInt(txAño.getText()), cbMes.getSelectedIndex(),
+								Integer.parseInt(cbDia.getSelectedItem().toString()),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 										+ cbFin.getSelectedIndex() + 1);
