@@ -199,6 +199,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return btnSalida;
 	}
+
 	private JButton getBtnSimultanea() {
 		if (btnSimultanea == null) {
 			btnSimultanea = new JButton("Reserva periodica");
