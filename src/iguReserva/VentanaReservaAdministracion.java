@@ -320,7 +320,20 @@ public class VentanaReservaAdministracion extends JDialog {
 			btReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (rdbtnAdministracion.isSelected()) {
-
+						// Codigo hacer reservas administracion
+						boolean success = false;
+						success = Reservador.hacerReservaAdmin(cbSalas.getSelectedItem().toString(), ano,
+								cbMes.getSelectedIndex(), Integer.parseInt(cbDia.getSelectedItem().toString()),
+								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
+								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
+										+ cbFin.getSelectedIndex() + 1);
+						if (!success) {
+							JOptionPane.showMessageDialog(getContentPane(),
+									"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
+											+ "reservada o el usuario ya posee otra reserva");
+						} else {
+							JOptionPane.showMessageDialog(getContentPane(), "Su reserva ha sido realizada con exito.");
+						}
 					} else {
 						try {
 							Usuario usuario = propietarioReserva();
@@ -440,7 +453,7 @@ public class VentanaReservaAdministracion extends JDialog {
 			pnPropietarioReserva.setLayout(null);
 			pnPropietarioReserva.add(getTxUsuario());
 			pnPropietarioReserva.add(getRdbtnSocio());
-			pnPropietarioReserva.add(getRdbtnAdministracion());			
+			pnPropietarioReserva.add(getRdbtnAdministracion());
 		}
 		return pnPropietarioReserva;
 	}
