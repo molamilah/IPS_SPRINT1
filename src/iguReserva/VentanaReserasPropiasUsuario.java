@@ -344,7 +344,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 							Date parsedDate = dateFormat.parse(horaInicio);
 							Timestamp timestampReserva = new java.sql.Timestamp(parsedDate.getTime());
 							Timestamp timestampActual = new Timestamp(año - 1900, mes, dia, hora, 0, 0, 0);
-
+//							if(timestampActual.before(timestampReserva)){
+//								
+//							}
 							if (timestampActual.getYear() <= timestampReserva.getYear()) {
 								if (timestampActual.getMonth() <= timestampReserva.getMonth()) {
 									if (timestampActual.getDate() <= timestampReserva.getDate()) {
