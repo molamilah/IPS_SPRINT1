@@ -357,7 +357,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 								borrarModelo();
 								cargarElementosTabla();
 							}else{
-								
+								JOptionPane.showMessageDialog(null,
+										"No se puede cancelar una hora con menos de una hora de antelación,disculpe las molestias.",
+										"ERROR", JOptionPane.ERROR_MESSAGE);
 							}
 						} catch (Exception ex) {
 							ex.printStackTrace();
