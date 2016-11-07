@@ -164,7 +164,7 @@ public class BBDDReservas {
 			rs2.close();
 			st.close();
 			ps = conexion
-					.prepareStatement("insert into Pago (id_reserva, precio, contado, pagado) values(?,?,?,false)");
+					.prepareStatement("insert into Pago (id_reserva, precio, contado) values(?,?,?)");
 			ps.setInt(1, idReserva);
 			ps.setDouble(2, precio);
 			ps.setBoolean(3, tipoPago);

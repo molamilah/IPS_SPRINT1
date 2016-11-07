@@ -11,7 +11,7 @@ public class Sala {
 	private boolean ocupada;
 	private List<Reserva> reservas;
 
-	public Sala(int id_sala, String descripcion, double precio,List<Reserva> reservas) {
+	public Sala(int id_sala, String descripcion, double precio, List<Reserva> reservas) {
 		super();
 		this.id_sala = id_sala;
 		this.descripcion = descripcion;
@@ -63,6 +63,8 @@ public class Sala {
 			int mesReserva = reserva.getHora_inicio().getMonth();
 			int inicioReserva = reserva.getHora_inicio().getHours();
 			int finReserva = reserva.getHora_fin().getHours();
+			if (finReserva == 0)
+				finReserva = 24;
 			int duracion = finReserva - inicioReserva;
 			if (diaReserva == dia && mes == mesReserva) {
 				for (int i = 0; i < duracion; i++) {
@@ -70,6 +72,6 @@ public class Sala {
 				}
 			}
 		}
-		return  propietarioReserva;
+		return propietarioReserva;
 	}
 }
