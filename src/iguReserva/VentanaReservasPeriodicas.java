@@ -318,13 +318,15 @@ public class VentanaReservasPeriodicas extends JDialog {
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (chkDiaCompleto.isSelected())
-						Reservador.reservarPeriodico(fechaInicial, fechaFinal, 0, 23, cbDiaSemana.getSelectedIndex(),
+						Reservador.reservarPeriodico(0, fechaInicial, fechaFinal, 0, 24, cbDiaSemana.getSelectedIndex()+1,
 								cbSalas.getItemAt(cbSalas.getSelectedIndex()));
 					else
-						Reservador.reservarPeriodico(fechaInicial, fechaFinal,
+						Reservador.reservarPeriodico(0, fechaInicial, fechaFinal,
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) + 1,
 								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()));
+					JOptionPane.showMessageDialog(getContentPane(), "Reservas realizadas correctamente");
+					dispose();
 				}
 			});
 			btnReservar.setBounds(522, 380, 89, 34);
@@ -598,8 +600,15 @@ public class VentanaReservasPeriodicas extends JDialog {
 	private JCheckBox getChkDiaCompleto() {
 		if (chkDiaCompleto == null) {
 			chkDiaCompleto = new JCheckBox("Todo el dia");
+			chkDiaCompleto.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					cbInicio.setEnabled(false);
+					cbFin.setEnabled(false);
+					btnReservar.setEnabled(true);
+				}
+			});
 			chkDiaCompleto.setEnabled(false);
-			chkDiaCompleto.setBounds(94, 440, 97, 23);
+			chkDiaCompleto.setBounds(91, 386, 97, 23);
 		}
 		return chkDiaCompleto;
 	}
