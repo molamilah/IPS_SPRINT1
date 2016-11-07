@@ -16,6 +16,7 @@ import javax.swing.border.TitledBorder;
 
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
+import iguReserva.VentanaRegistrarPago;
 import iguReserva.VentanaReservaAdministracion;
 import iguReserva.VentanaReservasPropiasAdministracion;
 import logica.Usuario;
@@ -35,6 +36,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JPanel pnZonaAdministracion;
 	private Usuario usuario;
 	private JButton btnReservasPropias;
+	private JButton btnRegistrarPago;
 
 	/**
 	 * Create the frame.
@@ -130,6 +132,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnZonaAdministracion.setBounds(10, 336, 812, 140);
 			pnZonaAdministracion.setLayout(new GridLayout(0, 1, 0, 0));
 			pnZonaAdministracion.add(getBtnReservasPropias());
+			pnZonaAdministracion.add(getBtnRegistrarPago());
 		}
 		return pnZonaAdministracion;
 	}
@@ -148,5 +151,21 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			btnReservasPropias.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
 		return btnReservasPropias;
+	}
+	
+	private JButton getBtnRegistrarPago() {
+		if (btnRegistrarPago == null) {
+			btnRegistrarPago = new JButton("Registrar pago");
+			btnRegistrarPago.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VentanaRegistrarPago vrp = new VentanaRegistrarPago();
+					vrp.setModal(true);
+					vrp.setLocationRelativeTo(null);
+					vrp.setVisible(true);
+				}
+			});
+			btnRegistrarPago.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnRegistrarPago;
 	}
 }

@@ -403,7 +403,7 @@ public class BaseDatos {
 		}
 	}
 
-	private double sacarImportePago(int idPago) {
+	private double sacarImportePago(int idPago) throws SQLException {
 		Connection con = null;
 		PreparedStatement psIMPORTE_PAGO = null;
 		ResultSet rsIMPORTE_PAGO = null;
@@ -420,14 +420,16 @@ public class BaseDatos {
 
 			rsIMPORTE_PAGO.close();
 			psIMPORTE_PAGO.close();
-			con.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			con.close();
 		}
 		return importe;
 	}
 
-	private void generarRecibo(int id_pago, String DNI, Timestamp fecha) throws IOException {
+	private void generarRecibo(int id_pago, String DNI, Timestamp fecha) throws IOException, SQLException {
 		int idPago = id_pago;
 		double importe = sacarImportePago(idPago);
 
@@ -436,14 +438,14 @@ public class BaseDatos {
 		BufferedWriter bw;
 		if (archivo.exists()) {
 			bw = new BufferedWriter(new FileWriter(archivo));
-			bw.write("Número de recibo: " + idPago);
-			bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ".");
-			bw.write("Importe a pagar: " + importe + ".");
+			bw.write("Número de recibo: " + idPago + "\n");
+			bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ".\n");
+			bw.write("Importe a pagar: " + importe + " euros.\n");
 		} else {
 			bw = new BufferedWriter(new FileWriter(archivo));
-			bw.write("Número de recibo: " + idPago);
-			bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ".");
-			bw.write("Importe a pagar: " + importe + ".");
+			bw.write("Número de recibo: " + idPago + "\n");
+			bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ". \n");
+			bw.write("Importe a pagar: " + importe + "euros. \n");
 		}
 		bw.close();
 	}
