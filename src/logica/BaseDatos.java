@@ -21,8 +21,8 @@ public class BaseDatos {
 	private Connection conexion;
 
 	@SuppressWarnings("serial")
-	public class ExceptionUsuarioContraseña extends Exception {
-		public ExceptionUsuarioContraseña(String msg) {
+	public class ExceptionUserPassword extends Exception {
+		public ExceptionUserPassword(String msg) {
 			super(msg);
 		}
 	}
@@ -76,20 +76,20 @@ public class BaseDatos {
 		if (usuario.getPassword().equals(password))
 			return true;
 		else
-			throw new ExceptionUsuarioContraseña("EL usuario y la contraseña no coinciden.");
+			throw new ExceptionUserPassword("EL usuario y la contraseï¿½a no coinciden.");
 	}
 
 	/**
-	 * Comprobar administrador y contraseña.
+	 * Comprobar administrador y contraseï¿½a.
 	 * 
 	 * @param user
 	 * @param password
 	 * @return
 	 * @throws ExcepcionUsuarioNoEncontrado
-	 * @throws ExceptionUsuarioContraseña
+	 * @throws ExceptionUsuarioContraseï¿½a
 	 */
 	public boolean comprobarUserPasswordAdmin(String user, String password)
-			throws ExcepcionUsuarioNoEncontrado, ExceptionUsuarioContraseña {
+			throws ExcepcionUsuarioNoEncontrado, ExceptionUserPassword {
 		Usuario usuario = cargarAdministrador(user);
 		if (usuario == null) {
 			throw new ExcepcionUsuarioNoEncontrado("El usuario no existe en la base de datos");
@@ -97,7 +97,7 @@ public class BaseDatos {
 		if (usuario.getPassword().equals(password))
 			return true;
 		else
-			throw new ExceptionUsuarioContraseña("EL usuario y la contraseña no coinciden.");
+			throw new ExceptionUserPassword("EL usuario y la contraseï¿½a no coinciden.");
 	}
 
 	public Usuario cargarAdministrador(String identificador) {
@@ -436,12 +436,12 @@ public class BaseDatos {
 		BufferedWriter bw;
 		if (archivo.exists()) {
 			bw = new BufferedWriter(new FileWriter(archivo));
-			bw.write("Número de recibo: " + idPago);
+			bw.write("Nï¿½mero de recibo: " + idPago);
 			bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ".");
 			bw.write("Importe a pagar: " + importe + ".");
 		} else {
 			bw = new BufferedWriter(new FileWriter(archivo));
-			bw.write("Número de recibo: " + idPago);
+			bw.write("Nï¿½mero de recibo: " + idPago);
 			bw.write("El socio con DNI: " + DNI + " ha pagado la reserva con fecha " + fecha + ".");
 			bw.write("Importe a pagar: " + importe + ".");
 		}
@@ -461,7 +461,7 @@ public class BaseDatos {
 		List<String> reservasPendientes = new ArrayList<String>();
 		try {
 			Connection con = conectar();
-			// Falta añadir la comprobacion de que no este cancelada.
+			// Falta aï¿½adir la comprobacion de que no este cancelada.
 			PreparedStatement ps = con.prepareStatement(
 					"SELECT S.DESCRIPCION,R.HORA_INICIO,R.HORA_FIN FROM RESERVA R,SALA S WHERE S.ID_SALA = R.ID_SALA AND R.ID_USUARIO = ? AND R.HORA_INICIO BETWEEN ? AND ? and (R.ESTADO<>'CANCELADA' or r.estado IS NULL) ORDER BY R.HORA_INICIO;");
 			ps.setInt(1, user.getId_usuario());

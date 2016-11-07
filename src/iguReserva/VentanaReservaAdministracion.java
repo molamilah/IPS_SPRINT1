@@ -60,7 +60,7 @@ public class VentanaReservaAdministracion extends JDialog {
 	private JRadioButton rdbtnAdministracion;
 	private JRadioButton rdbtnSocio;
 	private JTextField txUsuario;
-	private JTextField txAño;
+	private JTextField txAnno;
 	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -81,6 +81,7 @@ public class VentanaReservaAdministracion extends JDialog {
 	public VentanaReservaAdministracion() {
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Reserva Instalaciones Administracion");
 		setBounds(100, 100, 556, 438);
 		getContentPane().setLayout(null);
@@ -99,7 +100,7 @@ public class VentanaReservaAdministracion extends JDialog {
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
 		cbSalas.setSelectedIndex(0);
-		txAño.setText(ano + "");
+		txAnno.setText(ano + "");
 	}
 
 	private JLabel getLbReservaInstalaciones() {
@@ -144,8 +145,8 @@ public class VentanaReservaAdministracion extends JDialog {
 			});
 			cbSalas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			cbSalas.setBounds(10, 120, 127, 28);
-			int tamaño = salasGimnasio.size();
-			String[] salas = new String[tamaño];
+			int tamano = salasGimnasio.size();
+			String[] salas = new String[tamano];
 			for (int i = 0; i < salasGimnasio.size(); i++)
 				salas[i] = salasGimnasio.get(i).getDescripcion();
 			cbSalas.setModel(new DefaultComboBoxModel<String>(salas));
@@ -156,7 +157,7 @@ public class VentanaReservaAdministracion extends JDialog {
 	}
 
 	private void ponerPrecio() {
-		txPrecio.setText(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio() + "€");
+		txPrecio.setText(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio() + "ï¿½");
 	}
 
 	private JLabel getLbPrecio() {
@@ -179,7 +180,7 @@ public class VentanaReservaAdministracion extends JDialog {
 			pnFecha.add(getLbDia());
 			pnFecha.add(getCbDia());
 			pnFecha.add(getLbAno());
-			pnFecha.add(getTxAño());
+			pnFecha.add(getTxAnno());
 		}
 		return pnFecha;
 	}
@@ -321,20 +322,14 @@ public class VentanaReservaAdministracion extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					if (rdbtnAdministracion.isSelected()) {
 						// Codigo hacer reservas administracion
-						boolean success = false;
-						success = Reservador.reservarAdministracion(cbSalas.getSelectedItem().toString(),
-								Integer.parseInt(txAño.getText()), cbMes.getSelectedIndex(),
+						Reservador.reservarAdmin(0, cbSalas.getSelectedItem().toString(),
+								Integer.parseInt(txAnno.getText()), cbMes.getSelectedIndex(),
 								Integer.parseInt(cbDia.getSelectedItem().toString()),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 										+ cbFin.getSelectedIndex() + 1);
-						if (!success) {
-							JOptionPane.showMessageDialog(getContentPane(),
-									"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
-											+ "reservada o el usuario ya posee otra reserva");
-						} else {
-							JOptionPane.showMessageDialog(getContentPane(), "Su reserva ha sido realizada con exito.");
-						}
+
+						JOptionPane.showMessageDialog(getContentPane(), "Su reserva ha sido realizada con exito.");
 					} else {
 						try {
 							Usuario usuario = propietarioReserva();
@@ -342,9 +337,9 @@ public class VentanaReservaAdministracion extends JDialog {
 							boolean success = false;
 							if (radioButtonEfectivo.isSelected())
 								tipo = true;
-							success = Reservador.reservar(usuario.getId_usuario(), cbSalas.getSelectedItem().toString(),
-									Integer.parseInt(txAño.getText()), cbMes.getSelectedIndex(),
-									Integer.parseInt(cbDia.getSelectedItem().toString()),
+							success = Reservador.reservarSocio(usuario.getId_usuario(),
+									cbSalas.getSelectedItem().toString(), Integer.parseInt(txAnno.getText()),
+									cbMes.getSelectedIndex(), Integer.parseInt(cbDia.getSelectedItem().toString()),
 									Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 									Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 											+ cbFin.getSelectedIndex() + 1,
@@ -698,15 +693,15 @@ public class VentanaReservaAdministracion extends JDialog {
 		return txUsuario;
 	}
 
-	private JTextField getTxAño() {
-		if (txAño == null) {
-			txAño = new JTextField();
-			txAño.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			txAño.setEnabled(false);
-			txAño.setEditable(false);
-			txAño.setBounds(206, 32, 86, 26);
-			txAño.setColumns(10);
+	private JTextField getTxAnno() {
+		if (txAnno == null) {
+			txAnno = new JTextField();
+			txAnno.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txAnno.setEnabled(false);
+			txAnno.setEditable(false);
+			txAnno.setBounds(206, 32, 86, 26);
+			txAnno.setColumns(10);
 		}
-		return txAño;
+		return txAnno;
 	}
 }

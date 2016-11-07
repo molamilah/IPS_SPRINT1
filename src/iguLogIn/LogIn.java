@@ -20,7 +20,7 @@ import iguAdministracion.VentanaPrincipalAdministracion;
 import iguUsuario.VentanaPrincipalUsuarios;
 import logica.BaseDatos;
 import logica.BaseDatos.ExcepcionUsuarioNoEncontrado;
-import logica.BaseDatos.ExceptionUsuarioContraseña;
+import logica.BaseDatos.ExceptionUserPassword;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -33,9 +33,9 @@ public class LogIn extends JFrame {
 	private JPanel contentPane;
 	private JPanel pnLogIn;
 	private JLabel lblUsuario;
-	private JLabel lblContrasea;
+	private JLabel lblPassword;
 	private JTextField txUsuario;
-	private JPasswordField pfContraseña;
+	private JPasswordField pfPassword;
 	private JButton btEntrar;
 	private JLabel lbImagen;
 	private JButton btnCancelar;
@@ -85,7 +85,7 @@ public class LogIn extends JFrame {
 			pnLogIn.add(getLblUsuario());
 			pnLogIn.add(getLblContrasea());
 			pnLogIn.add(getTxUsuario());
-			pnLogIn.add(getPfContraseña());
+			pnLogIn.add(getpfPassword());
 			pnLogIn.add(getBtEntrar());
 			pnLogIn.add(getLbImagen());
 			pnLogIn.add(getBtnCancelar());
@@ -105,14 +105,14 @@ public class LogIn extends JFrame {
 	}
 
 	private JLabel getLblContrasea() {
-		if (lblContrasea == null) {
-			lblContrasea = new JLabel("Contrase\u00F1a:");
-			lblContrasea.setLabelFor(getPfContraseña());
-			lblContrasea.setDisplayedMnemonic('C');
-			lblContrasea.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			lblContrasea.setBounds(56, 187, 89, 29);
+		if (lblPassword == null) {
+			lblPassword = new JLabel("Contrase\u00F1a:");
+			lblPassword.setLabelFor(getpfPassword());
+			lblPassword.setDisplayedMnemonic('C');
+			lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			lblPassword.setBounds(56, 187, 89, 29);
 		}
-		return lblContrasea;
+		return lblPassword;
 	}
 
 	private JTextField getTxUsuario() {
@@ -125,13 +125,13 @@ public class LogIn extends JFrame {
 		return txUsuario;
 	}
 
-	private JPasswordField getPfContraseña() {
-		if (pfContraseña == null) {
-			pfContraseña = new JPasswordField();
-			pfContraseña.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			pfContraseña.setBounds(135, 187, 251, 32);
+	private JPasswordField getpfPassword() {
+		if (pfPassword == null) {
+			pfPassword = new JPasswordField();
+			pfPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			pfPassword.setBounds(135, 187, 251, 32);
 		}
-		return pfContraseña;
+		return pfPassword;
 	}
 
 	private JButton getBtEntrar() {
@@ -139,43 +139,47 @@ public class LogIn extends JFrame {
 			btEntrar = new JButton("Entrar");
 			btEntrar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					String password = new String(pfContraseña.getPassword()).toUpperCase();
+					String password = new String(pfPassword.getPassword()).toUpperCase();
 					String user = txUsuario.getText().toUpperCase();
 					try {
 						if (user.equals("") || password.equals("")) {
 							JOptionPane.showMessageDialog(null,
-									"Los campos usuario y contraseña han de rellenarse obligatoriamente.", "ERROR",
+									"Los campos usuario y contrase\u00F1a han de rellenarse obligatoriamente.", "ERROR",
 									JOptionPane.ERROR_MESSAGE);
 						} else if (user.equals("ADMIN")) {
 							if (bd.comprobarUserPasswordAdmin(user, password)) {
 								dispose();
-								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(bd.cargarAdministrador(user));
+								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(
+										bd.cargarAdministrador(user));
 								vp.setLocationRelativeTo(null);
 								vp.setVisible(true);
 							}
 						} else if (user.equals("CONTABLE")) {
 							if (bd.comprobarUserPasswordAdmin(user, password)) {
 								dispose();
-								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(bd.cargarAdministrador(user));
+								VentanaPrincipalAdministracion vp = new VentanaPrincipalAdministracion(
+										bd.cargarAdministrador(user));
 								vp.setLocationRelativeTo(null);
 								vp.setVisible(true);
 							}
 						} else {
 							if (bd.comprobarUserPassword(Integer.parseInt(user), password)) {
 								dispose();
-								VentanaPrincipalUsuarios vpu = new VentanaPrincipalUsuarios(bd.cargarUsuario(Integer.parseInt(user)));
+								VentanaPrincipalUsuarios vpu = new VentanaPrincipalUsuarios(
+										bd.cargarUsuario(Integer.parseInt(user)));
 								vpu.setLocationRelativeTo(null);
 								vpu.setVisible(true);
 							}
 						}
-					} catch (ExceptionUsuarioContraseña e) {
-						JOptionPane.showMessageDialog(null, "El usuario y la contraseña no se corresponden.", "ERROR",
-								JOptionPane.ERROR_MESSAGE);
+					} catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(contentPane, "El usuario debe ser num\u00E9rico");
+					} catch (ExceptionUserPassword e) {
+						JOptionPane.showMessageDialog(null, "El usuario y la contrase\u00F1a no se corresponden.",
+								"ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ExcepcionUsuarioNoEncontrado e1) {
 						JOptionPane.showMessageDialog(null, "El usuario no existe en la base de datos.", "ERROR",
 								JOptionPane.ERROR_MESSAGE);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

@@ -41,6 +41,7 @@ public class VentanaPrincipalUsuarios extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaPrincipalUsuarios(Usuario usuario) {
+		setResizable(false);
 		this.usuario = usuario;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaPrincipalAdministracion.class.getResource("/img/img-recepcion-2.jpg")));
 		setTitle("Socio:"+usuario.getNombre());
@@ -94,7 +95,8 @@ public class VentanaPrincipalUsuarios extends JFrame {
 					vru.setLocationRelativeTo(null);
 					vru.setVisible(true);
 					}catch(Exception n){
-						JOptionPane.showMessageDialog(null, "El sistema esta en mantenimiento, por favor intentelo más tarde.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+						n.printStackTrace();
+						JOptionPane.showMessageDialog(null, "El sistema esta en mantenimiento, por favor intentelo mï¿½s tarde.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			});

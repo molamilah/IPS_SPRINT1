@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -18,7 +19,9 @@ import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
 import iguReserva.VentanaReservaAdministracion;
 import iguReserva.VentanaReservasPropiasAdministracion;
+import iguReserva.VentanaReservasPeriodicas;
 import logica.Usuario;
+import ocupacion.OcupacionSalas;
 
 public class VentanaPrincipalAdministracion extends JFrame {
 
@@ -35,14 +38,20 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JPanel pnZonaAdministracion;
 	private Usuario usuario;
 	private JButton btnReservasPropias;
+	private JButton btnLlegada;
+	private JButton btnSalida;
+	private JButton btnSimultanea;
 
 	/**
 	 * Create the frame.
-	 * @param usuario 
+	 * 
+	 * @param usuario
 	 */
 	public VentanaPrincipalAdministracion(Usuario usuario) {
+		setResizable(false);
 		this.usuario = usuario;
-		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaPrincipalAdministracion.class.getResource("/img/img-recepcion-2.jpg")));
+		setIconImage(Toolkit.getDefaultToolkit()
+				.getImage(VentanaPrincipalAdministracion.class.getResource("/img/img-recepcion-2.jpg")));
 		setTitle("Administraci\u00F3n");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 848, 593);
@@ -55,17 +64,23 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		contentPane.add(getPnActividades());
 		contentPane.add(getPnZonaAdministracion());
 	}
+
 	private JPanel getPnInstalaciones() {
 		if (pnInstalaciones == null) {
 			pnInstalaciones = new JPanel();
-			pnInstalaciones.setBorder(new TitledBorder(null, "Instalaciones", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnInstalaciones.setBorder(
+					new TitledBorder(null, "Instalaciones", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnInstalaciones.setBounds(10, 22, 812, 146);
 			pnInstalaciones.setLayout(new GridLayout(1, 1, 0, 0));
+			pnInstalaciones.add(getBtnLlegada());
+			pnInstalaciones.add(getBtnSalida());
 			pnInstalaciones.add(getBtDisponibilidad());
 			pnInstalaciones.add(getBtnReservas());
+			pnInstalaciones.add(getBtnSimultanea());
 		}
 		return pnInstalaciones;
 	}
+
 	private JButton getBtDisponibilidad() {
 		if (btDisponibilidad == null) {
 			btDisponibilidad = new JButton("Disponibilidad");
@@ -74,7 +89,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 					VentanaDisponibilidadInstalaciones vdi = new VentanaDisponibilidadInstalaciones(usuario);
 					vdi.setModal(true);
 					vdi.setLocationRelativeTo(null);
-					vdi.setVisible(true);					
+					vdi.setVisible(true);
 				}
 			});
 			btDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -82,9 +97,10 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return btDisponibilidad;
 	}
+
 	private JButton getBtnReservas() {
 		if (btnReservas == null) {
-			btnReservas = new JButton("Reservas");
+			btnReservas = new JButton("Reserva Unica");
 			btnReservas.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					VentanaReservaAdministracion vra = new VentanaReservaAdministracion();
@@ -98,6 +114,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return btnReservas;
 	}
+
 	private JButton getBtnSalir() {
 		if (btnSalir == null) {
 			btnSalir = new JButton("Salir");
@@ -114,25 +131,29 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return btnSalir;
 	}
+
 	private JPanel getPnActividades() {
 		if (pnActividades == null) {
 			pnActividades = new JPanel();
-			pnActividades.setBorder(new TitledBorder(null, "Actividades", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnActividades.setBorder(
+					new TitledBorder(null, "Actividades", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnActividades.setBounds(10, 179, 812, 146);
 		}
 		return pnActividades;
 	}
+
 	private JPanel getPnZonaAdministracion() {
 		if (pnZonaAdministracion == null) {
 			pnZonaAdministracion = new JPanel();
-			pnZonaAdministracion.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Zona Administraci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			pnZonaAdministracion.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"),
+					"Zona Administraci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			pnZonaAdministracion.setBounds(10, 336, 812, 140);
 			pnZonaAdministracion.setLayout(new GridLayout(0, 1, 0, 0));
 			pnZonaAdministracion.add(getBtnReservasPropias());
 		}
 		return pnZonaAdministracion;
 	}
-	
+
 	private JButton getBtnReservasPropias() {
 		if (btnReservasPropias == null) {
 			btnReservasPropias = new JButton("Reservas Propias");
@@ -147,5 +168,77 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			btnReservasPropias.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
 		return btnReservasPropias;
+	}
+
+	private JButton getBtnLlegada() {
+		if (btnLlegada == null) {
+			btnLlegada = new JButton("Indicar Llegada");
+			btnLlegada.setMnemonic('L');
+			btnLlegada.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String respuesta = JOptionPane.showInputDialog(contentPane,
+							"Introduzca el dni del usuario que ha llegado");
+					if (respuesta != null) {
+						if (respuesta.equals(""))
+							JOptionPane.showMessageDialog(contentPane, "No se ha indicado ningun cliente");
+						else {
+							boolean estado = OcupacionSalas.indicarLlegada(respuesta);
+							if (!estado)
+								JOptionPane.showMessageDialog(contentPane,
+										"El ciente con el DNI indicado no tiene una reserva y no puede pasar a usar las instalaciones");
+							else
+								JOptionPane.showMessageDialog(contentPane, "La llegada ha sido indicada correctamente");
+						}
+					}
+				}
+			});
+			btnLlegada.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnLlegada;
+	}
+
+	private JButton getBtnSalida() {
+		if (btnSalida == null) {
+			btnSalida = new JButton("Indicar Salida");
+			btnSalida.setMnemonic('S');
+			btnSalida.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String respuesta = JOptionPane.showInputDialog(contentPane,
+							"Introduzca el dni del usuario que se va");
+					if (respuesta != null) {
+						if (respuesta.equals(""))
+							JOptionPane.showMessageDialog(contentPane, "No se ha indicado ningun cliente");
+
+						else {
+							boolean estado = OcupacionSalas.indicarSalida(respuesta);
+							if (!estado)
+								JOptionPane.showMessageDialog(contentPane,
+										"No se ha podido encontrar ningun cliente usando las instalaciones con ese DNI");
+							else
+								JOptionPane.showMessageDialog(contentPane, "La salida ha sido indicada correctamente");
+						}
+					}
+				}
+			});
+			btnSalida.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnSalida;
+	}
+
+	private JButton getBtnSimultanea() {
+		if (btnSimultanea == null) {
+			btnSimultanea = new JButton("Reserva periodica");
+			btnSimultanea.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					VentanaReservasPeriodicas vrp = new VentanaReservasPeriodicas();
+					vrp.setModal(true);
+					vrp.setLocationRelativeTo(null);
+					vrp.setVisible(true);
+				}
+			});
+			btnSimultanea.setMnemonic('P');
+			btnSimultanea.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnSimultanea;
 	}
 }

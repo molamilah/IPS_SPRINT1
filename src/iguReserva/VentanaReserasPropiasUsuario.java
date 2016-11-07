@@ -59,9 +59,9 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private Calendar c = Calendar.getInstance();
 	private int dia = c.get(Calendar.DATE);
 	private int mes = c.get(Calendar.MONTH);
-	private int año = c.get(Calendar.YEAR);
+	private int anno = c.get(Calendar.YEAR);
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
-	private int min= c.get(Calendar.MINUTE);
+	private int min = c.get(Calendar.MINUTE);
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
@@ -82,7 +82,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		getContentPane().add(getScrollPane_1());
 
 		cargarDias();
-		cargarAño();
+		cargarAnno();
 		getContentPane().add(getPnFiltro());
 	}
 
@@ -300,7 +300,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private void cargarElementosTabla() {
 		List<String> result;
 		if (rdbtnPendientes.isSelected()) {
-			result = bd.cargarReservasPendientesUsuario(usuario, new Timestamp(año - 1900, mes, dia, 0, 0, 0, 0),
+			result = bd.cargarReservasPendientesUsuario(usuario, new Timestamp(anno - 1900, mes, dia, 0, 0, 0, 0),
 					new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
 							cbMesH.getSelectedIndex(), Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())),
 							23, 59, 0, 0));
@@ -344,22 +344,22 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 							Date parsedDate = dateFormat.parse(horaInicio);
 							Timestamp timestampReserva = new java.sql.Timestamp(parsedDate.getTime());
-							Timestamp timestampActual = new Timestamp(año - 1900, mes, dia, hora, min, 0, 0);
+							Timestamp timestampActual = new Timestamp(anno - 1900, mes, dia, hora, min, 0, 0);
 							long millisHour = 60 * 60 * 1000;
-							
+
 							long diferenciaEnMillis = timestampReserva.getTime() - timestampActual.getTime();
-							
-							long diferenciaHoras = diferenciaEnMillis/millisHour;
-							
-							if(diferenciaHoras >= 1){
+
+							long diferenciaHoras = diferenciaEnMillis / millisHour;
+
+							if (diferenciaHoras >= 1) {
 								bd.cancelarReservaUsuario(usuario, nombre, horaInicio, horaFin);
 								JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.",
 										"Informacion", JOptionPane.INFORMATION_MESSAGE);
 								borrarModelo();
 								cargarElementosTabla();
-							}else{
+							} else {
 								JOptionPane.showMessageDialog(null,
-										"No se puede cancelar una hora con menos de una hora de antelación,disculpe las molestias.",
+										"No se puede cancelar una hora con menos de una hora de antelaciï¿½n,disculpe las molestias.",
 										"ERROR", JOptionPane.ERROR_MESSAGE);
 							}
 						} catch (Exception ex) {
@@ -445,12 +445,12 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	}
 
 	/**
-	 * Metodo que carga el años en el combobox dedicado a tal efecto.Se cargara
-	 * el año en curso y el siguiente.
+	 * Metodo que carga el aï¿½os en el combobox dedicado a tal efecto.Se cargara
+	 * el aï¿½o en curso y el siguiente.
 	 */
-	private void cargarAño() {
-		String[] años = { año + "", año + 1 + "" };
-		cbAno.setModel(new DefaultComboBoxModel<String>(años));
-		cbAnoH.setModel(new DefaultComboBoxModel<String>(años));
+	private void cargarAnno() {
+		String[] annos = { anno + "", anno + 1 + "" };
+		cbAno.setModel(new DefaultComboBoxModel<String>(annos));
+		cbAnoH.setModel(new DefaultComboBoxModel<String>(annos));
 	}
 }

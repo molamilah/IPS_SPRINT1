@@ -61,7 +61,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 	private Calendar c = Calendar.getInstance();
 	private int dia = c.get(Calendar.DATE);
 	private int mes = c.get(Calendar.MONTH);
-	private int año = c.get(Calendar.YEAR);
+	private int anno = c.get(Calendar.YEAR);
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
@@ -87,7 +87,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 		getContentPane().add(getScrollPane_1());
 
 		cargarDias();
-		cargarAño();
+		cargarAnno();
 		getContentPane().add(getPnFiltro());
 		getContentPane().add(getPnPropietarioReserva());
 	}
@@ -311,7 +311,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 	private void cargarElementosTabla(Usuario usuario) {
 		List<String> result;
 		if (rdbtnPendientes.isSelected()) {
-			result = bd.cargarReservasPendientesUsuario(usuario, new Timestamp(año - 1900, mes, dia, 0, 0, 0, 0),
+			result = bd.cargarReservasPendientesUsuario(usuario, new Timestamp(anno - 1900, mes, dia, 0, 0, 0, 0),
 					new Timestamp(Integer.parseInt(cbAnoH.getItemAt(cbAnoH.getSelectedIndex())) - 1900,
 							cbMesH.getSelectedIndex(), Integer.parseInt(cbDiaH.getItemAt(cbDiaH.getSelectedIndex())),
 							23, 59, 0, 0));
@@ -455,13 +455,13 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 	}
 
 	/**
-	 * Metodo que carga el años en el combobox dedicado a tal efecto.Se cargara
-	 * el año en curso y el siguiente.
+	 * Metodo que carga el aï¿½os en el combobox dedicado a tal efecto.Se cargara
+	 * el aï¿½o en curso y el siguiente.
 	 */
-	private void cargarAño() {
-		String[] años = { año + "", año + 1 + "" };
-		cbAno.setModel(new DefaultComboBoxModel<String>(años));
-		cbAnoH.setModel(new DefaultComboBoxModel<String>(años));
+	private void cargarAnno() {
+		String[] annos = { anno + "", anno + 1 + "" };
+		cbAno.setModel(new DefaultComboBoxModel<String>(annos));
+		cbAnoH.setModel(new DefaultComboBoxModel<String>(annos));
 	}
 
 	private JPanel getPnPropietarioReserva() {
