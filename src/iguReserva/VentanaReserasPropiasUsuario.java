@@ -61,6 +61,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	private int mes = c.get(Calendar.MONTH);
 	private int año = c.get(Calendar.YEAR);
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
+	private int min= c.get(Calendar.MINUTE);
 
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
@@ -343,7 +344,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 							Date parsedDate = dateFormat.parse(horaInicio);
 							Timestamp timestampReserva = new java.sql.Timestamp(parsedDate.getTime());
-							Timestamp timestampActual = new Timestamp(año - 1900, mes, dia, hora, 0, 0, 0);
+							Timestamp timestampActual = new Timestamp(año - 1900, mes, dia, hora, min, 0, 0);
 							long millisHour = 60 * 60 * 1000;
 							
 							long diferenciaEnMillis = timestampReserva.getTime() - timestampActual.getTime();
