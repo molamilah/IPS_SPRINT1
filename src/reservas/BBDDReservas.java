@@ -64,7 +64,7 @@ public class BBDDReservas {
 
 		try {
 			ps = conexion.prepareStatement("select id_reserva from Reserva where id_sala = ? "
-					+ "and ((? > hora_inicio and ? < hora_fin) or (? < hora_inicio and ?> hora_inicio) or (? = hora_inicio and ? = hora_fin))");
+					+ "and ((? > hora_inicio and ? < hora_fin) or (? < hora_inicio and ?> hora_inicio) or (? = hora_inicio and ? = hora_fin)) and estado IS NULL");
 			ps.setTimestamp(2, horaInicial);
 			ps.setTimestamp(3, horaInicial);
 			ps.setTimestamp(4, horaInicial);
@@ -104,7 +104,6 @@ public class BBDDReservas {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -125,7 +124,6 @@ public class BBDDReservas {
 				ps.close();
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return fechaBaja;
@@ -146,7 +144,6 @@ public class BBDDReservas {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -166,14 +163,14 @@ public class BBDDReservas {
 			idReserva = rs2.getInt("id");
 			rs2.close();
 			st.close();
-			ps = conexion.prepareStatement("insert into Pago (id_reserva, precio, contado) values(?,?,?)");
+			ps = conexion
+					.prepareStatement("insert into Pago (id_reserva, precio, contado, pagado) values(?,?,?,false)");
 			ps.setInt(1, idReserva);
 			ps.setDouble(2, precio);
 			ps.setBoolean(3, tipoPago);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -183,18 +180,42 @@ public class BBDDReservas {
 		conectar();
 		ResultSet rs;
 		PreparedStatement ps;
-		int sala= -1;
+		int sala = -1;
 		try {
-			ps= conexion.prepareStatement("select id_sala from Sala where descripcion= ?");
-			ps.setString(1,idSala);
-			rs= ps.executeQuery();
+			ps = conexion.prepareStatement("select id_sala from Sala where descripcion= ?");
+			ps.setString(1, idSala);
+			rs = ps.executeQuery();
 			rs.next();
 			sala = rs.getInt(1);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return sala;
+	}
+
+	public static String buscarDatosReserva(int idReserva) {
+		PreparedStatement ps;
+		PreparedStatement ps2;
+		ResultSet rs;
+		ResultSet rs2;
+		String res ="";
+		try {
+			ps=conexion.prepareStatement("select * from Reserva where id_reserva = ?");
+			ps.setInt(1, idReserva);
+			rs= ps.executeQuery();
+			rs.next();
+			ps2=conexion.prepareStatement("select descripcion from Sala where id_sala = ?");
+			ps2.setInt(1, rs.getInt("id_sala"));
+			rs2 = ps2.executeQuery();
+			rs2.next();
+			res = ("Reserva: " + idReserva + "Cliente: " + rs.getInt("id_usuario") + "Sala: "
+					+ rs2.getString("descripcion") + "HoraInicio: " + rs.getTimestamp("hora_Inicio") 
+					+ "HoraFin: " + rs.getTimestamp("hora_fin"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+		
 	}
 
 }
