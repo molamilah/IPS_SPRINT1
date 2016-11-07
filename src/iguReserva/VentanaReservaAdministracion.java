@@ -2,6 +2,7 @@ package iguReserva;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.util.Calendar;
@@ -16,6 +17,8 @@ import javax.swing.border.TitledBorder;
 import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
+import logica.BaseDatos.ExcepcionUsuarioNoEncontrado;
+import reservas.Reservador;
 
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
@@ -57,6 +60,9 @@ public class VentanaReservaAdministracion extends JDialog {
 	private JRadioButton rdbtnAdministracion;
 	private JRadioButton rdbtnSocio;
 	private JTextField txUsuario;
+	private JTextField txAño;
+	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	private Calendar c = Calendar.getInstance();
 	private int dia = c.get(Calendar.DATE);
@@ -64,20 +70,15 @@ public class VentanaReservaAdministracion extends JDialog {
 	private int ano = c.get(Calendar.YEAR);
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
 
-	private Usuario usuario;
 	private String[] meses = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
 			"Octubre", "Noviembre", "Diciembre" };
 	private List<Sala> salasGimnasio;
 	private BaseDatos bd;
-	private JTextField txAño;
-	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
-	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Create the dialog.
 	 */
-	public VentanaReservaAdministracion(Usuario user) {
-		this.usuario = user;
+	public VentanaReservaAdministracion() {
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
 		setTitle("Reserva Instalaciones Administracion");
@@ -98,7 +99,7 @@ public class VentanaReservaAdministracion extends JDialog {
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
 		cbSalas.setSelectedIndex(0);
-		txAño.setText(c.get(Calendar.YEAR) + "");
+		txAño.setText(ano + "");
 	}
 
 	private JLabel getLbReservaInstalaciones() {
@@ -318,6 +319,36 @@ public class VentanaReservaAdministracion extends JDialog {
 			btReservar = new JButton("Reservar");
 			btReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					if (rdbtnAdministracion.isSelected()) {
+
+					} else {
+						try {
+							Usuario usuario = propietarioReserva();
+							boolean tipo = false;
+							boolean success = false;
+							if (radioButtonEfectivo.isSelected())
+								tipo = true;
+							success = Reservador.reservar(usuario.getId_usuario(), cbSalas.getSelectedItem().toString(),
+									Integer.parseInt(txAño.getText()), cbMes.getSelectedIndex(),
+									Integer.parseInt(cbDia.getSelectedItem().toString()),
+									Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
+									Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
+											+ cbFin.getSelectedIndex() + 1,
+									tipo);
+							if (!success) {
+								JOptionPane.showMessageDialog(getContentPane(),
+										"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
+												+ "reservada o el usuario ya posee otra reserva");
+							} else {
+								JOptionPane.showMessageDialog(getContentPane(),
+										"Su reserva ha sido realizada con exito.");
+							}
+
+						} catch (NullPointerException x) {
+							JOptionPane.showMessageDialog(null, "Es obligatorio introducir el id del socio.", "ERROR",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					}
 				}
 			});
 			btReservar.setMnemonic('R');
@@ -325,6 +356,25 @@ public class VentanaReservaAdministracion extends JDialog {
 			btReservar.setBounds(421, 366, 109, 23);
 		}
 		return btReservar;
+	}
+
+	/**
+	 * Metodo que devuelve el usuario sobre el que se van a realizar las labora
+	 * de cancelacion de las reservas.
+	 * 
+	 * @return
+	 */
+	private Usuario propietarioReserva() {
+		try {
+			if (!txUsuario.getText().equals("")) {
+				if (bd.comprobarUsuario(Integer.parseInt(txUsuario.getText())))
+					return bd.cargarUsuario(Integer.parseInt(txUsuario.getText()));
+			}
+		} catch (ExcepcionUsuarioNoEncontrado e) {
+			JOptionPane.showMessageDialog(null, "El usuario no existe en la base de datos.", "ERROR",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		return null;
 	}
 
 	private JButton getBtAtras() {
@@ -388,9 +438,9 @@ public class VentanaReservaAdministracion extends JDialog {
 					new TitledBorder(null, "Propietario Reserva", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnPropietarioReserva.setBounds(10, 169, 225, 158);
 			pnPropietarioReserva.setLayout(null);
-			pnPropietarioReserva.add(getRdbtnSocio());
-			pnPropietarioReserva.add(getRdbtnAdministracion());
 			pnPropietarioReserva.add(getTxUsuario());
+			pnPropietarioReserva.add(getRdbtnSocio());
+			pnPropietarioReserva.add(getRdbtnAdministracion());			
 		}
 		return pnPropietarioReserva;
 	}
@@ -522,6 +572,7 @@ public class VentanaReservaAdministracion extends JDialog {
 		cargarDiasUsuario();
 
 		habilitarPanelMedioPago();
+		txUsuario.setEnabled(true);
 
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
@@ -533,6 +584,7 @@ public class VentanaReservaAdministracion extends JDialog {
 		cargarDiasAdministracion();
 
 		deshabilitarMedioPago();
+		txUsuario.setEnabled(false);
 
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
@@ -626,7 +678,6 @@ public class VentanaReservaAdministracion extends JDialog {
 		if (txUsuario == null) {
 			txUsuario = new JTextField();
 			txUsuario.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			txUsuario.setEnabled(false);
 			txUsuario.setBounds(29, 114, 171, 33);
 			txUsuario.setColumns(10);
 		}

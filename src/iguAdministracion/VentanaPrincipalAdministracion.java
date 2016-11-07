@@ -74,8 +74,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 					VentanaDisponibilidadInstalaciones vdi = new VentanaDisponibilidadInstalaciones(usuario);
 					vdi.setModal(true);
 					vdi.setLocationRelativeTo(null);
-					vdi.setVisible(true);
-					
+					vdi.setVisible(true);					
 				}
 			});
 			btDisponibilidad.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -88,7 +87,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			btnReservas = new JButton("Reservas");
 			btnReservas.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					VentanaReservaAdministracion vra = new VentanaReservaAdministracion(usuario);
+					VentanaReservaAdministracion vra = new VentanaReservaAdministracion();
 					vra.setModal(true);
 					vra.setLocationRelativeTo(null);
 					vra.setVisible(true);

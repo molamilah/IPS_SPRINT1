@@ -119,6 +119,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 					cbMes.setSelectedIndex(mes);
 					cbDia.setSelectedIndex(dia - 1);
 					cbDiaH.setSelectedIndex(dia - 1);
+					btnAnularReserva.setEnabled(false);
 				}
 			});
 			buttonGroup.add(rdbtnCanceladas);
@@ -141,6 +142,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 					cbMes.setSelectedIndex(mes);
 					cbDia.setSelectedIndex(dia - 1);
 					cbDiaH.setSelectedIndex(dia - 1);
+					btnAnularReserva.setEnabled(true);
 				}
 			});
 			buttonGroup.add(rdbtnPendientes);
@@ -164,6 +166,7 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 					cbMes.setSelectedIndex(mes);
 					cbDia.setSelectedIndex(dia - 1);
 					cbDiaH.setSelectedIndex(dia - 1);
+					btnAnularReserva.setEnabled(false);
 				}
 			});
 			buttonGroup.add(rdbtnRealizadas);
@@ -290,9 +293,9 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 			btnMostrarReserva.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					borrarModelo();
-					try{
-					cargarElementosTabla(propietarioReserva());
-					}catch(NullPointerException x){
+					try {
+						cargarElementosTabla(propietarioReserva());
+					} catch (NullPointerException x) {
 						JOptionPane.showMessageDialog(null, "Es obligatorio introducir el id del socio.", "ERROR",
 								JOptionPane.ERROR_MESSAGE);
 					}
