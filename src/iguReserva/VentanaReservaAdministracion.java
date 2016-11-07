@@ -95,7 +95,10 @@ public class VentanaReservaAdministracion extends JDialog {
 		getContentPane().add(getPnFormaPago());
 		getContentPane().add(getPnPropietarioReserva());
 
-		txAño.setText(ano + "");
+		cbDia.setSelectedIndex(0);
+		cbMes.setSelectedIndex(0);
+		cbSalas.setSelectedIndex(0);
+		txAño.setText(c.get(Calendar.YEAR) + "");
 	}
 
 	private JLabel getLbReservaInstalaciones() {
@@ -185,12 +188,14 @@ public class VentanaReservaAdministracion extends JDialog {
 			cbMes = new JComboBox<String>();
 			cbMes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					if (rdbtnSocio.isSelected()) {
+					if (rdbtnAdministracion.isSelected()) {
+						cargarDiasAdministracion();
+						generarHorasInicio();
+						generarHorasFinAdministracion(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
+					} else {
 						cargarDiasUsuario();
 						generarHorasInicio();
 						generarHorasFinUsuario(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
-					} else {
-						cargarDiasAdministracion();
 					}
 				}
 			});
@@ -227,7 +232,11 @@ public class VentanaReservaAdministracion extends JDialog {
 			cbDia.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					generarHorasInicio();
-					generarHorasFinUsuario(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
+					if (rdbtnAdministracion.isSelected())
+						generarHorasFinAdministracion(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
+
+					else
+						generarHorasFinUsuario(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
 				}
 			});
 			cbDia.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -275,7 +284,10 @@ public class VentanaReservaAdministracion extends JDialog {
 			cbInicio = new JComboBox<String>();
 			cbInicio.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					generarHorasFinUsuario(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
+					if (rdbtnAdministracion.isSelected())
+						generarHorasFinAdministracion(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
+					else
+						generarHorasFinUsuario(cbInicio.getItemAt(cbInicio.getSelectedIndex()));
 				}
 			});
 			cbInicio.setBounds(10, 42, 89, 26);
@@ -376,8 +388,8 @@ public class VentanaReservaAdministracion extends JDialog {
 					new TitledBorder(null, "Propietario Reserva", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnPropietarioReserva.setBounds(10, 169, 225, 158);
 			pnPropietarioReserva.setLayout(null);
-			pnPropietarioReserva.add(getRdbtnAdministracion());
 			pnPropietarioReserva.add(getRdbtnSocio());
+			pnPropietarioReserva.add(getRdbtnAdministracion());
 			pnPropietarioReserva.add(getTxUsuario());
 		}
 		return pnPropietarioReserva;
@@ -455,11 +467,31 @@ public class VentanaReservaAdministracion extends JDialog {
 		}
 	}
 
+	private void generarHorasFinAdministracion(String horaInicio) {
+		if (horaInicio.equals("23:00")) {
+			String[] horas = new String[] { "23:59" };
+			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
+		} else {
+			int horaI = Integer.parseInt(horaInicio.split(":")[0]);
+			int diferencia = 24 - horaI;
+			String[] horas = new String[diferencia];
+			for (int i = 0; i < horas.length; i++) {
+				if (horaI < 10) {
+					horas[i] = "0" + horaI + ":59";
+					horaI++;
+				} else {
+					horas[i] = horaI + ":59";
+					horaI++;
+				}
+			}
+			cbFin.setModel(new DefaultComboBoxModel<String>(horas));
+		}
+	}
+
 	private void generarHorasInicio() {
 		int aux = Integer.parseInt(cbDia.getSelectedItem().toString());
 		if (dia == aux) {
 			int diferencia = 24 - hora;
-
 			String[] horas = new String[diferencia - 1];
 			int j = hora + 1;
 			for (int i = 0; i < diferencia - 1; i++) {
@@ -489,11 +521,11 @@ public class VentanaReservaAdministracion extends JDialog {
 		cargarMesesUsuario();
 		cargarDiasUsuario();
 
+		habilitarPanelMedioPago();
+
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
 		cbSalas.setSelectedIndex(0);
-
-		habilitarPanelMedioPago();
 	}
 
 	private void habilitarReservaAdministracion() {
@@ -501,6 +533,10 @@ public class VentanaReservaAdministracion extends JDialog {
 		cargarDiasAdministracion();
 
 		deshabilitarMedioPago();
+
+		cbDia.setSelectedIndex(0);
+		cbMes.setSelectedIndex(0);
+		cbSalas.setSelectedIndex(0);
 	}
 
 	private void deshabilitarMedioPago() {
