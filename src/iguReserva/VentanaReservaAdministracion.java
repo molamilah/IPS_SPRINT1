@@ -125,7 +125,7 @@ public class VentanaReservaAdministracion extends JDialog {
 	private JTextField getTxPrecio() {
 		if (txPrecio == null) {
 			txPrecio = new JTextField();
-			txPrecio.setText("0.0\u20AC");
+			txPrecio.setText("0.0€");
 			txPrecio.setHorizontalAlignment(SwingConstants.CENTER);
 			txPrecio.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txPrecio.setEditable(false);
@@ -157,7 +157,7 @@ public class VentanaReservaAdministracion extends JDialog {
 	}
 
 	private void ponerPrecio() {
-		txPrecio.setText(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio() + "�");
+		txPrecio.setText(salasGimnasio.get(cbSalas.getSelectedIndex()).getPrecio() + "€");
 	}
 
 	private JLabel getLbPrecio() {
