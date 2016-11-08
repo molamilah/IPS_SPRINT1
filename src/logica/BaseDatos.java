@@ -515,9 +515,8 @@ public class BaseDatos {
 			id_usuario = findID_Usuario(DNI);
 			id_reserva = findID_Reserva(id_usuario, fecha);
 
-			psUPDATE_PAGO = con.prepareStatement("update pago set status = ? where id_reserva = ?");
-			psUPDATE_PAGO.setString(1, "PAGADO");
-			psUPDATE_PAGO.setInt(2, id_reserva);
+			psUPDATE_PAGO = con.prepareStatement("update pago set pagado = true where id_reserva = ?");
+			psUPDATE_PAGO.setInt(1, id_reserva);
 			int num = psUPDATE_PAGO.executeUpdate();
 			if (num == 0) {
 				throw new ExcepcionPagoNoEncontrado("El pago no existe");
@@ -659,9 +658,7 @@ public class BaseDatos {
 		Integer idUsuario = 0;
 		double importe = 0.0;
 		double cuota = 0.0;
-		for(Integer idPago: idsPagos) {
-			System.out.println(idPago);
-		}
+
 		// Por cada pago:
 		for(Integer idPago : idsPagos) {
 			//		Miro el ID de su reserva y cojo la fecha, el ID del usuario,
@@ -699,7 +696,7 @@ public class BaseDatos {
 		
 		try {
 			con = conectar();
-			psIDS = con.prepareStatement("SELECT ID_PAGO FROM PAGO WHERE CONTADO = FALSE AND EN_CUOTA = FALSE AND STATUS = 'NO_PAGADO'");
+			psIDS = con.prepareStatement("SELECT ID_PAGO FROM PAGO WHERE CONTADO = FALSE AND EN_CUOTA = FALSE AND PAGADO = false");
 			rsIDS = psIDS.executeQuery();
 			
 			if(rsIDS.next()) {
