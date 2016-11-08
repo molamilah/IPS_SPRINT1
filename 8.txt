@@ -1,0 +1,3 @@
+Número de recibo: 8
+El socio con DNI: 76458395Y ha pagado la reserva con fecha 2016-11-08 22:00:00.0. 
+Importe a pagar: 8.9 euros. 

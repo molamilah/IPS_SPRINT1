@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,10 +18,13 @@ import javax.swing.border.TitledBorder;
 
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
+import iguReserva.VentanaRegistrarPago;
 import iguReserva.VentanaReservaAdministracion;
 import iguReserva.VentanaReservasPropiasAdministracion;
 import iguReserva.VentanaReservasPeriodicas;
 import logica.Usuario;
+import logica.BaseDatos;
+import logica.BaseDatos.ExcepcionPagoNoEncontrado;
 import ocupacion.OcupacionSalas;
 
 public class VentanaPrincipalAdministracion extends JFrame {
@@ -41,6 +45,10 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JButton btnLlegada;
 	private JButton btnSalida;
 	private JButton btnSimultanea;
+	private JButton btnRegistrarPago;
+	private JButton btnActualizarMensualidades;
+	
+	private BaseDatos bd = new BaseDatos();
 
 	/**
 	 * Create the frame.
@@ -150,6 +158,8 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnZonaAdministracion.setBounds(10, 336, 812, 140);
 			pnZonaAdministracion.setLayout(new GridLayout(0, 1, 0, 0));
 			pnZonaAdministracion.add(getBtnReservasPropias());
+			pnZonaAdministracion.add(getBtnRegistrarPago());
+			pnZonaAdministracion.add(getBtnActualizarMensualidades());
 		}
 		return pnZonaAdministracion;
 	}
@@ -240,5 +250,42 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			btnSimultanea.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
 		return btnSimultanea;
+	}
+	
+	private JButton getBtnRegistrarPago() {
+		if (btnRegistrarPago == null) {
+			btnRegistrarPago = new JButton("Registrar Pago");
+			btnRegistrarPago.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VentanaRegistrarPago vrp = new VentanaRegistrarPago();
+					vrp.setModal(true);
+					vrp.setLocationRelativeTo(null);
+					vrp.setVisible(true);
+				}
+			});
+			btnRegistrarPago.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnRegistrarPago;
+	}
+	private JButton getBtnActualizarMensualidades() {
+		if (btnActualizarMensualidades == null) {
+			btnActualizarMensualidades = new JButton("Actualizar Mensualidades");
+			btnActualizarMensualidades.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						bd.actualizarMensualidades();
+						JOptionPane.showMessageDialog(null, "Las mensualidades han sido actualizadas con éxito", "Informacion",
+								JOptionPane.INFORMATION_MESSAGE);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (ExcepcionPagoNoEncontrado e) {
+						JOptionPane.showMessageDialog(null, e.getMessage(), "Informacion",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			});
+			btnActualizarMensualidades.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnActualizarMensualidades;
 	}
 }

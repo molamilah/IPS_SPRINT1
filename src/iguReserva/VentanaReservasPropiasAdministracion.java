@@ -25,6 +25,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import logica.BaseDatos;
+import logica.BaseDatos.ExcepcionPagoNoEncontrado;
+import logica.BaseDatos.ExcepcionReservaNoEncontrada;
 import logica.BaseDatos.ExcepcionUsuarioNoEncontrado;
 import logica.Usuario;
 import javax.swing.JTextField;
@@ -371,7 +373,13 @@ public class VentanaReservasPropiasAdministracion extends JDialog {
 						String nombre = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 0);
 						String horaInicio = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 1);
 						String horaFin = (String) tbReservas.getValueAt(tbReservas.getSelectedRow(), 2);
-						bd.cancelarReservaUsuario(propietarioReserva(), nombre, horaInicio, horaFin);
+						try {
+							bd.cancelarReservaUsuario(propietarioReserva(), nombre, horaInicio, horaFin);
+						} catch (ExcepcionPagoNoEncontrado e1) {
+							e1.getMessage();
+						} catch (ExcepcionReservaNoEncontrada e1) {
+							e1.getMessage();
+						}
 						JOptionPane.showMessageDialog(null, "Su reserva ha sido borrada con exito.", "Informacion",
 								JOptionPane.INFORMATION_MESSAGE);
 						borrarModelo();
