@@ -6,9 +6,11 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -19,6 +21,8 @@ import iguLogIn.LogIn;
 import iguReserva.VentanaRegistrarPago;
 import iguReserva.VentanaReservaAdministracion;
 import iguReserva.VentanaReservasPropiasAdministracion;
+import logica.BaseDatos;
+import logica.BaseDatos.ExcepcionPagoNoEncontrado;
 import logica.Usuario;
 
 public class VentanaPrincipalAdministracion extends JFrame {
@@ -37,6 +41,9 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private Usuario usuario;
 	private JButton btnReservasPropias;
 	private JButton btnRegistrarPago;
+	private JButton btnActualizarMensualidades;
+	
+	private BaseDatos bd = new BaseDatos();
 
 	/**
 	 * Create the frame.
@@ -133,6 +140,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnZonaAdministracion.setLayout(new GridLayout(0, 1, 0, 0));
 			pnZonaAdministracion.add(getBtnReservasPropias());
 			pnZonaAdministracion.add(getBtnRegistrarPago());
+			pnZonaAdministracion.add(getBtnActualizarMensualidades());
 		}
 		return pnZonaAdministracion;
 	}
@@ -167,5 +175,26 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			btnRegistrarPago.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
 		return btnRegistrarPago;
+	}
+	private JButton getBtnActualizarMensualidades() {
+		if (btnActualizarMensualidades == null) {
+			btnActualizarMensualidades = new JButton("Actualizar mensualidades");
+			btnActualizarMensualidades.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						bd.actualizarMensualidades();
+						JOptionPane.showMessageDialog(null, "Las mensualidades han sido actualizadas con éxito", "Informacion",
+								JOptionPane.INFORMATION_MESSAGE);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (ExcepcionPagoNoEncontrado e) {
+						JOptionPane.showMessageDialog(null, e.getMessage(), "Informacion",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			});
+			btnActualizarMensualidades.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnActualizarMensualidades;
 	}
 }

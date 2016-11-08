@@ -1,6 +1,7 @@
 package logica;
 
 import java.io.BufferedWriter;
+import java.io.Console;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BaseDatos {
 
@@ -312,6 +314,31 @@ public class BaseDatos {
 		}
 		return idUsuario;
 	}
+	
+	private int findID_Usuario(int idReserva) {
+		Connection con = null;
+		PreparedStatement psID_USUARIO = null;
+		ResultSet rsID_USUARIO = null;
+		int idUsuario = 0;
+		try {
+			con = conectar();
+			
+			psID_USUARIO = con.prepareStatement("select id_usuario from reserva where id_reserva = ?");
+			psID_USUARIO.setInt(1, idReserva);
+			rsID_USUARIO = psID_USUARIO.executeQuery();
+			rsID_USUARIO.next();
+			idUsuario = rsID_USUARIO.getInt(1);
+			
+			rsID_USUARIO.close();
+			psID_USUARIO.close();
+			con.close();
+			
+			return idUsuario;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return idUsuario;
+	}
 
 	private int findID_Reserva(int id_usuario, Timestamp fecha) throws ExcepcionReservaNoEncontrada {
 		Connection con = null;
@@ -338,6 +365,31 @@ public class BaseDatos {
 				con.close();
 				throw new ExcepcionReservaNoEncontrada("La reserva no se encuentra en la base de datos");
 			}
+			return idReserva;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return idReserva;
+	}
+	
+	private int findID_Reserva(int id_pago) {
+		Connection con = null;
+		PreparedStatement psID_RESERVA = null;
+		ResultSet rsID_RESERVA = null;
+
+		int idReserva = 0;
+
+		try {
+			con = conectar();
+			psID_RESERVA = con.prepareStatement("select id_reserva from pago where id_pago = ?");
+			psID_RESERVA.setInt(1, id_pago);
+			rsID_RESERVA = psID_RESERVA.executeQuery();
+			rsID_RESERVA.next();
+			idReserva = rsID_RESERVA.getInt(1);
+			rsID_RESERVA.close();
+			psID_RESERVA.close();
+			con.close();
+			
 			return idReserva;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -373,6 +425,81 @@ public class BaseDatos {
 		}
 		return idPago;
 	}
+	
+	private Timestamp findFechaReserva(int id_reserva) {
+		Connection con = null;
+		PreparedStatement psFECHARESERVA = null;
+		ResultSet rsFECHARESERVA = null;
+
+		Timestamp fechaReserva = null;
+
+		try {
+			con = conectar();
+			psFECHARESERVA = con.prepareStatement("select hora_inicio from reserva where id_reserva = ?");
+			psFECHARESERVA.setInt(1, id_reserva);
+			rsFECHARESERVA = psFECHARESERVA.executeQuery();
+			rsFECHARESERVA.next();
+			fechaReserva = rsFECHARESERVA.getTimestamp(1);
+			rsFECHARESERVA.close();
+			psFECHARESERVA.close();
+			con.close();
+			
+			return fechaReserva;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return fechaReserva;
+	}
+	
+	private double findCuotaBase(int idUsuario) {
+		Connection con = null;
+		PreparedStatement psCUOTABASE = null;
+		ResultSet rsCUOTABASE = null;
+
+		double cuotaBase = 0.0;
+
+		try {
+			con = conectar();
+			psCUOTABASE = con.prepareStatement("select cuota from usuario where id_usuario = ?");
+			psCUOTABASE.setInt(1, idUsuario);
+			rsCUOTABASE = psCUOTABASE.executeQuery();
+			rsCUOTABASE.next();
+			cuotaBase = rsCUOTABASE.getDouble(1);
+			rsCUOTABASE.close();
+			psCUOTABASE.close();
+			con.close();
+			
+			return cuotaBase;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cuotaBase;
+	}
+	
+	private boolean verificarSiExisteLaMensualidad(int idUsuario, int mes, int anno) {
+		
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		
+		boolean existe = false;
+		
+		try {
+			con = conectar();
+			pst = con.prepareStatement("select * from mensualidades where id_usuario = ? and mes = ? and anno = ?");
+			pst.setInt(1, idUsuario);
+			pst.setInt(2, mes);
+			pst.setInt(3, anno);
+			rs = pst.executeQuery();
+			if(rs.next()) {
+				existe = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return existe;
+	}
 
 	public void pasarPagoAPagado(String DNI, Timestamp fecha)
 			throws ExcepcionUsuarioNoEncontrado, ExcepcionReservaNoEncontrada, ExcepcionPagoNoEncontrado, IOException {
@@ -389,7 +516,7 @@ public class BaseDatos {
 			id_reserva = findID_Reserva(id_usuario, fecha);
 
 			psUPDATE_PAGO = con.prepareStatement("update pago set status = ? where id_reserva = ?");
-			psUPDATE_PAGO.setString(1, "pagado");
+			psUPDATE_PAGO.setString(1, "PAGADO");
 			psUPDATE_PAGO.setInt(2, id_reserva);
 			int num = psUPDATE_PAGO.executeUpdate();
 			if (num == 0) {
@@ -397,7 +524,9 @@ public class BaseDatos {
 			}
 			id_pago = findID_Pago(id_reserva);
 			generarRecibo(id_pago, DNI, fecha);
-
+			
+			psUPDATE_PAGO.close();
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -417,15 +546,14 @@ public class BaseDatos {
 			rsIMPORTE_PAGO = psIMPORTE_PAGO.executeQuery();
 			rsIMPORTE_PAGO.next();
 			importe = rsIMPORTE_PAGO.getDouble(1);
-
+			
 			rsIMPORTE_PAGO.close();
 			psIMPORTE_PAGO.close();
-			
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			con.close();
 		}
+		
 		return importe;
 	}
 
@@ -448,6 +576,151 @@ public class BaseDatos {
 			bw.write("Importe a pagar: " + importe + "euros. \n");
 		}
 		bw.close();
+	}
+	
+	private void actualizarMensualidad(int idUsuario, int mes, int anno, double importe) throws ExcepcionPagoNoEncontrado {
+		
+		Connection con = null;
+		PreparedStatement pst = null;
+		
+		try {
+			
+			con = conectar();
+			pst = con.prepareStatement("update mensualidades set cuota = cuota + ?");
+			pst.setDouble(1, importe);
+			int num = pst.executeUpdate();
+			if(num == 0) {
+				throw new ExcepcionPagoNoEncontrado("Hubo un error al actualizar la mensualidad ("+idUsuario +","+mes+","+anno+").");
+			}
+			
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void registrarMensualidad(int idUsuario, int mes, int anno, double importe, double cuota) throws ExcepcionPagoNoEncontrado {
+		
+		Connection con = null;
+		PreparedStatement pst = null;
+		
+		try {
+			
+			con = conectar();
+			pst = con.prepareStatement("insert into mensualidades values(?, ?, ?, ?)");
+			pst.setInt(1, idUsuario);
+			pst.setInt(2, mes);
+			pst.setInt(3, anno);
+			pst.setDouble(4, importe+cuota);
+			int num = pst.executeUpdate();
+			if(num == 0) {
+				throw new ExcepcionPagoNoEncontrado("Hubo un error al crear la mensualidad ("+idUsuario +","+mes+","+anno+").");
+			}
+			
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void registrarPagoEnCuota(int idPago) throws ExcepcionPagoNoEncontrado {
+		
+		Connection con = null;
+		PreparedStatement pst = null;
+		
+		try {
+			
+			con = conectar();
+			pst = con.prepareStatement("update pago set en_cuota = true where id_pago = ?");
+			pst.setInt(1, idPago);
+			int num = pst.executeUpdate();
+			if(num == 0) {
+				throw new ExcepcionPagoNoEncontrado("Hubo un error al registrar el pago ("+idPago+") en la cuota mensual.");
+			}
+			
+			pst.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void actualizarMensualidades() throws SQLException, ExcepcionPagoNoEncontrado {
+
+		// Miro los pagos con CONTADO a false y que no estén en PAGADO.
+		List<Integer> idsPagos = recuperarPagosParaCuotaMensual();
+		//List<Map<String, Integer>> listaMapIDPAGO_RESERVA_SOCIO = new ArrayList<Map<String, Integer>>(); // Por si acaso necesito relacionar ID_PAGO con su ID_RESERVA
+		Integer idReserva = 0;
+		Timestamp fecha = null;
+		Integer idUsuario = 0;
+		double importe = 0.0;
+		double cuota = 0.0;
+		for(Integer idPago: idsPagos) {
+			System.out.println(idPago);
+		}
+		// Por cada pago:
+		for(Integer idPago : idsPagos) {
+			//		Miro el ID de su reserva y cojo la fecha, el ID del usuario,
+			// 		la cuota base y el importe.
+			idReserva = findID_Reserva(idPago);
+			fecha = findFechaReserva(idReserva);
+			idUsuario = findID_Usuario(idReserva);
+			cuota = findCuotaBase(idUsuario);
+			importe = sacarImportePago(idPago);
+			//		Miro el día y el mes:
+			//		- Si es después del 20, sumo +1 al mes. Si es antes del 19, no sumo +1 al mes.
+			if(fecha.getDate() >= 20) {
+				fecha.setMonth(fecha.getMonth()+1);
+			}
+			// 		Por ahora tengo el año, el mes y el ID del usuario.
+			//	    Miro si existe la mensualidad y luego se presentan dos casos:
+			//		- Si existe esa mensualidad, sumo el importe del pago a la cuota.
+			if(verificarSiExisteLaMensualidad(idUsuario, fecha.getMonth(), fecha.getYear()+1900)) {
+				actualizarMensualidad(idUsuario, fecha.getMonth(), fecha.getYear()+1900, importe);
+			} else { // - Si no existe, creo la mensualidad sumando el importe y la cuota.
+				registrarMensualidad(idUsuario, fecha.getMonth(), fecha.getYear()+1900, importe, cuota);
+			}
+			//		Una vez acabado esto, en el pago pongo el campo EN_CUOTA a true.
+			registrarPagoEnCuota(idPago);
+		}
+		
+	}
+	
+	private List<Integer> recuperarPagosParaCuotaMensual() throws SQLException, ExcepcionPagoNoEncontrado {
+		List<Integer> ids = new ArrayList<>();
+		
+		Connection con = null;
+		PreparedStatement psIDS = null;
+		ResultSet rsIDS = null;
+		
+		try {
+			con = conectar();
+			psIDS = con.prepareStatement("SELECT ID_PAGO FROM PAGO WHERE CONTADO = FALSE AND EN_CUOTA = FALSE AND STATUS = 'NO_PAGADO'");
+			rsIDS = psIDS.executeQuery();
+			
+			if(rsIDS.next()) {
+				ids.add(rsIDS.getInt(1));
+				while(rsIDS.next()) {
+					ids.add(rsIDS.getInt(1));
+				}
+				rsIDS.close();
+				psIDS.close();
+				con.close();
+			} else {
+				rsIDS.close();
+				psIDS.close();
+				con.close();
+				throw new ExcepcionPagoNoEncontrado("No hay pagos que añadir a las cuotas mensuales.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return ids;
 	}
 
 	/**
