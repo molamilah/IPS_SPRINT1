@@ -1,30 +1,27 @@
 package iguReserva;
 
-import javax.swing.JDialog;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import logica.BaseDatos;
 import logica.Sala;
 import reservas.Reservador;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import javax.swing.JCheckBox;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.UIManager;
 
 public class VentanaReservasPeriodicas extends JDialog {
 
@@ -40,7 +37,6 @@ public class VentanaReservasPeriodicas extends JDialog {
 	private Calendar c = Calendar.getInstance();
 	private Calendar fechaInicial;
 	private Calendar fechaFinal;
-	private int dia = c.get(Calendar.DATE);
 	private int hora = c.get(Calendar.HOUR_OF_DAY);
 	private int min = c.get(Calendar.MINUTE);
 	private JLabel lbInicio;
