@@ -12,6 +12,7 @@ public class Reservador {
 
 	public static boolean reservarSocio(int idSocio, String idSala, int year, int mes, int day, int horaInicial,
 			int horaFinal, boolean tipoPago) {
+		BBDDReservas.conectar();
 		Calendar fechaInicial = Calendar.getInstance();
 		int month = fechaInicial.get(Calendar.MONTH) + mes + 1;
 		fechaInicial.set(Calendar.MINUTE, 0);
@@ -36,12 +37,13 @@ public class Reservador {
 			BBDDReservas.validarPago((calcularPrecio(idInstalacion, horaInicial, horaFinal)), tipoPago);
 			return true;
 		}
-
+		BBDDReservas.desconectar();
 		return false;
 	}
 
 	public static void reservarPeriodico(int id, Calendar fechaInicio, Calendar fechaFin, int horaInicio, int horaFin,
 			int diaSemana, String instalacion) {
+		BBDDReservas.conectar();
 		int idInstalacion = BBDDReservas.buscarInstalacion(instalacion);
 		fechasReserva.clear();
 		errors.clear();
@@ -69,10 +71,12 @@ public class Reservador {
 				errors.add(false);
 		}
 		conflictosReservas(horaInicio, horaFin, idInstalacion);
+		BBDDReservas.desconectar();
 	}
 
 	public static void reservarAdmin(int id, String instalacion, int year, int month, int day, int horaInicio,
 			int horaFin) {
+		BBDDReservas.conectar();
 		int idInstalacion = BBDDReservas.buscarInstalacion(instalacion);
 		fechasReserva.clear();
 		errors.clear();
@@ -99,6 +103,7 @@ public class Reservador {
 		} else
 			errors.add(false);
 		conflictosReservas(horaInicio, horaFin, idInstalacion);
+		BBDDReservas.desconectar();
 	}
 
 	private static void conflictosReservas(int horaInicio, int horaFin, int idInstalacion) {
