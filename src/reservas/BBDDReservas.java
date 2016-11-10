@@ -11,9 +11,17 @@ public class BBDDReservas {
 	private static String URL = "jdbc:hsqldb:hsql://localhost/labdb";
 	private static Connection conexion;
 
-	private static void conectar() {
+	public static void conectar() {
 		try {
 			conexion = DriverManager.getConnection(URL, USER, PASS);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void desconectar(){
+		try {
+			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -29,7 +37,6 @@ public class BBDDReservas {
 		horaFinal.setNanos(0);
 
 		try {
-			conectar();
 			ps = conexion.prepareStatement("select id_reserva from Reserva where id_usuario = ? "
 					+ "and ((? > hora_inicio and ? < hora_fin) or ( ? < hora_inicio and ? > hora_inicio) or (? = hora_inicio and ? = hora_fin))");
 			ps.setTimestamp(2, horaInicial);
@@ -47,7 +54,6 @@ public class BBDDReservas {
 			}
 			rs.close();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			return false;
 		}
@@ -70,7 +76,6 @@ public class BBDDReservas {
 		horaFinal.setNanos(0);
 
 		try {
-			conectar();
 			ps = conexion.prepareStatement("select id_reserva from Reserva where id_sala = ? "
 					+ "and ((? > hora_inicio and ? < hora_fin) or (? < hora_inicio and ?> hora_inicio)"
 					+ " or (? <= hora_inicio and ? >= hora_fin)) and estado IS NULL");
@@ -89,7 +94,6 @@ public class BBDDReservas {
 			}
 			rs.close();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -112,7 +116,6 @@ public class BBDDReservas {
 		horaFinal.setNanos(0);
 
 		try {
-			conectar();
 			ps = conexion.prepareStatement("select id_reserva from Reserva where id_sala = ? "
 					+ "and ((? > hora_inicio and ? < hora_fin) or (? < hora_inicio and ?> hora_inicio) or (? = hora_inicio and ? = hora_fin)) and estado IS NULL");
 			ps.setTimestamp(2, horaInicial);
@@ -127,7 +130,6 @@ public class BBDDReservas {
 				res.add(rs.getInt("id_reserva"));
 			rs.close();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -147,7 +149,6 @@ public class BBDDReservas {
 		horaInicial.setNanos(0);
 		horaFinal.setNanos(0);
 		try {
-			conectar();
 			ps = conexion.prepareStatement("insert into Reserva (hora_inicio, hora_fin,"
 					+ " id_usuario, id_sala, hora_entrada, hora_salida) values (?,?,?,?,null,null)");
 			ps.setTimestamp(1, horaInicial);
@@ -156,7 +157,6 @@ public class BBDDReservas {
 			ps.setInt(4, idInstalacion);
 			ps.executeUpdate();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -173,7 +173,6 @@ public class BBDDReservas {
 		hora_inicio.setNanos(0);
 		hora_fin.setNanos(0);
 		try {
-			conectar();
 			ps = conexion.prepareStatement("delete from Reserva where id_reserva = ?");
 			ps1 = conexion.prepareStatement("delete from Pago where id_reserva = ?");
 			for (int i : reservas) {
@@ -190,7 +189,6 @@ public class BBDDReservas {
 			ps2.setInt(3, idInstalacion);
 			ps2.executeUpdate();
 			ps2.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -202,7 +200,6 @@ public class BBDDReservas {
 		ResultSet rs;
 		java.util.Date fechaBaja = null;
 		try {
-			conectar();
 			ps = conexion.prepareStatement("select fecha_baja from Usuario where id_usuario = ? and baja = true");
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
@@ -210,7 +207,6 @@ public class BBDDReservas {
 				fechaBaja = new java.util.Date(rs.getTimestamp("fecha_baja").getTime());
 			rs.close();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -224,7 +220,6 @@ public class BBDDReservas {
 		ResultSet rs;
 		double res = 0.0;
 		try {
-			conectar();
 			ps = conexion.prepareStatement("select precio from Sala where id_sala = ?");
 			ps.setInt(1, idSala);
 			rs = ps.executeQuery();
@@ -232,7 +227,6 @@ public class BBDDReservas {
 			res = rs.getDouble("precio");
 			rs.close();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -247,7 +241,6 @@ public class BBDDReservas {
 		Statement st;
 		int idReserva = 0;
 		try {
-			conectar();
 			st = conexion.createStatement();
 			rs2 = st.executeQuery("select MAX(id_reserva) as id from Reserva");
 			rs2.next();
@@ -261,7 +254,6 @@ public class BBDDReservas {
 			ps.setBoolean(3, tipoPago);
 			ps.executeUpdate();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -274,7 +266,6 @@ public class BBDDReservas {
 		PreparedStatement ps;
 		int sala = -1;
 		try {
-			conectar();
 			ps = conexion.prepareStatement("select id_sala from Sala where descripcion= ?");
 			ps.setString(1, idSala);
 			rs = ps.executeQuery();
@@ -282,7 +273,6 @@ public class BBDDReservas {
 			sala = rs.getInt(1);
 			rs.close();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -296,7 +286,6 @@ public class BBDDReservas {
 		ResultSet rs2;
 		String res = "";
 		try {
-			conectar();
 			ps = conexion.prepareStatement("select * from Reserva where id_reserva = ?");
 			ps.setInt(1, idReserva);
 			rs = ps.executeQuery();
@@ -312,7 +301,6 @@ public class BBDDReservas {
 			ps2.close();
 			rs.close();
 			ps.close();
-			conexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
