@@ -28,6 +28,9 @@ import javax.swing.table.DefaultTableModel;
 
 import logica.BaseDatos;
 import logica.Usuario;
+import reservas.BBDDReservas;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class VentanaReserasPropiasUsuario extends JDialog {
 
@@ -70,8 +73,15 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 	 * Create the dialog.
 	 */
 	public VentanaReserasPropiasUsuario(Usuario usuario) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				BBDDReservas.desconectar();
+			}
+		});
 		this.usuario = usuario;
 		bd = new BaseDatos();
+		BBDDReservas.conectar();
 		setTitle("Reservas Propias");
 		setBounds(100, 100, 683, 602);
 		getContentPane().setLayout(null);
@@ -380,6 +390,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 			btnAtras = new JButton("Atras");
 			btnAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					BBDDReservas.desconectar();
 					dispose();
 				}
 			});

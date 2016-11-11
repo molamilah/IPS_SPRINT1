@@ -96,7 +96,7 @@ public class VentanaRegistrarPago extends JDialog {
 						Timestamp fechaInicio = Timestamp.valueOf(getTextFieldFechaReserva().getText());
 						try {
 							bd.pasarPagoAPagado(dni, fechaInicio);
-							JOptionPane.showMessageDialog(null, "El pago ha sido registrado con éxito", "Informacion",
+							JOptionPane.showMessageDialog(null, "El pago ha sido registrado con exito", "Informacion",
 									JOptionPane.INFORMATION_MESSAGE);
 						} catch (ExcepcionUsuarioNoEncontrado e1) {
 							JOptionPane.showMessageDialog(null, e1.getMessage(), "Informacion",

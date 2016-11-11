@@ -20,10 +20,13 @@ import javax.swing.border.TitledBorder;
 import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
+import reservas.BBDDReservas;
 import reservas.Reservador;
 
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class VentanaReservaUsuario extends JDialog {
 	/**
@@ -74,8 +77,15 @@ public class VentanaReservaUsuario extends JDialog {
 	 * Create the dialog.
 	 */
 	public VentanaReservaUsuario(Usuario usuario) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				BBDDReservas.desconectar();
+			}
+		});
 		setResizable(false);
 		bd = new BaseDatos();
+		BBDDReservas.conectar();
 		salasGimnasio = bd.cargarSalas();
 		this.usuario = usuario;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -95,7 +105,6 @@ public class VentanaReservaUsuario extends JDialog {
 		cbDia.setSelectedIndex(0);
 		cbMes.setSelectedIndex(0);
 		cbSalas.setSelectedIndex(0);
-		
 
 	}
 
@@ -414,6 +423,7 @@ public class VentanaReservaUsuario extends JDialog {
 			btAtras.setMnemonic('A');
 			btAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					BBDDReservas.desconectar();
 					dispose();
 				}
 			});
@@ -580,6 +590,7 @@ public class VentanaReservaUsuario extends JDialog {
 		}
 		return rdbtnCuota;
 	}
+
 	private JPanel getPnSala() {
 		if (pnSala == null) {
 			pnSala = new JPanel();
