@@ -19,7 +19,7 @@ public class BBDDReservas {
 		}
 	}
 	
-	public static void desconectar() {
+	public static void desconectar(){
 		try {
 			conexion.close();
 		} catch (SQLException e) {

@@ -36,6 +36,7 @@ public class Reservador {
 			BBDDReservas.validarPago((calcularPrecio(idInstalacion, horaInicial, horaFinal)), tipoPago);
 			return true;
 		}
+
 		return false;
 	}
 
