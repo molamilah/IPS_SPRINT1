@@ -13,7 +13,7 @@ public class Reservador {
 	public static boolean reservarSocio(int idSocio, String idSala, int year, int mes, int day, int horaInicial,
 			int horaFinal, boolean tipoPago) {
 		Calendar fechaInicial = Calendar.getInstance();
-		int month = fechaInicial.get(Calendar.MONTH) + mes + 1;
+		int month = fechaInicial.get(Calendar.MONTH) + mes;
 		fechaInicial.set(Calendar.MINUTE, 0);
 		fechaInicial.set(Calendar.SECOND, 0);
 		Calendar fechaFinal = Calendar.getInstance();
@@ -24,7 +24,7 @@ public class Reservador {
 		BBDDReservas.id = idSocio;
 
 		fechaInicial.set(Calendar.YEAR, year);
-		fechaInicial.set(Calendar.MONTH, month - 1);
+		fechaInicial.set(Calendar.MONTH, month);
 		fechaInicial.set(Calendar.DAY_OF_MONTH, day);
 
 		fechaFinal.setTime(fechaInicial.getTime());
@@ -71,13 +71,14 @@ public class Reservador {
 		conflictosReservas(horaInicio, horaFin, idInstalacion);
 	}
 
-	public static void reservarAdmin(int id, String instalacion, int year, int month, int day, int horaInicio,
+	public static void reservarAdmin(int id, String instalacion, int year, int mes, int day, int horaInicio,
 			int horaFin) {
 		int idInstalacion = BBDDReservas.buscarInstalacion(instalacion);
 		fechasReserva.clear();
 		errors.clear();
 		BBDDReservas.id = id;
 		Calendar fechaInicial = Calendar.getInstance();
+		int month = fechaInicial.get(Calendar.MONTH) + mes;
 		fechaInicial.set(Calendar.YEAR, year);
 		fechaInicial.set(Calendar.MONTH, month);
 		fechaInicial.set(Calendar.DAY_OF_MONTH, day);
