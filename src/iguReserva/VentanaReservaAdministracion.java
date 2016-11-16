@@ -18,6 +18,7 @@ import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
 import logica.BaseDatos.ExcepcionUsuarioNoEncontrado;
+import reservas.BBDDReservas;
 import reservas.Reservador;
 
 import javax.swing.JButton;
@@ -28,6 +29,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class VentanaReservaAdministracion extends JDialog {
 
@@ -79,8 +82,15 @@ public class VentanaReservaAdministracion extends JDialog {
 	 * Create the dialog.
 	 */
 	public VentanaReservaAdministracion() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				BBDDReservas.desconectar();
+			}
+		});
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
+		BBDDReservas.conectar();
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Reserva Instalaciones Administracion");
 		setBounds(100, 100, 556, 438);
@@ -391,6 +401,7 @@ public class VentanaReservaAdministracion extends JDialog {
 			btAtras = new JButton("Atras");
 			btAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					BBDDReservas.desconectar();
 					dispose();
 				}
 			});

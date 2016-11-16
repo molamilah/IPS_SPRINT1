@@ -21,7 +21,10 @@ import javax.swing.border.TitledBorder;
 
 import logica.BaseDatos;
 import logica.Sala;
+import reservas.BBDDReservas;
 import reservas.Reservador;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class VentanaReservasPeriodicas extends JDialog {
 
@@ -65,6 +68,12 @@ public class VentanaReservasPeriodicas extends JDialog {
 	private JPanel panel;
 
 	public VentanaReservasPeriodicas() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				BBDDReservas.desconectar();
+			}
+		});
 		setResizable(false);
 		setTitle("Admin: Reservas Periodicas");
 		setIconImage(Toolkit.getDefaultToolkit()
@@ -75,6 +84,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 		getContentPane().setLayout(null);
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
+		BBDDReservas.conectar();
 		getContentPane().add(getPnFecha());
 		getContentPane().add(getPnHora());
 		getContentPane().add(getBtnReservar());
@@ -322,6 +332,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) + 1,
 								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()));
 					JOptionPane.showMessageDialog(getContentPane(), "Reservas realizadas correctamente");
+					BBDDReservas.desconectar();
 					dispose();
 				}
 			});
@@ -337,6 +348,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 			btnAtras = new JButton("Atras");
 			btnAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					BBDDReservas.desconectar();
 					dispose();
 				}
 			});
