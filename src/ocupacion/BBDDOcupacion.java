@@ -36,7 +36,7 @@ public class BBDDOcupacion {
 			idSocio = rs.getInt("id_usuario");
 			rs.close();
 			ps.close();
-			ps2 = conexion.prepareStatement("update Reserva set hora_entrada = ?, hora_salida = null  "
+			ps2 = conexion.prepareStatement("update Reserva set hora_entrada = ?"
 					+ "where id_usuario = ? and (? between hora_inicio and hora_fin)");
 			ps2.setTimestamp(1, time);
 			ps2.setInt(2, idSocio);
