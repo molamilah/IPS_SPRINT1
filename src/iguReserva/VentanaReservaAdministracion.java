@@ -339,7 +339,7 @@ public class VentanaReservaAdministracion extends JDialog {
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 										+ cbFin.getSelectedIndex() + 1);
 
-						JOptionPane.showMessageDialog(getContentPane(), "Su reserva ha sido realizada con exito.");
+						JOptionPane.showMessageDialog(getContentPane(), "Operacion completada correctamente");
 					} else {
 						try {
 							Usuario usuario = propietarioReserva();

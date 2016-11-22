@@ -4,14 +4,20 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
+import logica.Reserva;
 import reservas.BBDDReservas;
+import javax.swing.JTable;
+import javax.swing.JPanel;
+import java.awt.GridLayout;
+import javax.swing.JScrollPane;
 
 public class VentanaConflictos extends JDialog {
 
@@ -19,66 +25,69 @@ public class VentanaConflictos extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Calendar fechaConflicto;
-	private Calendar fechaConflictoFin;
-	private ArrayList<Integer> reservasConflictivas;
+	private ArrayList<Reserva> conflictos;
 	private JButton btnUpdate;
 	private JButton btnCancel;
 	private JTextArea txtInfo;
-	private int idInstalacion;
+	private JTable table;
+	private JPanel pnTabla;
+	private JScrollPane scrollPane;
+	DefaultTableModel modelo;
+
+	ArrayList<Object[]> reservasPendientes;
 
 	/**
 	 * Create the frame.
 	 */
-	public VentanaConflictos(Calendar fechaConflicto, int horaInicio, int horaFin, int idInstalacion) {
-		this.fechaConflicto = (Calendar) fechaConflicto.clone();
-		this.fechaConflictoFin = (Calendar) fechaConflicto.clone();
-		this.fechaConflicto.set(Calendar.HOUR_OF_DAY, horaInicio);
-		this.fechaConflictoFin.set(Calendar.HOUR_OF_DAY, horaFin);
-		reservasConflictivas = new ArrayList<Integer>();
-		this.idInstalacion = idInstalacion;
+	public VentanaConflictos(ArrayList<Reserva> conflictos, ArrayList<Object[]> reservasPendientes) {
+		this.reservasPendientes = reservasPendientes;
+		this.conflictos = conflictos;
+		modelo = new DefaultTableModel() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		setTitle("Conflictos Encontrados");
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(VentanaConflictos.class.getResource("/img/img-recepcion-reducida.jpg")));
 		setResizable(false);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 811, 451);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(null);
 		getContentPane().add(getBtnUpdate());
 		getContentPane().add(getBtnCancel());
 		getContentPane().add(getTxtInfo());
-		reservasConflictivas();
+		getContentPane().add(getPnTabla());
 
-	}
-
-	private void reservasConflictivas() {
-		reservasConflictivas = BBDDReservas.buscarConflicto(idInstalacion, fechaConflicto, fechaConflictoFin);
 	}
 
 	private JButton getBtnUpdate() {
 		if (btnUpdate == null) {
-			btnUpdate = new JButton("Reservar");
+			btnUpdate = new JButton("Reservar y Sustituir");
 			btnUpdate.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					BBDDReservas.resolverConflictos(reservasConflictivas, fechaConflicto, fechaConflictoFin,
-							idInstalacion);
+					BBDDReservas.resolverConflictos(conflictos, reservasPendientes);
 					dispose();
 				}
 			});
-			btnUpdate.setBounds(75, 217, 101, 23);
+			btnUpdate.setBounds(479, 365, 214, 29);
 		}
 		return btnUpdate;
 	}
 
 	private JButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton("Cancelar");
+			btnCancel = new JButton("Cancelar y reservar otra fecha");
 			btnCancel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					dispose();
 				}
 			});
-			btnCancel.setBounds(295, 217, 89, 23);
+			btnCancel.setBounds(81, 365, 221, 28);
 		}
 		return btnCancel;
 	}
@@ -88,13 +97,60 @@ public class VentanaConflictos extends JDialog {
 			txtInfo = new JTextArea();
 			txtInfo.setLineWrap(true);
 			txtInfo.setWrapStyleWord(true);
-			txtInfo.setText("Tu reserva con la fecha " + fechaConflicto.get(Calendar.DAY_OF_MONTH) + " de "
-					+ fechaConflicto.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " de " + fechaConflicto.get(Calendar.YEAR) + " tiene un conflicto con 1 o mas reservas de existentes."
-							+ " Debes decidir si anular dichas reservas para realizar la tuya o cancelar tu intento de reserva\n"
-							+ "\u002AEn caso de que decidas anular las existentes se notificara tal cambio a los afectados");
+			txtInfo.setText(
+					"La reserva o reservas que deseas hacer han encontrado conflictos con otras reservas existentes que se muestran a continuacion");
 			txtInfo.setEditable(false);
-			txtInfo.setBounds(55, 28, 329, 174);
+			txtInfo.setBounds(38, 33, 709, 77);
 		}
 		return txtInfo;
+	}
+
+	private JTable getTable() {
+		if (table == null) {
+			table = new JTable(modelo);
+			rellenarTabla();
+			table.getColumnModel().getColumn(0).setMinWidth(100);
+			table.getColumnModel().getColumn(1).setMinWidth(100);
+			table.getColumnModel().getColumn(2).setMaxWidth(50);
+			table.getColumnModel().getColumn(4).setMinWidth(200);
+			DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+			tcr.setHorizontalAlignment(SwingConstants.CENTER);
+			table.getColumnModel().getColumn(0).setCellRenderer(tcr);
+			table.getColumnModel().getColumn(1).setCellRenderer(tcr);
+			table.getColumnModel().getColumn(2).setCellRenderer(tcr);
+			table.getColumnModel().getColumn(3).setCellRenderer(tcr);
+			table.getColumnModel().getColumn(4).setCellRenderer(tcr);
+		}
+		return table;
+	}
+
+	private void rellenarTabla() {
+		modelo.addColumn("FechaInicio");
+		modelo.addColumn("FechaFin");
+		modelo.addColumn("IdSala");
+		modelo.addColumn("Cliente");
+		modelo.addColumn("Direccion");
+		for (Reserva r : conflictos) {
+			String[] datosCliente = BBDDReservas.ObtenerDatosCliente(r.getId_usuario());
+			modelo.addRow(new Object[] { r.getHora_inicio(), r.getHora_fin(), r.getId_sala(), datosCliente[0], datosCliente[1] });
+		}
+	}
+
+	private JPanel getPnTabla() {
+		if (pnTabla == null) {
+			pnTabla = new JPanel();
+			pnTabla.setBounds(38, 143, 709, 186);
+			pnTabla.setLayout(new GridLayout(0, 1, 0, 0));
+			pnTabla.add(getScrollPane());
+		}
+		return pnTabla;
+	}
+
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			scrollPane.setViewportView(getTable());
+		}
+		return scrollPane;
 	}
 }

@@ -2,6 +2,9 @@ package reservas;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import logica.Reserva;
+
 import java.sql.*;
 
 public class BBDDReservas {
@@ -18,8 +21,8 @@ public class BBDDReservas {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void desconectar(){
+
+	public static void desconectar() {
 		try {
 			conexion.close();
 		} catch (SQLException e) {
@@ -61,9 +64,9 @@ public class BBDDReservas {
 
 	}
 
-	public static boolean comprobarDisponibilidadInstalacion(int idInstalacion, Calendar fechaInicial,
+	public static ArrayList<Integer> comprobarDisponibilidadInstalacion(int idInstalacion, Calendar fechaInicial,
 			Calendar fechaFinal) {
-
+		ArrayList<Integer> conflictos = new ArrayList<Integer>();
 		PreparedStatement ps;
 		ResultSet rs;
 		fechaInicial.set(Calendar.MINUTE, 0);
@@ -87,17 +90,14 @@ public class BBDDReservas {
 			ps.setTimestamp(6, horaInicial);
 			ps.setTimestamp(7, horaFinal);
 			rs = ps.executeQuery();
-			if (!rs.next()) {
-				rs.close();
-				ps.close();
-				return true;
-			}
+			while (rs.next())
+				conflictos.add(rs.getInt("id_reserva"));
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return conflictos;
 
 	}
 
@@ -163,31 +163,33 @@ public class BBDDReservas {
 
 	}
 
-	public static void resolverConflictos(ArrayList<Integer> reservas, Calendar horaInicial, Calendar horaFinal,
-			int idInstalacion) {
+	public static void resolverConflictos(ArrayList<Reserva> reservas, ArrayList<Object[]> reservasPendientes) {
 		PreparedStatement ps;
 		PreparedStatement ps1;
 		PreparedStatement ps2;
-		Timestamp hora_inicio = new Timestamp(horaInicial.getTimeInMillis());
-		Timestamp hora_fin = new Timestamp(horaFinal.getTimeInMillis());
-		hora_inicio.setNanos(0);
-		hora_fin.setNanos(0);
 		try {
 			ps = conexion.prepareStatement("delete from Reserva where id_reserva = ?");
 			ps1 = conexion.prepareStatement("delete from Pago where id_reserva = ?");
-			for (int i : reservas) {
-				ps.setInt(1, i);
-				ps1.setInt(1, i);
+			for (Reserva r : reservas) {
+				ps.setInt(1, r.getId_reserva());
+				ps1.setInt(1, r.getId_reserva());
 				ps1.executeUpdate();
 				ps.executeUpdate();
 			}
+			ps1.close();
 			ps.close();
 			ps2 = conexion.prepareStatement("insert into Reserva (hora_inicio, hora_fin,"
 					+ " id_usuario, id_sala, hora_entrada, hora_salida) values (?,?,0,?,null,null)");
-			ps2.setTimestamp(1, hora_inicio);
-			ps2.setTimestamp(2, hora_fin);
-			ps2.setInt(3, idInstalacion);
-			ps2.executeUpdate();
+			for (Object[] item : reservasPendientes) {
+				Timestamp hora_inicio = new Timestamp(((Calendar) item[1]).getTimeInMillis());
+				Timestamp hora_fin = new Timestamp(((Calendar) item[2]).getTimeInMillis());
+				hora_inicio.setNanos(0);
+				hora_fin.setNanos(0);
+				ps2.setTimestamp(1, hora_inicio);
+				ps2.setTimestamp(2, hora_fin);
+				ps2.setInt(3, (Integer) item[0]);
+				ps2.executeUpdate();
+			}
 			ps2.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -306,6 +308,45 @@ public class BBDDReservas {
 		}
 		return res;
 
+	}
+
+	public static ArrayList<Reserva> obtenerDatosReservas(ArrayList<Integer> conflictos) {
+		ArrayList<Reserva> res = new ArrayList<Reserva>();
+		PreparedStatement ps;
+		ResultSet rs;
+		try {
+			ps = conexion.prepareStatement("select * from Reserva where id_reserva = ?");
+			for (int id : conflictos) {
+				ps.setInt(1, id);
+				rs = ps.executeQuery();
+				while (rs.next())
+					res.add(new Reserva(rs.getInt("id_reserva"), rs.getInt("id_usuario"), rs.getInt("id_sala"),
+							rs.getTimestamp("hora_inicio"), rs.getTimestamp("hora_fin"),
+							rs.getTimestamp("hora_entrada"), rs.getTimestamp("hora_salida")));
+				rs.close();
+			}
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public static String[] ObtenerDatosCliente(int id_usuario) {
+		PreparedStatement ps;
+		ResultSet rs;
+		String[] res = new String[2];
+		try {
+			ps = conexion.prepareStatement("select nombre, apellidos, direccion from Usuario where id_usuario = ?");
+			ps.setInt(1, id_usuario);
+			rs = ps.executeQuery();
+			rs.next();
+			res[0] = rs.getString("Nombre") + " " + rs.getString("Apellidos");
+			res[1] = rs.getString("direccion");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
 	}
 
 }

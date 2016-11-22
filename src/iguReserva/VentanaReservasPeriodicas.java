@@ -331,7 +331,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) + 1,
 								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()));
-					JOptionPane.showMessageDialog(getContentPane(), "Reservas realizadas correctamente");
+					JOptionPane.showMessageDialog(getContentPane(), "Operacion realizada correctamente");
 					BBDDReservas.desconectar();
 					dispose();
 				}
