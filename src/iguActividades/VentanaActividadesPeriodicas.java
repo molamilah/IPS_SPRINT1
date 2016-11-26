@@ -1,4 +1,4 @@
-package iguReserva;
+package iguActividades;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -27,7 +27,7 @@ import reservas.Reservador;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class VentanaReservasPeriodicas extends JDialog {
+public class VentanaActividadesPeriodicas extends JDialog {
 
 	/**
 	 * 
@@ -67,8 +67,11 @@ public class VentanaReservasPeriodicas extends JDialog {
 	private JComboBox<String> cbSalas;
 	private List<Sala> salasGimnasio;
 	private JPanel panel;
+	private Object[] actividad;
+	private boolean creada;
+	private int idActividad;
 
-	public VentanaReservasPeriodicas() {
+	public VentanaActividadesPeriodicas(Object[] actividad) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
@@ -76,9 +79,11 @@ public class VentanaReservasPeriodicas extends JDialog {
 			}
 		});
 		setResizable(false);
+		this.actividad = actividad;
+		this.creada = false;
 		setTitle("Admin: Reservas Periodicas");
 		setIconImage(Toolkit.getDefaultToolkit()
-				.getImage(VentanaReservasPeriodicas.class.getResource("/img/img-recepcion-reducida.jpg")));
+				.getImage(VentanaActividadesPeriodicas.class.getResource("/img/img-recepcion-reducida.jpg")));
 		setBounds(100, 100, 652, 551);
 		setBounds(100, 100, 652, 467);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -324,14 +329,22 @@ public class VentanaReservasPeriodicas extends JDialog {
 			btnReservar = new JButton("Reservar");
 			btnReservar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (chkDiaCompleto.isSelected())
+					if (!creada) {
+						idActividad = BBDDReservasActividades.crearActividad((String) actividad[0],
+								(String) actividad[1], (Integer) actividad[2]);
+						creada = true;
+					}
+					if (chkDiaCompleto.isSelected()) {
 						Reservador.reservarPeriodico(0, fechaInicial, fechaFinal, 0, 24,
-								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()), -1);
-					else
+								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()),
+								idActividad);
+					} else {
 						Reservador.reservarPeriodico(0, fechaInicial, fechaFinal,
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]) + 1,
-								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()), -1);
+								cbDiaSemana.getSelectedIndex() + 1, cbSalas.getItemAt(cbSalas.getSelectedIndex()),
+								idActividad);
+					}
 					chkDiaCompleto.setSelected(false);
 					chkDiaCompleto.setEnabled(false);
 					cbInicio.setEnabled(false);
@@ -347,7 +360,6 @@ public class VentanaReservasPeriodicas extends JDialog {
 					cbAnnoInicial.setEnabled(true);
 					JOptionPane.showMessageDialog(getContentPane(), "Operacion realizada correctamente");
 				}
-
 			});
 			btnReservar.setBounds(522, 380, 89, 34);
 			btnReservar.setBounds(497, 380, 89, 34);
@@ -369,13 +381,14 @@ public class VentanaReservasPeriodicas extends JDialog {
 			btnAtras.setBounds(351, 380, 95, 34);
 		}
 		return btnAtras;
+
 	}
 
 	private JLabel getLblTitulo() {
 		if (lblTitulo == null) {
-			lblTitulo = new JLabel("Reserva Periodica de Instalaciones");
+			lblTitulo = new JLabel("Reserva Periodica de Instalaciones para actividades\r\n");
 			lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 18));
-			lblTitulo.setBounds(169, 28, 343, 34);
+			lblTitulo.setBounds(91, 28, 470, 34);
 		}
 		return lblTitulo;
 	}
@@ -554,7 +567,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 	private JButton getBtnValidarFecha() {
 		if (btnValidarFecha == null) {
 			btnValidarFecha = new JButton("Validar Fecha");
-			btnValidarFecha.setBounds(351, 223, 142, 34);
+			btnValidarFecha.setBounds(384, 223, 142, 34);
 			btnValidarFecha = new JButton("Validar");
 			btnValidarFecha.setBounds(369, 231, 89, 34);
 			btnValidarFecha.addActionListener(new ActionListener() {
@@ -612,7 +625,7 @@ public class VentanaReservasPeriodicas extends JDialog {
 				}
 			});
 			btnCambiar.setEnabled(false);
-			btnCambiar.setBounds(153, 223, 142, 34);
+			btnCambiar.setBounds(163, 223, 142, 34);
 		}
 		return btnCambiar;
 	}

@@ -16,6 +16,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import iguActividades.VentanaCreacionActividades;
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
 import iguReserva.VentanaRegistrarPago;
@@ -47,8 +48,9 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JButton btnSimultanea;
 	private JButton btnRegistrarPago;
 	private JButton btnActualizarMensualidades;
-	
+
 	private BaseDatos bd = new BaseDatos();
+	private JButton btnCrearActividad;
 
 	/**
 	 * Create the frame.
@@ -146,6 +148,8 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnActividades.setBorder(
 					new TitledBorder(null, "Actividades", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnActividades.setBounds(10, 179, 812, 146);
+			pnActividades.setLayout(new GridLayout(0, 1, 0, 0));
+			pnActividades.add(getBtnCrearActividad());
 		}
 		return pnActividades;
 	}
@@ -251,7 +255,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return btnSimultanea;
 	}
-	
+
 	private JButton getBtnRegistrarPago() {
 		if (btnRegistrarPago == null) {
 			btnRegistrarPago = new JButton("Registrar Pago");
@@ -267,6 +271,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 		}
 		return btnRegistrarPago;
 	}
+
 	private JButton getBtnActualizarMensualidades() {
 		if (btnActualizarMensualidades == null) {
 			btnActualizarMensualidades = new JButton("Actualizar Mensualidades");
@@ -274,8 +279,8 @@ public class VentanaPrincipalAdministracion extends JFrame {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
 						bd.actualizarMensualidades();
-						JOptionPane.showMessageDialog(null, "Las mensualidades han sido actualizadas con éxito", "Informacion",
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Las mensualidades han sido actualizadas con éxito",
+								"Informacion", JOptionPane.INFORMATION_MESSAGE);
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch (ExcepcionPagoNoEncontrado e) {
@@ -287,5 +292,20 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			btnActualizarMensualidades.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
 		return btnActualizarMensualidades;
+	}
+
+	private JButton getBtnCrearActividad() {
+		if (btnCrearActividad == null) {
+			btnCrearActividad = new JButton("CrearActividad");
+			btnCrearActividad.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					VentanaCreacionActividades va = new VentanaCreacionActividades();
+					va.setLocationRelativeTo(null);
+					va.setModal(true);
+					va.setVisible(true);
+				}
+			});
+		}
+		return btnCrearActividad;
 	}
 }

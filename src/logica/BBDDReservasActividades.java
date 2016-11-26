@@ -1,13 +1,10 @@
-package reservas;
+package logica;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import logica.Reserva;
-
 import java.sql.*;
 
-public class BBDDReservas {
+public class BBDDReservasActividades {
 	public static int id;
 	private static String PASS = "";
 	private static String USER = "SA";
@@ -28,6 +25,41 @@ public class BBDDReservas {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static int crearActividad(String nombre, String descripcion, int plazas) {
+		PreparedStatement ps;
+		PreparedStatement ps1;
+		ResultSet rs;
+		int res = -1;
+		try {
+			ps = conexion.prepareStatement("insert into Actividades(nombre,descripcion,numero_plazas) values (?,?,?)");
+			ps1 = conexion.prepareStatement("select MAX(id_actividad) as id from Actividades");
+			ps.setString(1, nombre);
+			ps.setString(2, descripcion);
+			ps.setInt(3, plazas);
+			ps.executeUpdate();
+			ps.close();
+			rs = ps1.executeQuery();
+			rs.next();
+			res = rs.getInt("id");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+
+	}
+
+	public static void borrarActividad(int idActividad) {
+		PreparedStatement ps;
+		try {
+			ps = conexion.prepareStatement("delete from Actividades where id_actividad = ?");
+			ps.setInt(1, idActividad);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public static boolean comprobarDisponibilidadSocio(Calendar fechaInicial, Calendar fechaFinal) {
@@ -137,7 +169,7 @@ public class BBDDReservas {
 
 	}
 
-	public static void hacerReserva(int idInstalacion, Calendar fechaInicial, Calendar fechaFinal) {
+	public static void hacerReserva(int idInstalacion, Calendar fechaInicial, Calendar fechaFinal, int idActividad) {
 
 		PreparedStatement ps;
 		fechaInicial.set(Calendar.MINUTE, 0);
@@ -150,11 +182,15 @@ public class BBDDReservas {
 		horaFinal.setNanos(0);
 		try {
 			ps = conexion.prepareStatement("insert into Reserva (hora_inicio, hora_fin,"
-					+ " id_usuario, id_sala, hora_entrada, hora_salida) values (?,?,?,?,null,null)");
+					+ " id_usuario, id_sala, hora_entrada, hora_salida, id_actividad) values (?,?,?,?,null,null,?)");
 			ps.setTimestamp(1, horaInicial);
 			ps.setTimestamp(2, horaFinal);
 			ps.setInt(3, id);
 			ps.setInt(4, idInstalacion);
+			if (idActividad == -1)
+				ps.setNull(5, java.sql.Types.INTEGER);
+			else
+				ps.setInt(5, idActividad);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -179,7 +215,7 @@ public class BBDDReservas {
 			ps1.close();
 			ps.close();
 			ps2 = conexion.prepareStatement("insert into Reserva (hora_inicio, hora_fin,"
-					+ " id_usuario, id_sala, hora_entrada, hora_salida) values (?,?,0,?,null,null)");
+					+ " id_usuario, id_sala, hora_entrada, hora_salida, id_actividad) values (?,?,0,?,null,null,?)");
 			for (Object[] item : reservasPendientes) {
 				Timestamp hora_inicio = new Timestamp(((Calendar) item[1]).getTimeInMillis());
 				Timestamp hora_fin = new Timestamp(((Calendar) item[2]).getTimeInMillis());
@@ -188,6 +224,10 @@ public class BBDDReservas {
 				ps2.setTimestamp(1, hora_inicio);
 				ps2.setTimestamp(2, hora_fin);
 				ps2.setInt(3, (Integer) item[0]);
+				if ((Integer) item[3] != -1)
+					ps2.setInt(4, (Integer) item[3]);
+				else
+					ps2.setNull(4, java.sql.Types.INTEGER);
 				ps2.executeUpdate();
 			}
 			ps2.close();

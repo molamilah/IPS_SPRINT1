@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import iguConflictos.VentanaConflictos;
+import logica.BBDDReservasActividades;
 import logica.Reserva;
 
 public class Reservador {
 	public static ArrayList<Calendar> fechasReserva = new ArrayList<Calendar>();
 	private static ArrayList<Integer> totalConflictos = new ArrayList<Integer>();
-	private static ArrayList<Object[]> reservasPendientes = new ArrayList<Object[]>();
+	private static ArrayList<Object[]> reservas = new ArrayList<Object[]>();
 
 	public static boolean reservarSocio(int idSocio, String idSala, int year, int mes, int day, int horaInicial,
-			int horaFinal, boolean tipoPago) {
+			int horaFinal, boolean tipoPago, int idActividad) {
 		Calendar fechaInicial = Calendar.getInstance();
 		int month = fechaInicial.get(Calendar.MONTH) + mes;
 		fechaInicial.set(Calendar.MINUTE, 0);
@@ -20,9 +21,9 @@ public class Reservador {
 		Calendar fechaFinal = Calendar.getInstance();
 		fechaFinal.set(Calendar.MINUTE, 0);
 		fechaFinal.set(Calendar.SECOND, 0);
-		int idInstalacion = BBDDReservas.buscarInstalacion(idSala);
+		int idInstalacion = BBDDReservasActividades.buscarInstalacion(idSala);
 
-		BBDDReservas.id = idSocio;
+		BBDDReservasActividades.id = idSocio;
 
 		fechaInicial.set(Calendar.YEAR, year);
 		fechaInicial.set(Calendar.MONTH, month);
@@ -31,10 +32,10 @@ public class Reservador {
 		fechaFinal.setTime(fechaInicial.getTime());
 		fechaInicial.set(Calendar.HOUR_OF_DAY, horaInicial);
 		fechaFinal.set(Calendar.HOUR_OF_DAY, horaFinal);
-		if (BBDDReservas.comprobarDisponibilidadSocio(fechaInicial, fechaFinal)
-				&& BBDDReservas.comprobarDisponibilidadInstalacion(idInstalacion, fechaInicial, fechaFinal).isEmpty()) {
-			BBDDReservas.hacerReserva(idInstalacion, fechaInicial, fechaFinal);
-			BBDDReservas.validarPago((calcularPrecio(idInstalacion, horaInicial, horaFinal)), tipoPago);
+		if (BBDDReservasActividades.comprobarDisponibilidadSocio(fechaInicial, fechaFinal)
+				&& BBDDReservasActividades.comprobarDisponibilidadInstalacion(idInstalacion, fechaInicial, fechaFinal).isEmpty()) {
+			BBDDReservasActividades.hacerReserva(idInstalacion, fechaInicial, fechaFinal, idActividad);
+			BBDDReservasActividades.validarPago((calcularPrecio(idInstalacion, horaInicial, horaFinal)), tipoPago);
 			return true;
 		}
 
@@ -42,16 +43,16 @@ public class Reservador {
 	}
 
 	public static void reservarPeriodico(int id, Calendar fechaInicio, Calendar fechaFin, int horaInicio, int horaFin,
-			int diaSemana, String instalacion) {
-		int idInstalacion = BBDDReservas.buscarInstalacion(instalacion);
+			int diaSemana, String instalacion, int idActividad) {
+		int idInstalacion = BBDDReservasActividades.buscarInstalacion(instalacion);
 		fechasReserva.clear();
-		reservasPendientes.clear();
+		reservas.clear();
 		totalConflictos.clear();
 		fechaInicio.set(Calendar.MINUTE, 0);
 		fechaInicio.set(Calendar.SECOND, 0);
 		fechaFin.set(Calendar.MINUTE, 0);
 		fechaFin.set(Calendar.SECOND, 0);
-		BBDDReservas.id = id;
+		BBDDReservasActividades.id = id;
 
 		for (Calendar iter = fechaInicio; iter.before(fechaFin) || iter.equals(fechaFin); iter
 				.add(Calendar.DAY_OF_MONTH, +1)) {
@@ -64,26 +65,27 @@ public class Reservador {
 			c.set(Calendar.HOUR_OF_DAY, horaInicio);
 			c2.setTime(c.getTime());
 			c2.set(Calendar.HOUR_OF_DAY, horaFin);
-			ArrayList<Integer> conflictos = BBDDReservas.comprobarDisponibilidadInstalacion(idInstalacion, c, c2);
-			if (conflictos.isEmpty()) {
-				BBDDReservas.hacerReserva(idInstalacion, c, c2);
-			} else {
-				totalConflictos.addAll(conflictos);
-				reservasPendientes.add(new Object[] { idInstalacion, c, c2 });
-			}
+			ArrayList<Integer> conflictos = BBDDReservasActividades.comprobarDisponibilidadInstalacion(idInstalacion, c, c2);
+			totalConflictos.addAll(conflictos);
+			reservas.add(new Object[] { idInstalacion, c, c2, idActividad });
 		}
 		if (!totalConflictos.isEmpty())
 			conflictosReservas();
+		else {
+			for (Object[] obj : reservas) {
+				BBDDReservasActividades.hacerReserva((Integer) obj[0], (Calendar) obj[1], (Calendar) obj[2], (Integer) obj[3]);
+			}
+		}
 
 	}
 
 	public static void reservarAdmin(int id, String instalacion, int year, int mes, int day, int horaInicio,
-			int horaFin) {
-		int idInstalacion = BBDDReservas.buscarInstalacion(instalacion);
+			int horaFin, int idActividad) {
+		int idInstalacion = BBDDReservasActividades.buscarInstalacion(instalacion);
 		fechasReserva.clear();
-		reservasPendientes.clear();
+		reservas.clear();
 		totalConflictos.clear();
-		BBDDReservas.id = id;
+		BBDDReservasActividades.id = id;
 		Calendar fechaInicial = Calendar.getInstance();
 		int month = fechaInicial.get(Calendar.MONTH) + mes;
 		fechaInicial.set(Calendar.YEAR, year);
@@ -101,21 +103,19 @@ public class Reservador {
 		fechasReserva.add(fechaInicial);
 		fechaInicial.set(Calendar.HOUR_OF_DAY, horaInicio);
 		fechaFinal.set(Calendar.HOUR_OF_DAY, horaFin);
-		ArrayList<Integer> conflictos = BBDDReservas.comprobarDisponibilidadInstalacion(idInstalacion, fechaInicial,
+		ArrayList<Integer> conflictos = BBDDReservasActividades.comprobarDisponibilidadInstalacion(idInstalacion, fechaInicial,
 				fechaFinal);
-		if (conflictos.isEmpty())
-			BBDDReservas.hacerReserva(idInstalacion, fechaInicial, fechaFinal);
-		else {
-			totalConflictos.addAll(conflictos);
-			reservasPendientes.add(new Object[] { idInstalacion, fechaInicial, fechaFinal });
-		}
+		totalConflictos.addAll(conflictos);
+		reservas.add(new Object[] { idInstalacion, fechaInicial, fechaFinal, idActividad });
 		if (!totalConflictos.isEmpty())
 			conflictosReservas();
+		else
+			BBDDReservasActividades.hacerReserva(idInstalacion, fechaInicial, fechaFinal, idActividad);
 	}
 
 	private static void conflictosReservas() {
-		ArrayList<Reserva> reservas = BBDDReservas.obtenerDatosReservas(totalConflictos);
-		VentanaConflictos vc = new VentanaConflictos(reservas, reservasPendientes);
+		ArrayList<Reserva> reservasConflicto = BBDDReservasActividades.obtenerDatosReservas(totalConflictos);
+		VentanaConflictos vc = new VentanaConflictos(reservasConflicto, reservas);
 		vc.setLocationRelativeTo(null);
 		vc.setModal(true);
 		vc.setVisible(true);
@@ -123,7 +123,7 @@ public class Reservador {
 
 	private static double calcularPrecio(int id, int horaInicial, int horaFinal) {
 		int duracion = horaFinal - horaInicial;
-		double precio = BBDDReservas.buscarPrecioInstalacion(id);
+		double precio = BBDDReservasActividades.buscarPrecioInstalacion(id);
 		return precio * duracion;
 
 	}

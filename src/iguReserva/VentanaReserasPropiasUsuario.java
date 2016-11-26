@@ -26,9 +26,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import logica.BBDDReservasActividades;
 import logica.BaseDatos;
 import logica.Usuario;
-import reservas.BBDDReservas;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -76,12 +77,12 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				BBDDReservas.desconectar();
+				BBDDReservasActividades.desconectar();
 			}
 		});
 		this.usuario = usuario;
 		bd = new BaseDatos();
-		BBDDReservas.conectar();
+		BBDDReservasActividades.conectar();
 		setTitle("Reservas Propias");
 		setBounds(100, 100, 683, 602);
 		getContentPane().setLayout(null);
@@ -390,7 +391,7 @@ public class VentanaReserasPropiasUsuario extends JDialog {
 			btnAtras = new JButton("Atras");
 			btnAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					BBDDReservas.desconectar();
+					BBDDReservasActividades.desconectar();
 					dispose();
 				}
 			});

@@ -14,11 +14,11 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import logica.BBDDReservasActividades;
 import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
 import logica.BaseDatos.ExcepcionUsuarioNoEncontrado;
-import reservas.BBDDReservas;
 import reservas.Reservador;
 
 import javax.swing.JButton;
@@ -85,12 +85,12 @@ public class VentanaReservaAdministracion extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				BBDDReservas.desconectar();
+				BBDDReservasActividades.desconectar();
 			}
 		});
 		bd = new BaseDatos();
 		salasGimnasio = bd.cargarSalas();
-		BBDDReservas.conectar();
+		BBDDReservasActividades.conectar();
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Reserva Instalaciones Administracion");
 		setBounds(100, 100, 556, 438);
@@ -337,9 +337,9 @@ public class VentanaReservaAdministracion extends JDialog {
 								Integer.parseInt(cbDia.getSelectedItem().toString()),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
-										+ cbFin.getSelectedIndex() + 1);
-
-						JOptionPane.showMessageDialog(getContentPane(), "Operacion completada correctamente");
+										+ cbFin.getSelectedIndex() + 1,
+								-1);
+						JOptionPane.showMessageDialog(getContentPane(), "Operacion realizada correctamente");
 					} else {
 						try {
 							Usuario usuario = propietarioReserva();
@@ -353,7 +353,7 @@ public class VentanaReservaAdministracion extends JDialog {
 									Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 									Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 											+ cbFin.getSelectedIndex() + 1,
-									tipo);
+									tipo, -1);
 							if (!success) {
 								JOptionPane.showMessageDialog(getContentPane(),
 										"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
@@ -401,7 +401,7 @@ public class VentanaReservaAdministracion extends JDialog {
 			btAtras = new JButton("Atras");
 			btAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					BBDDReservas.desconectar();
+					BBDDReservasActividades.desconectar();
 					dispose();
 				}
 			});
