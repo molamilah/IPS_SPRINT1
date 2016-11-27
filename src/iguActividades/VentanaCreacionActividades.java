@@ -157,7 +157,7 @@ public class VentanaCreacionActividades extends JDialog {
 	private JSpinner getSpPlazas() {
 		if (spPlazas == null) {
 			spPlazas = new JSpinner();
-			spPlazas.setModel(new SpinnerNumberModel(new Integer(0), null, null, new Integer(1)));
+			spPlazas.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
 			spPlazas.setBounds(303, 132, 53, 20);
 		}
 		return spPlazas;

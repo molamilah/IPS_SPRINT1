@@ -286,15 +286,15 @@ public class VentanaActividadUnica extends JDialog {
 						creada = true;
 					}
 					if (chkDiaCompleto.isSelected()) {
-						Reservador.reservarAdmin(0, cbSalas.getItemAt(cbSalas.getSelectedIndex()),
+						Reservador.reservarUnica(0, cbSalas.getItemAt(cbSalas.getSelectedIndex()),
 								Integer.parseInt(cbAnno.getItemAt(cbAnno.getSelectedIndex())), cbMes.getSelectedIndex(),
 								Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())), 0, 24, idActividad);
 					} else {
-						Reservador.reservarAdmin(0, cbSalas.getItemAt(cbSalas.getSelectedIndex()),
+						Reservador.reservarUnica(0, cbSalas.getItemAt(cbSalas.getSelectedIndex()),
 								Integer.parseInt(cbAnno.getItemAt(cbAnno.getSelectedIndex())), cbMes.getSelectedIndex(),
 								Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
-								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
+								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]),
 								idActividad);
 					}
 					chkDiaCompleto.setSelected(false);

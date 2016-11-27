@@ -112,6 +112,38 @@ public class Reservador {
 		else
 			BBDDReservasActividades.hacerReserva(idInstalacion, fechaInicial, fechaFinal, idActividad);
 	}
+	public static void reservarUnica(int id, String instalacion, int year, int mes, int day, int horaInicio,
+			int horaFin, int idActividad) {
+		int idInstalacion = BBDDReservasActividades.buscarInstalacion(instalacion);
+		fechasReserva.clear();
+		reservas.clear();
+		totalConflictos.clear();
+		BBDDReservasActividades.id = id;
+		Calendar fechaInicial = Calendar.getInstance();
+		fechaInicial.set(Calendar.YEAR, year);
+		fechaInicial.set(Calendar.MONTH, mes);
+		fechaInicial.set(Calendar.DAY_OF_MONTH, day);
+		Calendar fechaFinal = Calendar.getInstance();
+		fechaFinal.set(Calendar.YEAR, year);
+		fechaFinal.set(Calendar.MONTH, mes);
+		fechaFinal.set(Calendar.DAY_OF_MONTH, day);
+		fechaInicial.set(Calendar.HOUR_OF_DAY, 0);
+		fechaInicial.set(Calendar.MINUTE, 0);
+		fechaInicial.set(Calendar.SECOND, 0);
+		fechaFinal.set(Calendar.MINUTE, 0);
+		fechaFinal.set(Calendar.SECOND, 0);
+		fechasReserva.add(fechaInicial);
+		fechaInicial.set(Calendar.HOUR_OF_DAY, horaInicio);
+		fechaFinal.set(Calendar.HOUR_OF_DAY, horaFin);
+		ArrayList<Integer> conflictos = BBDDReservasActividades.comprobarDisponibilidadInstalacion(idInstalacion, fechaInicial,
+				fechaFinal);
+		totalConflictos.addAll(conflictos);
+		reservas.add(new Object[] { idInstalacion, fechaInicial, fechaFinal, idActividad });
+		if (!totalConflictos.isEmpty())
+			conflictosReservas();
+		else
+			BBDDReservasActividades.hacerReserva(idInstalacion, fechaInicial, fechaFinal, idActividad);
+	}
 
 	private static void conflictosReservas() {
 		ArrayList<Reserva> reservasConflicto = BBDDReservasActividades.obtenerDatosReservas(totalConflictos);

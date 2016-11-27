@@ -297,6 +297,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 	private JButton getBtnCrearActividad() {
 		if (btnCrearActividad == null) {
 			btnCrearActividad = new JButton("CrearActividad");
+			btnCrearActividad.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			btnCrearActividad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					VentanaCreacionActividades va = new VentanaCreacionActividades();
