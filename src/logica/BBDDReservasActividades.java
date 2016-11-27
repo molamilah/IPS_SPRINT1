@@ -62,6 +62,26 @@ public class BBDDReservasActividades {
 
 	}
 
+	public static boolean comprobarActividad(String nombre) {
+		PreparedStatement ps;
+		ResultSet rs;
+		try {
+			ps = conexion.prepareStatement("select id_actividad from Actividades where nombre = ?");
+			ps.setString(1, nombre);
+			rs = ps.executeQuery();
+			if (!rs.next()) {
+				rs.close();
+				ps.close();
+				return true;
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public static boolean comprobarDisponibilidadSocio(Calendar fechaInicial, Calendar fechaFinal) {
 
 		PreparedStatement ps;

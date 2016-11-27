@@ -142,10 +142,17 @@ public class VentanaCreacionActividades extends JDialog {
 						JOptionPane.showMessageDialog(getContentPane(), "El numero de plazas debe ser como minimo 1");
 					else {
 						BBDDReservasActividades.conectar();
-						VentanaActividadUnica vr = new VentanaActividadUnica(new Object[]{txtNombre.getText(), txtDescripcion.getText(), spPlazas.getValue()});
-						vr.setLocationRelativeTo(null);
-						vr.setModal(true);
-						vr.setVisible(true);
+						if (BBDDReservasActividades.comprobarActividad(txtNombre.getText())) {
+							VentanaActividadUnica vr = new VentanaActividadUnica(new Object[] { txtNombre.getText(),
+									txtDescripcion.getText(), spPlazas.getValue() });
+							vr.setLocationRelativeTo(null);
+							vr.setModal(true);
+							vr.setVisible(true);
+						} else {
+							JOptionPane.showMessageDialog(getContentPane(),
+									"Ya existe una actividad con ese nombre en la base de datos");
+							BBDDReservasActividades.desconectar();
+						}
 					}
 				}
 			});
@@ -162,6 +169,7 @@ public class VentanaCreacionActividades extends JDialog {
 		}
 		return spPlazas;
 	}
+
 	private JButton getBtnCrearPeriodica() {
 		if (btnCrearPeriodica == null) {
 			btnCrearPeriodica = new JButton("Crear Actividad Periodica");
@@ -174,10 +182,17 @@ public class VentanaCreacionActividades extends JDialog {
 						JOptionPane.showMessageDialog(getContentPane(), "El numero de plazas debe ser como minimo 1");
 					else {
 						BBDDReservasActividades.conectar();
-						VentanaActividadesPeriodicas vr = new VentanaActividadesPeriodicas(new Object[]{txtNombre.getText(), txtDescripcion.getText(), spPlazas.getValue()});
-						vr.setLocationRelativeTo(null);
-						vr.setModal(true);
-						vr.setVisible(true);
+						if (BBDDReservasActividades.comprobarActividad(txtNombre.getText())) {
+							VentanaActividadesPeriodicas vp = new VentanaActividadesPeriodicas(new Object[] { txtNombre.getText(),
+									txtDescripcion.getText(), spPlazas.getValue() });
+							vp.setLocationRelativeTo(null);
+							vp.setModal(true);
+							vp.setVisible(true);
+						} else {
+							JOptionPane.showMessageDialog(getContentPane(),
+									"Ya existe una actividad con ese nombre en la base de datos");
+							BBDDReservasActividades.desconectar();
+						}
 					}
 				}
 			});
