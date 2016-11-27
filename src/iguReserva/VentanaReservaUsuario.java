@@ -17,10 +17,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import logica.BBDDReservasActividades;
 import logica.BaseDatos;
 import logica.Sala;
 import logica.Usuario;
-import reservas.BBDDReservas;
 import reservas.Reservador;
 
 import javax.swing.JRadioButton;
@@ -80,12 +80,12 @@ public class VentanaReservaUsuario extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				BBDDReservas.desconectar();
+				BBDDReservasActividades.desconectar();
 			}
 		});
 		setResizable(false);
 		bd = new BaseDatos();
-		BBDDReservas.conectar();
+		BBDDReservasActividades.conectar();
 		salasGimnasio = bd.cargarSalas();
 		this.usuario = usuario;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -400,7 +400,7 @@ public class VentanaReservaUsuario extends JDialog {
 							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
 							Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0])
 									+ cbFin.getSelectedIndex() + 1,
-							tipo);
+							tipo, -1);
 					if (!success) {
 						JOptionPane.showMessageDialog(getContentPane(),
 								"No se puede tramitar la reserva en el intervalo solicitado, la instalacion se encuentra "
@@ -423,7 +423,7 @@ public class VentanaReservaUsuario extends JDialog {
 			btAtras.setMnemonic('A');
 			btAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					BBDDReservas.desconectar();
+					BBDDReservasActividades.desconectar();
 					dispose();
 				}
 			});

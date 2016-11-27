@@ -7,13 +7,15 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import logica.BBDDReservasActividades;
 import logica.Reserva;
-import reservas.BBDDReservas;
+
 import javax.swing.JTable;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
@@ -34,13 +36,13 @@ public class VentanaConflictos extends JDialog {
 	private JScrollPane scrollPane;
 	DefaultTableModel modelo;
 
-	ArrayList<Object[]> reservasPendientes;
+	ArrayList<Object[]> reservas;
 
 	/**
 	 * Create the frame.
 	 */
-	public VentanaConflictos(ArrayList<Reserva> conflictos, ArrayList<Object[]> reservasPendientes) {
-		this.reservasPendientes = reservasPendientes;
+	public VentanaConflictos(ArrayList<Reserva> conflictos, ArrayList<Object[]> reservas) {
+		this.reservas = reservas;
 		this.conflictos = conflictos;
 		modelo = new DefaultTableModel() {
 
@@ -70,7 +72,8 @@ public class VentanaConflictos extends JDialog {
 			btnUpdate = new JButton("Reservar y Sustituir");
 			btnUpdate.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					BBDDReservas.resolverConflictos(conflictos, reservasPendientes);
+					BBDDReservasActividades.resolverConflictos(conflictos, reservas);
+					JOptionPane.showMessageDialog(getContentPane(), "Reservas actualizadas correctamente");
 					dispose();
 				}
 			});
@@ -84,6 +87,7 @@ public class VentanaConflictos extends JDialog {
 			btnCancel = new JButton("Cancelar y reservar otra fecha");
 			btnCancel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					JOptionPane.showMessageDialog(getContentPane(), "Volviendo a la pantalla anterior sin reservar");
 					dispose();
 				}
 			});
@@ -131,8 +135,9 @@ public class VentanaConflictos extends JDialog {
 		modelo.addColumn("Cliente");
 		modelo.addColumn("Direccion");
 		for (Reserva r : conflictos) {
-			String[] datosCliente = BBDDReservas.ObtenerDatosCliente(r.getId_usuario());
-			modelo.addRow(new Object[] { r.getHora_inicio(), r.getHora_fin(), r.getId_sala(), datosCliente[0], datosCliente[1] });
+			String[] datosCliente = BBDDReservasActividades.ObtenerDatosCliente(r.getId_usuario());
+			modelo.addRow(new Object[] { r.getHora_inicio(), r.getHora_fin(), r.getId_sala(), datosCliente[0],
+					datosCliente[1] });
 		}
 	}
 
