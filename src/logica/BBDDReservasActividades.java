@@ -27,17 +27,19 @@ public class BBDDReservasActividades {
 		}
 	}
 
-	public static int crearActividad(String nombre, String descripcion, int plazas) {
+	public static int crearActividad(String nombre, String descripcion, int plazas, int monitor) {
 		PreparedStatement ps;
 		PreparedStatement ps1;
 		ResultSet rs;
 		int res = -1;
 		try {
-			ps = conexion.prepareStatement("insert into Actividades(nombre,descripcion,numero_plazas) values (?,?,?)");
+			ps = conexion.prepareStatement(
+					"insert into Actividades(nombre,descripcion,numero_plazas,id_monitor) values (?,?,?,?)");
 			ps1 = conexion.prepareStatement("select MAX(id_actividad) as id from Actividades");
 			ps.setString(1, nombre);
 			ps.setString(2, descripcion);
 			ps.setInt(3, plazas);
+			ps.setInt(4, monitor);
 			ps.executeUpdate();
 			ps.close();
 			rs = ps1.executeQuery();
@@ -403,6 +405,35 @@ public class BBDDReservasActividades {
 			rs.next();
 			res[0] = rs.getString("Nombre") + " " + rs.getString("Apellidos");
 			res[1] = rs.getString("direccion");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public static int comprobarMonitor(String dni) {
+		PreparedStatement ps;
+		PreparedStatement ps1;
+		ResultSet rs;
+		ResultSet rs1;
+		int id;
+		int res = -1;
+		try {
+			ps = conexion.prepareStatement("select id_usuario from Usuario where dni = ?");
+			ps1 = conexion.prepareStatement("select id_monitor from Monitores where id_usuario = ?");
+			ps.setString(1, dni);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				id = rs.getInt("id_usuario");
+				ps1.setInt(1, id);
+				rs1 = ps1.executeQuery();
+				if (rs1.next())
+					res = rs1.getInt("id_monitor");
+				rs1.close();
+				rs.close();
+			}
+			ps1.close();
+			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

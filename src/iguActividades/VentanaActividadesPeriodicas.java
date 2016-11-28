@@ -331,7 +331,7 @@ public class VentanaActividadesPeriodicas extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					if (!creada) {
 						idActividad = BBDDReservasActividades.crearActividad((String) actividad[0],
-								(String) actividad[1], (Integer) actividad[2]);
+								(String) actividad[1], (Integer) actividad[2], (Integer) actividad[3]);
 						creada = true;
 					}
 					if (chkDiaCompleto.isSelected()) {

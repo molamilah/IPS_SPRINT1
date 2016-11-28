@@ -282,7 +282,7 @@ public class VentanaActividadUnica extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					if (!creada) {
 						idActividad = BBDDReservasActividades.crearActividad((String) actividad[0],
-								(String) actividad[1], (Integer) actividad[2]);
+								(String) actividad[1], (Integer) actividad[2], (Integer) actividad[3]);
 						creada = true;
 					}
 					if (chkDiaCompleto.isSelected()) {
@@ -294,8 +294,7 @@ public class VentanaActividadUnica extends JDialog {
 								Integer.parseInt(cbAnno.getItemAt(cbAnno.getSelectedIndex())), cbMes.getSelectedIndex(),
 								Integer.parseInt(cbDia.getItemAt(cbDia.getSelectedIndex())),
 								Integer.parseInt(cbInicio.getItemAt(cbInicio.getSelectedIndex()).split(":")[0]),
-								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]),
-								idActividad);
+								Integer.parseInt(cbFin.getItemAt(cbFin.getSelectedIndex()).split(":")[0]), idActividad);
 					}
 					chkDiaCompleto.setSelected(false);
 					chkDiaCompleto.setEnabled(false);
