@@ -37,6 +37,8 @@ public class VentanaCreacionActividades extends JDialog {
 	private JButton btnCrearUnica;
 	private JSpinner spPlazas;
 	private JButton btnCrearPeriodica;
+	private JLabel lblMonitor;
+	private JTextField txtMonitor;
 
 	/**
 	 * Create the dialog.
@@ -58,6 +60,8 @@ public class VentanaCreacionActividades extends JDialog {
 		contentPanel.add(getBtnCrearUnica());
 		contentPanel.add(getSpPlazas());
 		contentPanel.add(getBtnCrearPeriodica());
+		contentPanel.add(getLblMonitor());
+		contentPanel.add(getTxtMonitor());
 	}
 
 	private JLabel getLblNombre() {
@@ -125,7 +129,7 @@ public class VentanaCreacionActividades extends JDialog {
 		if (lblPlazas == null) {
 			lblPlazas = new JLabel("Limite de plazas");
 			lblPlazas.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			lblPlazas.setBounds(134, 133, 117, 19);
+			lblPlazas.setBounds(71, 131, 117, 19);
 		}
 		return lblPlazas;
 	}
@@ -135,37 +139,39 @@ public class VentanaCreacionActividades extends JDialog {
 			btnCrearUnica = new JButton("Crear Actividad Unica");
 			btnCrearUnica.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					BBDDReservasActividades.conectar();
+					int monitor = BBDDReservasActividades.comprobarMonitor(txtMonitor.getText());
 					if (txtNombre.getText().isEmpty())
 						JOptionPane.showMessageDialog(getContentPane(),
 								"El Nombre de la actividad no puede quedar vacio");
 					else if ((Integer) spPlazas.getValue() <= 0)
 						JOptionPane.showMessageDialog(getContentPane(), "El numero de plazas debe ser como minimo 1");
+					else if (monitor == -1)
+						JOptionPane.showMessageDialog(getContentPane(), "El monitor no existe en la base de datos");
+					else if (!BBDDReservasActividades.comprobarActividad(txtNombre.getText()))
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Ya existe una actividad con ese nombre en la base de datos");
 					else {
-						BBDDReservasActividades.conectar();
-						if (BBDDReservasActividades.comprobarActividad(txtNombre.getText())) {
-							VentanaActividadUnica vr = new VentanaActividadUnica(new Object[] { txtNombre.getText(),
-									txtDescripcion.getText(), spPlazas.getValue() });
-							vr.setLocationRelativeTo(null);
-							vr.setModal(true);
-							vr.setVisible(true);
-						} else {
-							JOptionPane.showMessageDialog(getContentPane(),
-									"Ya existe una actividad con ese nombre en la base de datos");
-							BBDDReservasActividades.desconectar();
-						}
+						VentanaActividadUnica vr = new VentanaActividadUnica(new Object[] { txtNombre.getText(),
+								txtDescripcion.getText(), spPlazas.getValue(), monitor });
+						vr.setLocationRelativeTo(null);
+						vr.setModal(true);
+						vr.setVisible(true);
 					}
+					BBDDReservasActividades.desconectar();
 				}
 			});
 			btnCrearUnica.setBounds(201, 354, 165, 23);
 		}
 		return btnCrearUnica;
+
 	}
 
 	private JSpinner getSpPlazas() {
 		if (spPlazas == null) {
 			spPlazas = new JSpinner();
 			spPlazas.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
-			spPlazas.setBounds(303, 132, 53, 20);
+			spPlazas.setBounds(221, 132, 53, 20);
 		}
 		return spPlazas;
 	}
@@ -175,29 +181,48 @@ public class VentanaCreacionActividades extends JDialog {
 			btnCrearPeriodica = new JButton("Crear Actividad Periodica");
 			btnCrearPeriodica.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					BBDDReservasActividades.conectar();
+					int monitor = BBDDReservasActividades.comprobarMonitor(txtMonitor.getText());
 					if (txtNombre.getText().isEmpty())
 						JOptionPane.showMessageDialog(getContentPane(),
 								"El Nombre de la actividad no puede quedar vacio");
 					else if ((Integer) spPlazas.getValue() <= 0)
 						JOptionPane.showMessageDialog(getContentPane(), "El numero de plazas debe ser como minimo 1");
+					else if (monitor == -1)
+						JOptionPane.showMessageDialog(getContentPane(), "El monitor no existe en la base de datos");
+					else if (!BBDDReservasActividades.comprobarActividad(txtNombre.getText()))
+						JOptionPane.showMessageDialog(getContentPane(),
+								"Ya existe una actividad con ese nombre en la base de datos");
 					else {
-						BBDDReservasActividades.conectar();
-						if (BBDDReservasActividades.comprobarActividad(txtNombre.getText())) {
-							VentanaActividadesPeriodicas vp = new VentanaActividadesPeriodicas(new Object[] { txtNombre.getText(),
-									txtDescripcion.getText(), spPlazas.getValue() });
-							vp.setLocationRelativeTo(null);
-							vp.setModal(true);
-							vp.setVisible(true);
-						} else {
-							JOptionPane.showMessageDialog(getContentPane(),
-									"Ya existe una actividad con ese nombre en la base de datos");
-							BBDDReservasActividades.desconectar();
-						}
+						VentanaActividadesPeriodicas vr = new VentanaActividadesPeriodicas(new Object[] {
+								txtNombre.getText(), txtDescripcion.getText(), spPlazas.getValue(), monitor });
+						vr.setLocationRelativeTo(null);
+						vr.setModal(true);
+						vr.setVisible(true);
 					}
+					BBDDReservasActividades.desconectar();
 				}
 			});
 			btnCrearPeriodica.setBounds(376, 354, 183, 23);
 		}
 		return btnCrearPeriodica;
+	}
+
+	private JLabel getLblMonitor() {
+		if (lblMonitor == null) {
+			lblMonitor = new JLabel("DNI Monitor");
+			lblMonitor.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblMonitor.setBounds(303, 131, 96, 19);
+		}
+		return lblMonitor;
+	}
+
+	private JTextField getTxtMonitor() {
+		if (txtMonitor == null) {
+			txtMonitor = new JTextField();
+			txtMonitor.setBounds(407, 132, 86, 20);
+			txtMonitor.setColumns(10);
+		}
+		return txtMonitor;
 	}
 }
