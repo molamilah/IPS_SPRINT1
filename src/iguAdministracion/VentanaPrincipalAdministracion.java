@@ -150,6 +150,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnActividades.setBounds(10, 179, 812, 146);
 			pnActividades.setLayout(new GridLayout(0, 1, 0, 0));
 			pnActividades.add(getBtnCrearActividad());
+			pnActividades.add(getBtnBorrarSocio());
 		}
 		return pnActividades;
 	}
@@ -308,5 +309,21 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			});
 		}
 		return btnCrearActividad;
+	}
+	
+		private JButton getBtnBorrarSocio() {
+		if (btnBorrarSocio == null) {
+			btnBorrarSocio = new JButton("Borrar Socio");
+			btnBorrarSocio.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VentanaActividadesPropiasAdministracion vap = new VentanaActividadesPropiasAdministracion();
+					vap.setModal(true);
+					vap.setLocationRelativeTo(null);
+					vap.setVisible(true);
+				}
+			});
+			btnBorrarSocio.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnBorrarSocio;
 	}
 }
