@@ -959,4 +959,52 @@ public class BaseDatos {
 		}
 		return -1;
 	}
+
+	public void borrarReservaActividad(int id_socio, int id_actividad) {
+		try {
+			Connection con = conectar();
+			PreparedStatement ps = con
+					.prepareStatement("DELETE FROM APUNTADOS_ACTIVIDADES WHERE ID_USUARIO = ? AND ID_ACTIVIDAD = ?;");
+			ps.setInt(1, id_socio);
+			ps.setInt(2, id_actividad);
+			ps.executeUpdate();
+			ps.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int encontrarIdActividad(String nombre) {
+		int id = -1;
+		try {
+			Connection con = conectar();
+			PreparedStatement ps = con
+					.prepareStatement("SELECT ID_ACTIVIDAD FROM ACTIVIDADES A WHERE A.NOMBRE = ?;");
+			ps.setString(1, nombre);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+				id = rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
+
+	public List<String> cargarNombreDescripcionesActividades(int id_usuario) {
+		List<String> lista = new ArrayList<String>();
+		try {
+			Connection con = conectar();
+			PreparedStatement ps = con.prepareStatement(
+					"SELECT NOMBRE,DESCRIPCION FROM ACTIVIDADES A,APUNTADOS_ACTIVIDADES AP WHERE AP.ID_USUARIO = ? AND AP.ID_ACTIVIDAD = A.ID_ACTIVIDAD");
+			ps.setInt(1, id_usuario);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){				
+				lista.add(rs.getString(1)+"-"+rs.getString(2));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
 }

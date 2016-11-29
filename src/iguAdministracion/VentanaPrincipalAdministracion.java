@@ -16,6 +16,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import iguActividades.VentanaActividadesPropiasAdministracion;
 import iguActividades.VentanaCreacionActividades;
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
@@ -51,6 +52,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 
 	private BaseDatos bd = new BaseDatos();
 	private JButton btnCrearActividad;
+	private JButton btnBorrarSocio;
 
 	/**
 	 * Create the frame.
@@ -148,7 +150,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnActividades.setBorder(
 					new TitledBorder(null, "Actividades", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnActividades.setBounds(10, 179, 812, 146);
-			pnActividades.setLayout(new GridLayout(0, 1, 0, 0));
+			pnActividades.setLayout(new GridLayout(1, 1, 0, 0));
 			pnActividades.add(getBtnCrearActividad());
 			pnActividades.add(getBtnBorrarSocio());
 		}
@@ -161,7 +163,7 @@ public class VentanaPrincipalAdministracion extends JFrame {
 			pnZonaAdministracion.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"),
 					"Zona Administraci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			pnZonaAdministracion.setBounds(10, 336, 812, 140);
-			pnZonaAdministracion.setLayout(new GridLayout(0, 1, 0, 0));
+			pnZonaAdministracion.setLayout(new GridLayout(1, 1, 0, 0));
 			pnZonaAdministracion.add(getBtnReservasPropias());
 			pnZonaAdministracion.add(getBtnRegistrarPago());
 			pnZonaAdministracion.add(getBtnActualizarMensualidades());

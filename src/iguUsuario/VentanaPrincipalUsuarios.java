@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import iguActividades.VentanaActividadesPropias;
 import iguAdministracion.VentanaPrincipalAdministracion;
 import iguDisponibilidad.VentanaDisponibilidadInstalaciones;
 import iguLogIn.LogIn;
@@ -36,6 +37,7 @@ public class VentanaPrincipalUsuarios extends JFrame {
 	private JPanel pnZonaUsuario;
 	private Usuario usuario;
 	private JButton btnReservasPropias;
+	private JButton btnMisActividades;
 
 	/**
 	 * Create the frame.
@@ -136,6 +138,7 @@ public class VentanaPrincipalUsuarios extends JFrame {
 			pnZonaUsuario.setBounds(10, 336, 812, 140);
 			pnZonaUsuario.setLayout(new GridLayout(1, 0, 0, 0));
 			pnZonaUsuario.add(getBtnReservasPropias());
+			pnZonaUsuario.add(getBtnMisActividades());
 		}
 		return pnZonaUsuario;
 	}
@@ -153,5 +156,20 @@ public class VentanaPrincipalUsuarios extends JFrame {
 			btnReservasPropias.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		}
 		return btnReservasPropias;
+	}
+	private JButton getBtnMisActividades() {
+		if (btnMisActividades == null) {
+			btnMisActividades = new JButton("Mis Actividades");
+			btnMisActividades.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					VentanaActividadesPropias vap = new VentanaActividadesPropias(usuario);
+					vap.setModal(true);
+					vap.setLocationRelativeTo(null);
+					vap.setVisible(true);
+				}
+			});
+			btnMisActividades.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		}
+		return btnMisActividades;
 	}
 }
